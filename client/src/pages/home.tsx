@@ -221,6 +221,11 @@ export default function Home() {
 
       </header>
 
+      {/* Divider */}
+      <div className="w-full flex justify-center py-4 bg-white relative z-20">
+        <div className="w-3/4 max-w-4xl h-px bg-border/60"></div>
+      </div>
+
       {/* Curated Collections Section */}
       <section id="products" className="pt-8 sm:pt-16 pb-16 sm:pb-32 bg-white relative z-20">
         <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24">
@@ -235,6 +240,11 @@ export default function Home() {
           />
         </div>
       </section>
+
+      {/* Divider */}
+      <div className="w-full flex justify-center py-4 bg-white">
+        <div className="w-3/4 max-w-4xl h-px bg-border/60"></div>
+      </div>
 
       {/* Custom Order Section */}
       <section id="custom" className="py-12 sm:py-16 md:py-20 bg-secondary/20">
@@ -274,6 +284,11 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Divider */}
+      <div className="w-full flex justify-center py-4 bg-white">
+        <div className="w-3/4 max-w-4xl h-px bg-border/60"></div>
+      </div>
 
       {/* Best Sellers Section */}
       <section id="bestsellers" className="py-16 sm:py-24 md:py-32 bg-white">
