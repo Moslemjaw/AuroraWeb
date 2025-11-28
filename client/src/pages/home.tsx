@@ -18,16 +18,28 @@ export default function Home() {
     <div className="min-h-screen bg-background font-sans selection:bg-primary/10">
       
       {/* Navigation - Clean & Fixed on Mobile, integrated on Desktop */}
-      <nav className="fixed lg:absolute top-0 left-0 w-full lg:w-[45%] z-50 px-6 py-6 flex items-center justify-between bg-white/90 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none lg:px-12 lg:py-10">
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-6 flex items-center justify-between bg-white/95 backdrop-blur-md border-b border-border/40 transition-all duration-300">
          <div className="flex items-center gap-3">
-           <img src={logoImg} alt="Logo" className="w-10 h-10 lg:w-12 lg:h-12 object-contain" />
-           <span className="font-serif text-lg lg:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
+           <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain" />
+           <span className="font-serif text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
          </div>
-         <div className="hidden md:flex gap-8 text-xs font-bold tracking-widest uppercase text-muted-foreground">
-            <a href="#products" className="hover:text-primary transition-colors">Shop</a>
-            <a href="#about" className="hover:text-primary transition-colors">Studio</a>
-            <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
+         
+         <div className="hidden md:flex items-center gap-8">
+            <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-muted-foreground/80">
+              <a href="#products" className="hover:text-primary transition-colors">Shop</a>
+              <a href="#about" className="hover:text-primary transition-colors">About Us</a>
+              <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
+            </div>
+            
+            <div className="w-px h-4 bg-border/60 mx-2" />
+            
+            <Button variant="ghost" size="sm" className="hover:bg-primary/5 hover:text-primary px-2 gap-2 text-xs font-bold tracking-widest uppercase text-muted-foreground/80">
+               Cart
+               <ShoppingBag className="w-4 h-4 mb-0.5" />
+               <span className="bg-primary text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full ml-[-4px] -mt-2">0</span>
+            </Button>
          </div>
+
          <Button variant="ghost" size="icon" className="md:hidden"><Menu className="w-5 h-5" /></Button>
       </nav>
 
