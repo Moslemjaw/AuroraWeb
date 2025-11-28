@@ -4,6 +4,7 @@ import MobileNav from "@/components/mobile-nav";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Instagram, ShoppingBag, Star, Check, TrendingUp, ChevronLeft, ChevronRight, MessageCircle } from "lucide-react";
 import { Link } from "wouter";
+import { config } from "@/lib/config";
 
 import peonyImg from "@assets/generated_images/handmade_fabric_peony_bouquet.png";
 import roseImg from "@assets/generated_images/fabric_rose_close_up.png";
@@ -324,11 +325,11 @@ export default function Home() {
           </nav>
 
           <div className="flex justify-center gap-4 sm:gap-6 mb-8 sm:mb-12">
-             <a href="https://www.instagram.com/auroraflowers.kw" target="_blank" rel="noopener noreferrer" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors" data-testid="link-instagram"><Instagram className="w-4 h-4"/></a>
-             <a href="https://www.tiktok.com/@auroraflowers.kw" target="_blank" rel="noopener noreferrer" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors" data-testid="link-tiktok">
+             <a href={config.social.instagram} target="_blank" rel="noopener noreferrer" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors" data-testid="link-instagram"><Instagram className="w-4 h-4"/></a>
+             <a href={config.social.tiktok} target="_blank" rel="noopener noreferrer" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors" data-testid="link-tiktok">
                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>
              </a>
-             <a href="https://api.whatsapp.com/send/?phone=96551544913&text&type=phone_number&app_absent=0" target="_blank" rel="noopener noreferrer" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors" data-testid="link-whatsapp"><MessageCircle className="w-4 h-4"/></a>
+             <a href={config.social.whatsapp} target="_blank" rel="noopener noreferrer" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors" data-testid="link-whatsapp"><MessageCircle className="w-4 h-4"/></a>
           </div>
           
           <p className="text-[10px] sm:text-xs text-muted-foreground/60 uppercase tracking-widest">

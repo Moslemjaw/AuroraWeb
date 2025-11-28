@@ -4,6 +4,7 @@ import { Link } from "wouter";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 import { Mail, MapPin, Phone, Loader2, CheckCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { config } from "@/lib/config";
 
 export default function Contact() {
   const { toast } = useToast();
@@ -94,13 +95,13 @@ export default function Contact() {
                 <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-primary">
                   <Mail className="w-5 h-5" />
                 </div>
-                <span>auroraflowers.kw@gmail.com</span>
+                <span>{config.contact.email}</span>
               </div>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-primary">
                   <Phone className="w-5 h-5" />
                 </div>
-                <span>+965 51544913</span>
+                <span>{config.contact.phone}</span>
               </div>
               <div className="flex items-center gap-4 text-muted-foreground">
                 <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-primary">
