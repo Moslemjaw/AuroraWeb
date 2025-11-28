@@ -32,7 +32,33 @@ interface Color {
   colorId: string;
   name: string;
   hex: string;
+  price: number;
   createdAt?: Date;
+}
+
+interface Presentation {
+  _id?: string;
+  presentationId: string;
+  name: string;
+  description?: string;
+  price: number;
+  createdAt?: Date;
+}
+
+interface AddOn {
+  _id?: string;
+  addOnId: string;
+  name: string;
+  description?: string;
+  price: number;
+  createdAt?: Date;
+}
+
+interface Settings {
+  _id?: string;
+  key: string;
+  value: any;
+  updatedAt?: Date;
 }
 
 interface CustomOrder {
@@ -43,7 +69,8 @@ interface CustomOrder {
   customerPhone?: string;
   quantity: number;
   selectedColors?: string[];
-  wrappingStyle?: string;
+  selectedPresentation?: string;
+  selectedAddOns?: string[];
   totalPrice: string;
   status: string;
   createdAt?: Date;
@@ -53,17 +80,56 @@ export class MemoryStorage {
   private products: Map<string, Product> = new Map();
   private orders: Map<string, Order> = new Map();
   private colors: Map<string, Color> = new Map();
+  private presentations: Map<string, Presentation> = new Map();
+  private addOns: Map<string, AddOn> = new Map();
+  private settings: Map<string, Settings> = new Map();
   private customOrders: Map<string, CustomOrder> = new Map();
 
   constructor() {
-    // Initialize with default colors
+    // Initialize with default colors (with prices)
     const defaultColors = [
-      { colorId: "color-1", name: "Blush Pink", hex: "#f97a9d" },
-      { colorId: "color-2", name: "Cream White", hex: "#fdfbf7" },
-      { colorId: "color-3", name: "Sky Blue", hex: "#e0f2fe" },
+      { colorId: "color-1", name: "Blush Pink", hex: "#f97a9d", price: 0.5 },
+      { colorId: "color-2", name: "Cream White", hex: "#fdfbf7", price: 0 },
+      { colorId: "color-3", name: "Sky Blue", hex: "#e0f2fe", price: 0.5 },
+      { colorId: "color-4", name: "Lavender", hex: "#c4b5fd", price: 0.75 },
+      { colorId: "color-5", name: "Ruby Red", hex: "#dc2626", price: 1.0 },
+      { colorId: "color-6", name: "Gold", hex: "#fbbf24", price: 1.5 },
     ];
     defaultColors.forEach(color => {
       this.colors.set(color.colorId, { ...color, createdAt: new Date() });
+    });
+
+    // Initialize with default presentations
+    const defaultPresentations = [
+      { presentationId: "pres-1", name: "Signature Kraft Paper", description: "Eco-friendly kraft paper wrap", price: 0 },
+      { presentationId: "pres-2", name: "Silk Ribbon Binding", description: "Elegant silk ribbon finish", price: 2.0 },
+      { presentationId: "pres-3", name: "Ceramic Vase", description: "Beautiful ceramic vase included", price: 8.0 },
+      { presentationId: "pres-4", name: "Premium Gift Box", description: "Luxury gift box presentation", price: 5.0 },
+    ];
+    defaultPresentations.forEach(pres => {
+      this.presentations.set(pres.presentationId, { ...pres, createdAt: new Date() });
+    });
+
+    // Initialize with default add-ons
+    const defaultAddOns = [
+      { addOnId: "addon-1", name: "Greeting Card", description: "Personalized greeting card", price: 1.5 },
+      { addOnId: "addon-2", name: "Extra Greenery", description: "Additional eucalyptus and foliage", price: 3.0 },
+      { addOnId: "addon-3", name: "Decorative Pearls", description: "Pearl embellishments", price: 2.5 },
+      { addOnId: "addon-4", name: "LED Fairy Lights", description: "Battery-powered fairy lights", price: 4.0 },
+      { addOnId: "addon-5", name: "Fragrance Spray", description: "Light floral scent spray", price: 2.0 },
+    ];
+    defaultAddOns.forEach(addon => {
+      this.addOns.set(addon.addOnId, { ...addon, createdAt: new Date() });
+    });
+
+    // Initialize default settings
+    const defaultSettings = [
+      { key: "flowerCountMin", value: 1 },
+      { key: "flowerCountMax", value: 50 },
+      { key: "pricePerFlower", value: 5.0 },
+    ];
+    defaultSettings.forEach(setting => {
+      this.settings.set(setting.key, { ...setting, updatedAt: new Date() });
     });
 
     // Add demo orders
@@ -145,10 +211,88 @@ export class MemoryStorage {
     return newColor;
   }
 
+  async updateColor(colorId: string, updates: any) {
+    const color = this.colors.get(colorId);
+    if (!color) return null;
+    const updated = { ...color, ...updates };
+    this.colors.set(colorId, updated);
+    return updated;
+  }
+
   async deleteColor(colorId: string) {
     const color = this.colors.get(colorId);
     this.colors.delete(colorId);
     return color || null;
+  }
+
+  // Presentations
+  async findPresentations() {
+    return Array.from(this.presentations.values()).sort((a, b) => 
+      (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0)
+    );
+  }
+
+  async createPresentation(presentation: any) {
+    const newPresentation = { ...presentation, _id: Date.now().toString(), createdAt: new Date() };
+    this.presentations.set(presentation.presentationId, newPresentation);
+    return newPresentation;
+  }
+
+  async updatePresentation(presentationId: string, updates: any) {
+    const presentation = this.presentations.get(presentationId);
+    if (!presentation) return null;
+    const updated = { ...presentation, ...updates };
+    this.presentations.set(presentationId, updated);
+    return updated;
+  }
+
+  async deletePresentation(presentationId: string) {
+    const presentation = this.presentations.get(presentationId);
+    this.presentations.delete(presentationId);
+    return presentation || null;
+  }
+
+  // Add-ons
+  async findAddOns() {
+    return Array.from(this.addOns.values()).sort((a, b) => 
+      (a.createdAt?.getTime() || 0) - (b.createdAt?.getTime() || 0)
+    );
+  }
+
+  async createAddOn(addOn: any) {
+    const newAddOn = { ...addOn, _id: Date.now().toString(), createdAt: new Date() };
+    this.addOns.set(addOn.addOnId, newAddOn);
+    return newAddOn;
+  }
+
+  async updateAddOn(addOnId: string, updates: any) {
+    const addOn = this.addOns.get(addOnId);
+    if (!addOn) return null;
+    const updated = { ...addOn, ...updates };
+    this.addOns.set(addOnId, updated);
+    return updated;
+  }
+
+  async deleteAddOn(addOnId: string) {
+    const addOn = this.addOns.get(addOnId);
+    this.addOns.delete(addOnId);
+    return addOn || null;
+  }
+
+  // Settings
+  async findSettings() {
+    return Array.from(this.settings.values());
+  }
+
+  async getSetting(key: string) {
+    return this.settings.get(key) || null;
+  }
+
+  async updateSetting(key: string, value: any) {
+    const existing = this.settings.get(key);
+    const setting = { key, value, updatedAt: new Date(), _id: existing?._id || Date.now().toString() };
+    this.settings.set(key, setting);
+    return setting;
   }
 
   // Custom Orders

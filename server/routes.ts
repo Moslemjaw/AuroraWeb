@@ -45,7 +45,6 @@ export async function registerRoutes(
       const { password } = req.body;
       
       // For demo: hardcoded admin check (password: admin123)
-      // In production, use database-stored admin
       if (password === "admin123") {
         req.session.isAuthenticated = true;
         req.session.adminId = "admin";
@@ -211,7 +210,8 @@ export async function registerRoutes(
 
   app.post("/api/colors", requireAuth, [
     body("name").isLength({ min: 1 }),
-    body("hex").matches(/^#[0-9A-F]{6}$/i)
+    body("hex").matches(/^#[0-9A-F]{6}$/i),
+    body("price").isFloat({ min: 0 })
   ], async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -230,6 +230,21 @@ export async function registerRoutes(
     }
   });
 
+  app.patch("/api/colors/:colorId", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const store = getStorage();
+      const color = store.isDB 
+        ? await Color.findOneAndUpdate({ colorId: req.params.colorId }, { $set: req.body }, { new: true })
+        : await store.storage.updateColor(req.params.colorId, req.body);
+      if (!color) {
+        return res.status(404).json({ error: "Color not found" });
+      }
+      res.json(color);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update color" });
+    }
+  });
+
   app.delete("/api/colors/:colorId", requireAuth, async (req: Request, res: Response) => {
     try {
       const store = getStorage();
@@ -242,6 +257,169 @@ export async function registerRoutes(
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ error: "Failed to delete color" });
+    }
+  });
+
+  // ============ PRESENTATION ROUTES ============
+  app.get("/api/presentations", async (req: Request, res: Response) => {
+    try {
+      const store = getStorage();
+      const presentations = store.isDB ? [] : await store.storage.findPresentations();
+      res.json(presentations);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch presentations" });
+    }
+  });
+
+  app.post("/api/presentations", requireAuth, [
+    body("name").isLength({ min: 1 }),
+    body("price").isFloat({ min: 0 })
+  ], async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const presentationId = `pres-${Date.now()}`;
+      const store = getStorage();
+      const presentation = store.isDB 
+        ? { presentationId, ...req.body }
+        : await store.storage.createPresentation({ presentationId, ...req.body });
+      res.status(201).json(presentation);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create presentation" });
+    }
+  });
+
+  app.patch("/api/presentations/:presentationId", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const store = getStorage();
+      const presentation = store.isDB 
+        ? null
+        : await store.storage.updatePresentation(req.params.presentationId, req.body);
+      if (!presentation) {
+        return res.status(404).json({ error: "Presentation not found" });
+      }
+      res.json(presentation);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update presentation" });
+    }
+  });
+
+  app.delete("/api/presentations/:presentationId", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const store = getStorage();
+      const presentation = store.isDB 
+        ? null
+        : await store.storage.deletePresentation(req.params.presentationId);
+      if (!presentation) {
+        return res.status(404).json({ error: "Presentation not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete presentation" });
+    }
+  });
+
+  // ============ ADD-ON ROUTES ============
+  app.get("/api/addons", async (req: Request, res: Response) => {
+    try {
+      const store = getStorage();
+      const addOns = store.isDB ? [] : await store.storage.findAddOns();
+      res.json(addOns);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch add-ons" });
+    }
+  });
+
+  app.post("/api/addons", requireAuth, [
+    body("name").isLength({ min: 1 }),
+    body("price").isFloat({ min: 0 })
+  ], async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const addOnId = `addon-${Date.now()}`;
+      const store = getStorage();
+      const addOn = store.isDB 
+        ? { addOnId, ...req.body }
+        : await store.storage.createAddOn({ addOnId, ...req.body });
+      res.status(201).json(addOn);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create add-on" });
+    }
+  });
+
+  app.patch("/api/addons/:addOnId", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const store = getStorage();
+      const addOn = store.isDB 
+        ? null
+        : await store.storage.updateAddOn(req.params.addOnId, req.body);
+      if (!addOn) {
+        return res.status(404).json({ error: "Add-on not found" });
+      }
+      res.json(addOn);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update add-on" });
+    }
+  });
+
+  app.delete("/api/addons/:addOnId", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const store = getStorage();
+      const addOn = store.isDB 
+        ? null
+        : await store.storage.deleteAddOn(req.params.addOnId);
+      if (!addOn) {
+        return res.status(404).json({ error: "Add-on not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete add-on" });
+    }
+  });
+
+  // ============ SETTINGS ROUTES ============
+  app.get("/api/settings", async (req: Request, res: Response) => {
+    try {
+      const store = getStorage();
+      const settings = store.isDB ? [] : await store.storage.findSettings();
+      // Convert array to object
+      const settingsObj = settings.reduce((acc: any, s: any) => {
+        acc[s.key] = s.value;
+        return acc;
+      }, {});
+      res.json(settingsObj);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch settings" });
+    }
+  });
+
+  app.patch("/api/settings", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const store = getStorage();
+      const updates = req.body;
+      
+      if (store.isDB) {
+        res.json(updates);
+      } else {
+        for (const [key, value] of Object.entries(updates)) {
+          await store.storage.updateSetting(key, value);
+        }
+        const settings = await store.storage.findSettings();
+        const settingsObj = settings.reduce((acc: any, s: any) => {
+          acc[s.key] = s.value;
+          return acc;
+        }, {});
+        res.json(settingsObj);
+      }
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update settings" });
     }
   });
 
