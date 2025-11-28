@@ -73,14 +73,18 @@ export default function Home() {
          <MobileNav isLight={false} />
       </nav>
 
-      {/* Hero Image - Full Width on Mobile with Blend */}
+      {/* Hero Image - Full Width on Mobile with Blend and Fog */}
       <div className="w-full lg:hidden relative">
         <img 
           src={luxuryBouquetImg} 
           alt="Luxury Fabric Bouquet" 
           className="w-full h-auto object-cover"
         />
-        {/* Gradient fade to blend with content */}
+        {/* Left fog effect */}
+        <div className="absolute top-0 left-0 w-1/3 h-full bg-gradient-to-r from-white/80 via-white/40 to-transparent pointer-events-none" />
+        {/* Right fog effect */}
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/80 via-white/40 to-transparent pointer-events-none" />
+        {/* Bottom gradient fade to blend with content */}
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white via-white/70 to-transparent" />
       </div>
 
