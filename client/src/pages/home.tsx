@@ -63,6 +63,8 @@ export default function Home() {
         {/* Right Panel - Hero Image */}
         <div className="w-full lg:w-[55%] h-[50vh] lg:h-auto relative order-1 lg:order-2 overflow-hidden">
           <div className="absolute inset-0 bg-black/5 z-10 pointer-events-none" />
+          {/* Gradient fade to blend image with the next section */}
+          <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white via-white/50 to-transparent z-20" />
           <img 
             src={luxuryBouquetImg} 
             alt="Luxury Fabric Bouquet" 
@@ -73,11 +75,11 @@ export default function Home() {
       </header>
 
       {/* Simplified Products Grid - Editorial Style */}
-      <section id="products" className="py-32 bg-white">
+      <section id="products" className="pt-12 pb-32 bg-white relative z-20 -mt-12">
         <div className="container mx-auto px-6 md:px-12 lg:px-24">
-          <div className="text-center mb-20">
-             <h2 className="font-serif text-4xl md:text-5xl text-foreground mb-4">Curated Collections</h2>
-             <div className="w-12 h-1 bg-primary mx-auto" />
+          <div className="text-center mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
+             <p className="text-xs font-bold tracking-[0.3em] text-muted-foreground uppercase mb-3">Shop The Look</p>
+             <h2 className="font-serif text-4xl md:text-5xl text-foreground">Curated Collections</h2>
           </div>
           
           <div className="grid md:grid-cols-3 gap-12">
