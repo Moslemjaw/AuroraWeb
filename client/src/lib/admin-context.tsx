@@ -31,6 +31,7 @@ export type Color = {
   colorId: string;
   name: string;
   hex: string;
+  imageUrl?: string;
   price: number;
 };
 
@@ -75,7 +76,7 @@ type AdminContextType = {
   loadStats: () => Promise<void>;
   colors: Color[];
   loadColors: () => Promise<void>;
-  addColor: (color: { name: string; hex: string; price: number }) => Promise<void>;
+  addColor: (color: { name: string; hex: string; imageUrl?: string; price: number }) => Promise<void>;
   updateColor: (colorId: string, updates: Partial<Color>) => Promise<void>;
   removeColor: (colorId: string) => Promise<void>;
   presentations: Presentation[];
@@ -191,7 +192,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const addColor = async (color: { name: string; hex: string; price: number }) => {
+  const addColor = async (color: { name: string; hex: string; imageUrl?: string; price: number }) => {
     const created = await colorAPI.create(color);
     setColors([...colors, created]);
   };

@@ -39,6 +39,7 @@ const colorSchema = new mongoose.Schema({
   colorId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   hex: { type: String, required: true },
+  imageUrl: { type: String },
   price: { type: Number, default: 0 },
 }, { timestamps: true });
 

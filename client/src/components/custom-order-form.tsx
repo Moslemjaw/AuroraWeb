@@ -11,6 +11,7 @@ type Color = {
   colorId: string;
   name: string;
   hex: string;
+  imageUrl?: string;
   price: number;
 };
 
@@ -130,7 +131,7 @@ export default function CustomOrderForm() {
 
     const selectedColorDetails = selectedColors.map(colorId => {
       const color = colors.find(c => c.colorId === colorId)!;
-      return { colorId: color.colorId, name: color.name, hex: color.hex, price: color.price };
+      return { colorId: color.colorId, name: color.name, hex: color.hex, imageUrl: color.imageUrl, price: color.price };
     });
 
     const presentationDetails = presentations.find(p => p.presentationId === selectedPresentation)!;
@@ -235,10 +236,16 @@ export default function CustomOrderForm() {
                     <Check className="w-3 h-3 text-white" />
                   </div>
                 )}
-                <div 
-                  className="w-6 h-6 sm:w-8 sm:h-8 rounded-full mb-1.5 sm:mb-2 shadow-sm border border-border" 
-                  style={{ backgroundColor: color.hex }} 
-                />
+                {color.imageUrl ? (
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg mb-1.5 sm:mb-2 shadow-sm border border-border overflow-hidden">
+                    <img src={color.imageUrl} alt={color.name} className="w-full h-full object-cover" />
+                  </div>
+                ) : (
+                  <div 
+                    className="w-6 h-6 sm:w-8 sm:h-8 rounded-full mb-1.5 sm:mb-2 shadow-sm border border-border" 
+                    style={{ backgroundColor: color.hex }} 
+                  />
+                )}
                 <span className="text-[10px] sm:text-xs font-medium leading-tight">{color.name}</span>
                 {color.price > 0 && (
                   <span className="text-[9px] sm:text-[10px] text-primary mt-0.5">

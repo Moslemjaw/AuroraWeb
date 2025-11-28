@@ -1,17 +1,42 @@
 import { useAdmin, Product } from "@/lib/admin-context";
 import AdminLayout from "@/components/admin-layout";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash, Edit, Search, Star, Check, TrendingUp } from "lucide-react";
+import { Plus, Trash, Edit, Star, TrendingUp, X, Image } from "lucide-react";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 export default function AdminProducts() {
   const { products, addProduct, updateProduct, deleteProduct } = useAdmin();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newProduct, setNewProduct] = useState<Partial<Product>>({});
+  const [newProduct, setNewProduct] = useState<Partial<Product & { images: string[] }>>({ images: [] });
+  const [newImageUrl, setNewImageUrl] = useState('');
+
+  const handleAddImage = () => {
+    if (newImageUrl.trim()) {
+      const currentImages = newProduct.images || [];
+      setNewProduct({
+        ...newProduct,
+        images: [...currentImages, newImageUrl.trim()],
+        imageUrl: newProduct.imageUrl || newImageUrl.trim()
+      });
+      setNewImageUrl('');
+    }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    const currentImages = newProduct.images || [];
+    const updatedImages = currentImages.filter((_, i) => i !== index);
+    setNewProduct({
+      ...newProduct,
+      images: updatedImages,
+      imageUrl: updatedImages[0] || ''
+    });
+  };
 
   const handleSaveProduct = async () => {
     if (!newProduct.title || !newProduct.price) return;
+    
+    const images = newProduct.images || [];
     
     try {
       await addProduct({
@@ -20,13 +45,15 @@ export default function AdminProducts() {
         price: newProduct.price,
         description: newProduct.description || "",
         longDescription: newProduct.longDescription || "",
-        imageUrl: newProduct.imageUrl || "",
-        category: newProduct.category || "Uncategorized",
+        imageUrl: images[0] || newProduct.imageUrl || "",
+        images: images,
+        category: "Flowers",
         isCurated: false,
         isBestSeller: false,
       });
       setIsAddModalOpen(false);
-      setNewProduct({});
+      setNewProduct({ images: [] });
+      setNewImageUrl('');
     } catch (error) {
       console.error("Failed to add product:", error);
     }
@@ -40,7 +67,13 @@ export default function AdminProducts() {
             <h1 className="font-serif text-2xl sm:text-3xl text-foreground mb-1 sm:mb-2">Product Management</h1>
             <p className="text-sm text-muted-foreground">Add, edit, and organize your catalog.</p>
           </div>
-          <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+          <Dialog open={isAddModalOpen} onOpenChange={(open) => {
+            setIsAddModalOpen(open);
+            if (!open) {
+              setNewProduct({ images: [] });
+              setNewImageUrl('');
+            }
+          }}>
             <DialogTrigger asChild>
               <Button className="bg-primary text-white hover:bg-primary/90 gap-2 w-full sm:w-auto">
                 <Plus className="w-4 h-4" /> Add Product
@@ -55,30 +88,80 @@ export default function AdminProducts() {
                   <div className="space-y-2">
                     <label className="text-xs font-medium">Product Title</label>
                     <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-                      value={newProduct.title || ''} onChange={e => setNewProduct({...newProduct, title: e.target.value})} />
+                      value={newProduct.title || ''} 
+                      onChange={e => setNewProduct({...newProduct, title: e.target.value})}
+                      data-testid="input-product-title"
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-medium">Price (K.D.)</label>
                     <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-                      value={newProduct.price || ''} onChange={e => setNewProduct({...newProduct, price: e.target.value})} />
+                      value={newProduct.price || ''} 
+                      onChange={e => setNewProduct({...newProduct, price: e.target.value})}
+                      data-testid="input-product-price"
+                    />
                   </div>
-                </div>
-                <div className="space-y-2">
-                   <label className="text-xs font-medium">Category</label>
-                   <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-                      value={newProduct.category || ''} onChange={e => setNewProduct({...newProduct, category: e.target.value})} />
                 </div>
                 <div className="space-y-2">
                    <label className="text-xs font-medium">Short Description</label>
                    <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-                      value={newProduct.description || ''} onChange={e => setNewProduct({...newProduct, description: e.target.value})} />
+                      value={newProduct.description || ''} 
+                      onChange={e => setNewProduct({...newProduct, description: e.target.value})}
+                      data-testid="input-product-description"
+                   />
                 </div>
-                <div className="space-y-2">
-                   <label className="text-xs font-medium">Image URL (Mock)</label>
-                   <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-                      value={newProduct.imageUrl || ''} onChange={e => setNewProduct({...newProduct, imageUrl: e.target.value})} />
+                
+                {/* Multiple Images Section */}
+                <div className="space-y-3">
+                  <label className="text-xs font-medium">Product Images</label>
+                  <div className="flex gap-2">
+                    <input 
+                      type="text"
+                      placeholder="Paste image URL" 
+                      className="flex-1 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      value={newImageUrl}
+                      onChange={e => setNewImageUrl(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddImage())}
+                      data-testid="input-image-url"
+                    />
+                    <Button type="button" onClick={handleAddImage} size="icon" className="h-10 w-10" data-testid="button-add-image">
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
+                  
+                  {/* Image Preview Grid */}
+                  {(newProduct.images?.length ?? 0) > 0 && (
+                    <div className="grid grid-cols-3 gap-2 mt-3">
+                      {newProduct.images?.map((img, index) => (
+                        <div key={index} className="relative group aspect-square bg-secondary/20 rounded-lg overflow-hidden border border-border">
+                          <img src={img} alt={`Product ${index + 1}`} className="w-full h-full object-cover" />
+                          {index === 0 && (
+                            <span className="absolute top-1 left-1 bg-primary text-white text-[10px] px-1.5 py-0.5 rounded">Main</span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            data-testid={`button-remove-image-${index}`}
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  
+                  {(newProduct.images?.length ?? 0) === 0 && (
+                    <div className="flex items-center justify-center h-24 border-2 border-dashed border-border rounded-lg text-muted-foreground">
+                      <div className="text-center">
+                        <Image className="w-6 h-6 mx-auto mb-1 opacity-50" />
+                        <span className="text-xs">Add product images</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <Button onClick={handleSaveProduct}>Save Product</Button>
+                
+                <Button onClick={handleSaveProduct} data-testid="button-save-product">Save Product</Button>
               </div>
             </DialogContent>
           </Dialog>
@@ -94,7 +177,9 @@ export default function AdminProducts() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium text-foreground truncate">{product.title}</h3>
-                  <p className="text-xs text-muted-foreground">{product.category}</p>
+                  {product.images && product.images.length > 1 && (
+                    <p className="text-xs text-muted-foreground">{product.images.length} images</p>
+                  )}
                   <p className="text-sm font-bold text-primary mt-1">{product.price}</p>
                 </div>
               </div>
@@ -135,7 +220,7 @@ export default function AdminProducts() {
               <tr>
                 <th className="px-6 py-4">Image</th>
                 <th className="px-6 py-4">Product Name</th>
-                <th className="px-6 py-4">Category</th>
+                <th className="px-6 py-4">Images</th>
                 <th className="px-6 py-4">Price</th>
                 <th className="px-6 py-4 text-center">Curated</th>
                 <th className="px-6 py-4 text-center">Best Seller</th>
@@ -151,7 +236,9 @@ export default function AdminProducts() {
                     </div>
                   </td>
                   <td className="px-6 py-4 font-medium">{product.title}</td>
-                  <td className="px-6 py-4 text-muted-foreground">{product.category}</td>
+                  <td className="px-6 py-4 text-muted-foreground">
+                    {product.images && product.images.length > 0 ? `${product.images.length} images` : '1 image'}
+                  </td>
                   <td className="px-6 py-4 font-medium">{product.price}</td>
                   <td className="px-6 py-4 text-center">
                     <button 

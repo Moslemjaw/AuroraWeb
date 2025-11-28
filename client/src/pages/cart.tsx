@@ -100,10 +100,16 @@ export default function Cart() {
                           <div className="flex flex-wrap gap-1.5">
                             {item.customization.selectedColors.map((color) => (
                               <div key={color.colorId} className="flex items-center gap-1 bg-white rounded-full px-2 py-0.5 border border-border">
-                                <div 
-                                  className="w-3 h-3 rounded-full border border-border/50" 
-                                  style={{ backgroundColor: color.hex }} 
-                                />
+                                {color.imageUrl ? (
+                                  <div className="w-4 h-4 rounded border border-border/50 overflow-hidden">
+                                    <img src={color.imageUrl} alt={color.name} className="w-full h-full object-cover" />
+                                  </div>
+                                ) : (
+                                  <div 
+                                    className="w-3 h-3 rounded-full border border-border/50" 
+                                    style={{ backgroundColor: color.hex }} 
+                                  />
+                                )}
                                 <span className="text-[10px] text-muted-foreground">{color.name}</span>
                               </div>
                             ))}

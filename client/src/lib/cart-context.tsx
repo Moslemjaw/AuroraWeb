@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 interface CustomizationDetails {
   flowerCount: number;
   pricePerFlower: number;
-  selectedColors: { colorId: string; name: string; hex: string; price: number }[];
+  selectedColors: { colorId: string; name: string; hex: string; imageUrl?: string; price: number }[];
   presentation: { presentationId: string; name: string; price: number };
   addOns: { addOnId: string; name: string; price: number }[];
 }

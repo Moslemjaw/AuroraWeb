@@ -1,7 +1,7 @@
 import { useAdmin } from "@/lib/admin-context";
 import AdminLayout from "@/components/admin-layout";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash, Save, Edit2 } from "lucide-react";
+import { Plus, Trash, Save, Image, X } from "lucide-react";
 import { useState } from "react";
 
 export default function AdminSettings() {
@@ -12,7 +12,8 @@ export default function AdminSettings() {
     settings, updateSettings
   } = useAdmin();
 
-  const [newColor, setNewColor] = useState({ name: '', hex: '#f97a9d', price: 0 });
+  const [newColor, setNewColor] = useState({ name: '', hex: '#f97a9d', imageUrl: '', price: 0 });
+  const [useImageForColor, setUseImageForColor] = useState(false);
   const [newPresentation, setNewPresentation] = useState({ name: '', description: '', price: 0 });
   const [newAddOn, setNewAddOn] = useState({ name: '', description: '', price: 0 });
   const [flowerSettings, setFlowerSettings] = useState({
@@ -25,10 +26,16 @@ export default function AdminSettings() {
   const [editingAddOn, setEditingAddOn] = useState<string | null>(null);
 
   const handleAddColor = async () => {
-    if (newColor.name && newColor.hex) {
+    if (newColor.name && (newColor.hex || newColor.imageUrl)) {
       try {
-        await addColor({ ...newColor });
-        setNewColor({ name: '', hex: '#f97a9d', price: 0 });
+        await addColor({ 
+          name: newColor.name,
+          hex: newColor.hex || '#cccccc',
+          imageUrl: useImageForColor ? newColor.imageUrl : undefined,
+          price: newColor.price 
+        });
+        setNewColor({ name: '', hex: '#f97a9d', imageUrl: '', price: 0 });
+        setUseImageForColor(false);
       } catch (error) {
         console.error("Failed to add color:", error);
       }
@@ -122,55 +129,122 @@ export default function AdminSettings() {
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
-          {/* Color Management */}
+          {/* Color/Fabric Management */}
           <div className="bg-white p-4 sm:p-6 rounded-lg border border-border shadow-sm">
-            <h3 className="font-serif text-base sm:text-lg font-medium mb-3 sm:mb-4">Custom Order Colors</h3>
+            <h3 className="font-serif text-base sm:text-lg font-medium mb-3 sm:mb-4">Colors & Fabric Patterns</h3>
+            <p className="text-xs text-muted-foreground mb-4">Add solid colors or fabric pattern images for custom orders.</p>
             <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto_auto] gap-2 sm:gap-3 items-end">
-                <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Name</label>
+              {/* Toggle between color and image */}
+              <div className="flex items-center gap-4 mb-2">
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input 
-                    type="text" 
-                    placeholder="Color Name" 
-                    className="w-full h-10 rounded-md border border-input px-3 py-2 text-sm"
-                    value={newColor.name}
-                    onChange={e => setNewColor({...newColor, name: e.target.value})}
-                    data-testid="input-color-name"
+                    type="radio" 
+                    name="colorType" 
+                    checked={!useImageForColor}
+                    onChange={() => setUseImageForColor(false)}
+                    className="accent-primary"
                   />
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Color</label>
+                  <span className="text-sm">Solid Color</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
                   <input 
-                    type="color" 
-                    className="w-10 h-10 rounded border border-input cursor-pointer p-1"
-                    value={newColor.hex}
-                    onChange={e => setNewColor({...newColor, hex: e.target.value})}
-                    data-testid="input-color-hex"
+                    type="radio" 
+                    name="colorType" 
+                    checked={useImageForColor}
+                    onChange={() => setUseImageForColor(true)}
+                    className="accent-primary"
                   />
-                </div>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-1 block">Price (K.D.)</label>
-                  <input 
-                    type="number" 
-                    min="0"
-                    step="0.25"
-                    className="w-20 h-10 rounded-md border border-input px-2 py-2 text-sm"
-                    value={newColor.price}
-                    onChange={e => setNewColor({...newColor, price: parseFloat(e.target.value) || 0})}
-                    data-testid="input-color-price"
-                  />
-                </div>
-                <Button onClick={handleAddColor} size="icon" className="h-10 w-10" data-testid="button-add-color">
-                  <Plus className="w-4 h-4" />
-                </Button>
+                  <span className="text-sm">Fabric Pattern</span>
+                </label>
               </div>
 
-              <div className="space-y-2 max-h-[250px] overflow-y-auto pr-2">
+              <div className="grid grid-cols-1 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 items-end">
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Name</label>
+                    <input 
+                      type="text" 
+                      placeholder="Color/Pattern Name" 
+                      className="w-full h-10 rounded-md border border-input px-3 py-2 text-sm"
+                      value={newColor.name}
+                      onChange={e => setNewColor({...newColor, name: e.target.value})}
+                      data-testid="input-color-name"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Price (K.D.)</label>
+                    <input 
+                      type="number" 
+                      min="0"
+                      step="0.25"
+                      className="w-20 h-10 rounded-md border border-input px-2 py-2 text-sm"
+                      value={newColor.price}
+                      onChange={e => setNewColor({...newColor, price: parseFloat(e.target.value) || 0})}
+                      data-testid="input-color-price"
+                    />
+                  </div>
+                  <Button onClick={handleAddColor} size="icon" className="h-10 w-10" data-testid="button-add-color">
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                {/* Color picker or Image URL based on toggle */}
+                {!useImageForColor ? (
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Color</label>
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="color" 
+                        className="w-10 h-10 rounded border border-input cursor-pointer p-1"
+                        value={newColor.hex}
+                        onChange={e => setNewColor({...newColor, hex: e.target.value})}
+                        data-testid="input-color-hex"
+                      />
+                      <span className="text-xs text-muted-foreground">{newColor.hex}</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">Fabric Pattern Image URL</label>
+                    <input 
+                      type="text" 
+                      placeholder="https://example.com/pattern.jpg"
+                      className="w-full h-10 rounded-md border border-input px-3 py-2 text-sm"
+                      value={newColor.imageUrl}
+                      onChange={e => setNewColor({...newColor, imageUrl: e.target.value})}
+                      data-testid="input-fabric-image"
+                    />
+                    {newColor.imageUrl && (
+                      <div className="mt-2 w-16 h-16 rounded-lg border border-border overflow-hidden bg-secondary/20">
+                        <img src={newColor.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
                 {colors.map(color => (
                   <div key={color.colorId} className="flex items-center justify-between p-3 bg-secondary/10 rounded-md gap-2">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <div className="w-6 h-6 rounded-full border border-border shadow-sm flex-shrink-0" style={{ backgroundColor: color.hex }} />
-                      <span className="text-sm font-medium truncate">{color.name}</span>
+                      {color.imageUrl ? (
+                        <div className="w-8 h-8 rounded-lg border border-border overflow-hidden flex-shrink-0">
+                          <img src={color.imageUrl} alt={color.name} className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div 
+                          className="w-8 h-8 rounded-full border border-border shadow-sm flex-shrink-0" 
+                          style={{ backgroundColor: color.hex }} 
+                        />
+                      )}
+                      <div className="min-w-0">
+                        <span className="text-sm font-medium truncate block">{color.name}</span>
+                        {color.imageUrl && (
+                          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <Image className="w-3 h-3" /> Pattern
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <span className="text-sm text-muted-foreground whitespace-nowrap">
                       {color.price > 0 ? `+${color.price.toFixed(2)} K.D.` : 'Free'}
