@@ -85,14 +85,14 @@ export default function Home() {
         {/* Right fog effect */}
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/80 via-white/40 to-transparent pointer-events-none" />
         {/* Bottom gradient fade to blend with content */}
-        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white via-white/70 to-transparent" />
+        <div className="absolute bottom-0 left-0 w-full h-48 bg-gradient-to-t from-white via-white/80 to-transparent" />
       </div>
 
       {/* Hero Section */}
-      <header className="relative w-full flex flex-col lg:flex-row lg:min-h-[calc(100vh-80px)] -mt-16 lg:mt-0">
+      <header className="relative w-full flex flex-col lg:flex-row lg:min-h-[calc(100vh-80px)] -mt-24 lg:mt-0 z-10">
         
         {/* Left Panel - Content */}
-        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-center items-start p-6 sm:p-8 md:p-16 lg:p-24 z-10 pt-0 lg:pt-24">
+        <div className="w-full lg:w-[45%] bg-transparent lg:bg-white flex flex-col justify-center items-start p-6 sm:p-8 md:p-16 lg:p-24 z-10 pt-0 lg:pt-24">
              
              <span className="text-primary font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-[10px] sm:text-xs mb-4 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                EST. 2024
@@ -133,7 +133,7 @@ export default function Home() {
       </header>
 
       {/* Simplified Products Grid - Editorial Style */}
-      <section id="products" className="pt-16 sm:pt-24 pb-16 sm:pb-32 bg-white relative z-20">
+      <section id="products" className="pt-8 sm:pt-16 pb-16 sm:pb-32 bg-white relative z-20">
         <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24">
           <div className="text-center mb-10 sm:mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
              <p className="text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] text-muted-foreground uppercase mb-2 sm:mb-3">Shop The Look</p>
