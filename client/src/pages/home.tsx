@@ -73,11 +73,20 @@ export default function Home() {
          <MobileNav isLight={false} />
       </nav>
 
-      {/* Hero Section - Redesigned Left Side */}
+      {/* Hero Image - Full Width on Mobile */}
+      <div className="w-full lg:hidden">
+        <img 
+          src={luxuryBouquetImg} 
+          alt="Luxury Fabric Bouquet" 
+          className="w-full h-auto object-cover"
+        />
+      </div>
+
+      {/* Hero Section */}
       <header className="relative w-full flex flex-col lg:flex-row lg:min-h-[calc(100vh-80px)]">
         
-        {/* Left Panel - Cleaner, Minimalist Content */}
-        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-center items-start p-6 sm:p-8 md:p-16 lg:p-24 z-10 order-2 lg:order-1">
+        {/* Left Panel - Content */}
+        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-center items-start p-6 sm:p-8 md:p-16 lg:p-24 z-10">
              
              <span className="text-primary font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-[10px] sm:text-xs mb-4 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                EST. 2024
@@ -105,11 +114,9 @@ export default function Home() {
              </div>
         </div>
 
-        {/* Right Panel - Hero Image */}
-        <div className="w-full lg:w-[55%] h-[45vh] sm:h-[50vh] lg:h-auto relative order-1 lg:order-2 overflow-hidden">
+        {/* Right Panel - Hero Image (Desktop Only) */}
+        <div className="hidden lg:block w-[55%] relative overflow-hidden">
           <div className="absolute inset-0 bg-black/5 z-10 pointer-events-none" />
-          {/* Gradient fade to blend image with the next section */}
-          <div className="absolute bottom-0 left-0 w-full h-24 sm:h-40 bg-gradient-to-t from-white via-white/50 to-transparent z-20" />
           <img 
             src={luxuryBouquetImg} 
             alt="Luxury Fabric Bouquet" 
