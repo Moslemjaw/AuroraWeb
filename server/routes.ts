@@ -127,7 +127,7 @@ export async function registerRoutes(
 
     try {
       const { password } = req.body;
-      if (password === "admin123") {
+      if (password === "Fraij2006") {
         req.session.isAuthenticated = true;
         req.session.adminId = "admin";
         return res.json({ success: true, message: "Logged in successfully" });
