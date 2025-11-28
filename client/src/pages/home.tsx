@@ -27,7 +27,8 @@ export default function Home() {
          <div className="hidden md:flex items-center gap-8">
             <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-white/90 hover:text-white transition-colors items-center">
               <a href="#products" className="hover:text-white transition-colors">Shop</a>
-              <a href="#about" className="hover:text-white transition-colors">About Us</a>
+              <a href="#about" className="hover:text-white transition-colors">About</a>
+              <a href="#journal" className="hover:text-white transition-colors">Journal</a>
               <a href="#contact" className="hover:text-white transition-colors">Contact</a>
             </div>
             
