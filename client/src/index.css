@@ -41,46 +41,51 @@
   --font-serif: 'Playfair Display', serif;
 }
 
-/* MODERNIZED THEME - Cleaner, bolder, more sophisticated */
+/* PROFESSIONAL MINIMALIST THEME - Teal/Cyan & White */
 :root {
-  /* Pure white background for modern clean look */
+  /* Clean White Background */
   --background: 0 0% 100%; 
-  --foreground: 340 10% 10%; /* Dark charcoal, almost black */
+  --foreground: 200 20% 20%; /* Dark slate/teal-grey for text, softer than black */
 
+  /* Crisp White Cards */
   --card: 0 0% 100%;
-  --card-foreground: 340 10% 10%;
+  --card-foreground: 200 20% 20%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 340 10% 10%;
+  --popover-foreground: 200 20% 20%;
 
-  /* More vibrant pink for primary actions */
-  --primary: 330 80% 60%; 
+  /* The Main Color: #2596be */
+  --primary: 196 67% 45%; 
   --primary-foreground: 0 0% 100%;
 
-  /* Very subtle secondary for depth */
-  --secondary: 330 30% 96%;
-  --secondary-foreground: 330 40% 20%;
+  /* Very subtle cool grey for secondary */
+  --secondary: 200 20% 96%;
+  --secondary-foreground: 196 67% 45%;
 
-  --muted: 330 10% 96%;
-  --muted-foreground: 330 5% 50%;
+  --muted: 200 10% 96%;
+  --muted-foreground: 200 10% 60%;
 
-  --accent: 330 50% 98%;
-  --accent-foreground: 330 80% 40%;
+  --accent: 196 30% 96%;
+  --accent-foreground: 196 67% 45%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
 
-  --border: 330 10% 92%;
-  --input: 330 10% 92%;
-  --ring: 330 80% 60%;
+  --border: 200 10% 90%;
+  --input: 200 10% 90%;
+  --ring: 196 67% 45%;
 
-  --radius: 1rem;
+  --radius: 0.5rem; /* Reduced radius for a more professional look */
 }
 
 .dark {
-  --background: 330 20% 5%;
-  --foreground: 330 10% 95%;
-  /* ... (rest of dark mode values if needed, keeping simple for now) */
+  /* Dark mode version if needed */
+  --background: 200 30% 10%;
+  --foreground: 200 10% 95%;
+  --card: 200 30% 12%;
+  --card-foreground: 200 10% 95%;
+  --primary: 196 67% 55%; /* Slightly lighter for dark mode */
+  --primary-foreground: 200 30% 10%;
 }
 
 @layer base {
@@ -93,25 +98,10 @@
   h1, h2, h3, h4, h5, h6 {
     @apply font-serif tracking-tight;
   }
-  
-  /* Modern scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-  }
-  ::-webkit-scrollbar-track {
-    @apply bg-transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40 transition-colors;
-  }
 }
 
 @layer utilities {
-  .glass-panel {
-    @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-xl;
-  }
-  
-  .text-balance {
-    text-wrap: balance;
+  .container-padding {
+    @apply px-6 md:px-12 lg:px-24;
   }
 }

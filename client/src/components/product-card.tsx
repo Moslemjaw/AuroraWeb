@@ -10,22 +10,23 @@ interface ProductCardProps {
 
 export default function ProductCard({ image, title, price, description }: ProductCardProps) {
   return (
-    <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-all duration-300 group bg-white/80 backdrop-blur-sm">
-      <CardContent className="p-0 relative aspect-square overflow-hidden">
+    <Card className="overflow-hidden border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 group bg-white">
+      <CardContent className="p-0 relative aspect-[4/5] overflow-hidden bg-secondary/20">
         <img 
           src={image} 
           alt={title}
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" 
+          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out" 
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        {/* Clean Overlay */}
+        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </CardContent>
-      <CardFooter className="flex flex-col items-start p-6 gap-2">
-        <div className="flex w-full justify-between items-center">
-          <h3 className="font-serif text-xl font-medium text-foreground">{title}</h3>
-          <span className="font-sans font-bold text-primary text-lg">{price}</span>
+      <CardFooter className="flex flex-col items-start p-6 space-y-3">
+        <div className="flex w-full justify-between items-start">
+          <h3 className="font-serif text-lg font-medium text-foreground">{title}</h3>
+          <span className="font-sans font-bold text-primary">{price}</span>
         </div>
-        <p className="text-muted-foreground text-sm leading-relaxed">{description}</p>
-        <Button className="w-full mt-4 bg-primary hover:bg-primary/90 text-white rounded-full font-medium shadow-md hover:shadow-lg transition-all">
+        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">{description}</p>
+        <Button variant="outline" className="w-full mt-2 border-primary/20 text-primary hover:bg-primary hover:text-white hover:border-primary transition-all rounded-full">
           Add to Cart
         </Button>
       </CardFooter>
