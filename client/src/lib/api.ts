@@ -1,5 +1,6 @@
 // API client for backend
-const API_BASE = "/api";
+import { config } from "./config";
+const API_BASE = config.api.baseUrl || "/api";
 
 async function apiCall(endpoint: string, options?: RequestInit) {
   const response = await fetch(`${API_BASE}${endpoint}`, {
@@ -12,7 +13,9 @@ async function apiCall(endpoint: string, options?: RequestInit) {
   });
 
   if (!response.ok) {
-    const error = await response.json().catch(() => ({ error: "Request failed" }));
+    const error = await response
+      .json()
+      .catch(() => ({ error: "Request failed" }));
     throw new Error(error.error || `API call failed: ${response.statusText}`);
   }
 
@@ -23,57 +26,98 @@ async function apiCall(endpoint: string, options?: RequestInit) {
 export const productAPI = {
   getAll: () => apiCall("/products"),
   getByProductId: (productId: string) => apiCall(`/products/${productId}`),
-  create: (product: any) => apiCall("/products", { method: "POST", body: JSON.stringify(product) }),
-  update: (productId: string, updates: any) => apiCall(`/products/${productId}`, { method: "PATCH", body: JSON.stringify(updates) }),
-  delete: (productId: string) => apiCall(`/products/${productId}`, { method: "DELETE" }),
+  create: (product: any) =>
+    apiCall("/products", { method: "POST", body: JSON.stringify(product) }),
+  update: (productId: string, updates: any) =>
+    apiCall(`/products/${productId}`, {
+      method: "PATCH",
+      body: JSON.stringify(updates),
+    }),
+  delete: (productId: string) =>
+    apiCall(`/products/${productId}`, { method: "DELETE" }),
 };
 
 // Orders
 export const orderAPI = {
   getAll: () => apiCall("/orders"),
-  create: (order: any) => apiCall("/orders", { method: "POST", body: JSON.stringify(order) }),
-  update: (orderId: string, updates: any) => apiCall(`/orders/${orderId}`, { method: "PATCH", body: JSON.stringify(updates) }),
+  create: (order: any) =>
+    apiCall("/orders", { method: "POST", body: JSON.stringify(order) }),
+  update: (orderId: string, updates: any) =>
+    apiCall(`/orders/${orderId}`, {
+      method: "PATCH",
+      body: JSON.stringify(updates),
+    }),
 };
 
 // Colors
 export const colorAPI = {
   getAll: () => apiCall("/colors"),
-  create: (color: any) => apiCall("/colors", { method: "POST", body: JSON.stringify(color) }),
-  update: (colorId: string, updates: any) => apiCall(`/colors/${colorId}`, { method: "PATCH", body: JSON.stringify(updates) }),
-  delete: (colorId: string) => apiCall(`/colors/${colorId}`, { method: "DELETE" }),
+  create: (color: any) =>
+    apiCall("/colors", { method: "POST", body: JSON.stringify(color) }),
+  update: (colorId: string, updates: any) =>
+    apiCall(`/colors/${colorId}`, {
+      method: "PATCH",
+      body: JSON.stringify(updates),
+    }),
+  delete: (colorId: string) =>
+    apiCall(`/colors/${colorId}`, { method: "DELETE" }),
 };
 
 // Presentations
 export const presentationAPI = {
   getAll: () => apiCall("/presentations"),
-  create: (presentation: any) => apiCall("/presentations", { method: "POST", body: JSON.stringify(presentation) }),
-  update: (presentationId: string, updates: any) => apiCall(`/presentations/${presentationId}`, { method: "PATCH", body: JSON.stringify(updates) }),
-  delete: (presentationId: string) => apiCall(`/presentations/${presentationId}`, { method: "DELETE" }),
+  create: (presentation: any) =>
+    apiCall("/presentations", {
+      method: "POST",
+      body: JSON.stringify(presentation),
+    }),
+  update: (presentationId: string, updates: any) =>
+    apiCall(`/presentations/${presentationId}`, {
+      method: "PATCH",
+      body: JSON.stringify(updates),
+    }),
+  delete: (presentationId: string) =>
+    apiCall(`/presentations/${presentationId}`, { method: "DELETE" }),
 };
 
 // Add-ons
 export const addOnAPI = {
   getAll: () => apiCall("/addons"),
-  create: (addOn: any) => apiCall("/addons", { method: "POST", body: JSON.stringify(addOn) }),
-  update: (addOnId: string, updates: any) => apiCall(`/addons/${addOnId}`, { method: "PATCH", body: JSON.stringify(updates) }),
-  delete: (addOnId: string) => apiCall(`/addons/${addOnId}`, { method: "DELETE" }),
+  create: (addOn: any) =>
+    apiCall("/addons", { method: "POST", body: JSON.stringify(addOn) }),
+  update: (addOnId: string, updates: any) =>
+    apiCall(`/addons/${addOnId}`, {
+      method: "PATCH",
+      body: JSON.stringify(updates),
+    }),
+  delete: (addOnId: string) =>
+    apiCall(`/addons/${addOnId}`, { method: "DELETE" }),
 };
 
 // Settings
 export const settingsAPI = {
   get: () => apiCall("/settings"),
-  update: (settings: any) => apiCall("/settings", { method: "PATCH", body: JSON.stringify(settings) }),
+  update: (settings: any) =>
+    apiCall("/settings", { method: "PATCH", body: JSON.stringify(settings) }),
 };
 
 // Custom Orders
 export const customOrderAPI = {
   getAll: () => apiCall("/custom-orders"),
-  create: (customOrder: any) => apiCall("/custom-orders", { method: "POST", body: JSON.stringify(customOrder) }),
+  create: (customOrder: any) =>
+    apiCall("/custom-orders", {
+      method: "POST",
+      body: JSON.stringify(customOrder),
+    }),
 };
 
 // Admin
 export const adminAPI = {
-  login: (password: string) => apiCall("/admin/login", { method: "POST", body: JSON.stringify({ password }) }),
+  login: (password: string) =>
+    apiCall("/admin/login", {
+      method: "POST",
+      body: JSON.stringify({ password }),
+    }),
   logout: () => apiCall("/admin/logout", { method: "POST" }),
   checkAuth: () => apiCall("/admin/check"),
   getStats: () => apiCall("/admin/stats"),

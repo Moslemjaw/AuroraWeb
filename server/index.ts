@@ -5,30 +5,65 @@ import { createServer } from "http";
 import { connectDB } from "./db";
 import session from "express-session";
 import MongoStore from "connect-mongo";
+import cors from "cors";
 
 const app = express();
 const httpServer = createServer(app);
 
-app.set('trust proxy', 1);
+app.set("trust proxy", 1);
 
-const mongoUri = process.env.MONGODB_URI || "mongodb+srv://user:ltFRuVcClyIoJXLn@cluster0.rnndcqr.mongodb.net/fabric-blooms";
+// CORS configuration
+const allowedOrigins = [
+  "https://auroraflowerskw.vercel.app",
+  "http://localhost:5000",
+  ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
+];
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || "fabric-blooms-secret-key-change-in-production",
-  resave: false,
-  saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: mongoUri,
-    collectionName: 'sessions',
-    ttl: 7 * 24 * 60 * 60
-  }),
-  cookie: {
-    secure: process.env.NODE_ENV === "production",
-    httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 7,
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
-  }
-}));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      if (
+        allowedOrigins.includes(origin) ||
+        process.env.NODE_ENV === "development"
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+const mongoUri =
+  process.env.MONGODB_URI ||
+  "mongodb+srv://user:ltFRuVcClyIoJXLn@cluster0.rnndcqr.mongodb.net/fabric-blooms";
+
+app.use(
+  session({
+    secret:
+      process.env.SESSION_SECRET ||
+      "fabric-blooms-secret-key-change-in-production",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({
+      mongoUrl: mongoUri,
+      collectionName: "sessions",
+      ttl: 7 * 24 * 60 * 60,
+    }),
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      httpOnly: true,
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    },
+  })
+);
 
 declare module "http" {
   interface IncomingMessage {
@@ -41,7 +76,7 @@ app.use(
     verify: (req, _res, buf) => {
       req.rawBody = buf;
     },
-  }),
+  })
 );
 
 app.use(express.urlencoded({ extended: false }));
@@ -85,10 +120,10 @@ app.use((req, res, next) => {
 
 (async () => {
   await connectDB();
-  
+
   const { seedDatabase } = await import("./seed");
   await seedDatabase();
-  
+
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -115,6 +150,6 @@ app.use((req, res, next) => {
     },
     () => {
       log(`serving on port ${port}`);
-    },
+    }
   );
 })();
