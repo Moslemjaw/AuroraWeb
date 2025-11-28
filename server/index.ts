@@ -8,14 +8,17 @@ import session from "express-session";
 const app = express();
 const httpServer = createServer(app);
 
+app.set('trust proxy', 1);
+
 app.use(session({
   secret: process.env.SESSION_SECRET || "fabric-blooms-secret-key-change-in-production",
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
-    maxAge: 1000 * 60 * 60 * 24 * 7
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax"
   }
 }));
 
