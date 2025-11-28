@@ -67,7 +67,7 @@ export default function CustomOrderForm() {
                       defaultValue={[field.value]}
                       onValueChange={(vals) => {
                         field.onChange(vals[0]);
-                        setPreviewPrice(vals[0] * 15);
+                        setPreviewPrice(vals[0] * 5);
                       }}
                       className="py-2"
                     />
@@ -147,7 +147,7 @@ export default function CustomOrderForm() {
             <div className="pt-6 border-t border-border mt-4">
               <div className="flex justify-between items-end mb-6">
                  <span className="text-sm text-muted-foreground">Estimated Total</span>
-                 <span className="text-3xl font-serif font-medium text-primary">${previewPrice}</span>
+                 <span className="text-3xl font-serif font-medium text-primary">{previewPrice}.00 K.D.</span>
               </div>
               <Button type="submit" size="lg" className="w-full h-14 text-lg rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all">
                 Begin Order

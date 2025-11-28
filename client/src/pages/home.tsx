@@ -89,19 +89,19 @@ export default function Home() {
             <ProductCard 
               image={peonyImg}
               title="Blushing Peony"
-              price="$45.00"
+              price="15.00 K.D."
               description="Delicate layers of fabric handcrafted into a stunning bloom."
             />
             <ProductCard 
               image={roseImg}
               title="Royal Velvet Rose"
-              price="$18.00"
+              price="6.00 K.D."
               description="Deep red velvet textures for a romantic, classic look."
             />
             <ProductCard 
               image={tulipImg}
               title="Pastel Tulip Set"
-              price="$32.00"
+              price="10.50 K.D."
               description="A breath of spring that never fades. Perfect for gifting."
             />
           </div>
@@ -164,19 +164,19 @@ export default function Home() {
             <ProductCard 
               image={hydrangeaImg}
               title="Azure Hydrangea"
-              price="$55.00"
+              price="18.00 K.D."
               description="Voluminous blooms of hand-dyed blue fabric petals."
             />
             <ProductCard 
               image={orchidImg}
               title="Imperial Orchid"
-              price="$65.00"
+              price="22.00 K.D."
               description="Elegant, architectural stems of pure white orchids."
             />
             <ProductCard 
               image={sunflowerImg}
               title="Rustic Sunflower"
-              price="$48.00"
+              price="16.50 K.D."
               description="Warm and inviting sunflowers wrapped in natural burlap."
             />
           </div>
