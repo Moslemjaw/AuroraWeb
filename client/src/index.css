@@ -41,72 +41,46 @@
   --font-serif: 'Playfair Display', serif;
 }
 
-/* LIGHT MODE - Pink/Fabric Theme */
+/* MODERNIZED THEME - Cleaner, bolder, more sophisticated */
 :root {
-  /* Soft Pink Background */
-  --background: 340 60% 98%; 
-  --foreground: 340 20% 20%;
+  /* Pure white background for modern clean look */
+  --background: 0 0% 100%; 
+  --foreground: 340 10% 10%; /* Dark charcoal, almost black */
 
-  /* White Cards with slight pink tint */
   --card: 0 0% 100%;
-  --card-foreground: 340 20% 20%;
+  --card-foreground: 340 10% 10%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 340 20% 20%;
+  --popover-foreground: 340 10% 10%;
 
-  /* Strong Pink for Primary Actions */
-  --primary: 340 82% 70%; /* Matches the logo pink approx */
-  --primary-foreground: 340 10% 98%;
+  /* More vibrant pink for primary actions */
+  --primary: 330 80% 60%; 
+  --primary-foreground: 0 0% 100%;
 
-  /* Softer Pink for Secondary */
-  --secondary: 340 40% 92%;
-  --secondary-foreground: 340 30% 30%;
+  /* Very subtle secondary for depth */
+  --secondary: 330 30% 96%;
+  --secondary-foreground: 330 40% 20%;
 
-  --muted: 340 20% 94%;
-  --muted-foreground: 340 10% 50%;
+  --muted: 330 10% 96%;
+  --muted-foreground: 330 5% 50%;
 
-  --accent: 340 50% 90%;
-  --accent-foreground: 340 40% 30%;
+  --accent: 330 50% 98%;
+  --accent-foreground: 330 80% 40%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
 
-  --border: 340 30% 90%;
-  --input: 340 30% 90%;
-  --ring: 340 82% 70%;
+  --border: 330 10% 92%;
+  --input: 330 10% 92%;
+  --ring: 330 80% 60%;
 
-  --radius: 0.75rem;
+  --radius: 1rem;
 }
 
 .dark {
-  /* Darker pink/purple for dark mode if needed, though fabric sites usually stay light */
-  --background: 340 20% 10%;
-  --foreground: 340 10% 95%;
-
-  --card: 340 20% 14%;
-  --card-foreground: 340 10% 95%;
-
-  --popover: 340 20% 14%;
-  --popover-foreground: 340 10% 95%;
-
-  --primary: 340 82% 70%;
-  --primary-foreground: 340 10% 10%;
-
-  --secondary: 340 20% 20%;
-  --secondary-foreground: 340 10% 95%;
-
-  --muted: 340 20% 20%;
-  --muted-foreground: 340 10% 70%;
-
-  --accent: 340 20% 20%;
-  --accent-foreground: 340 10% 95%;
-
-  --destructive: 0 62% 30%;
-  --destructive-foreground: 0 0% 95%;
-
-  --border: 340 20% 20%;
-  --input: 340 20% 20%;
-  --ring: 340 82% 70%;
+  --background: 330 20% 5%;
+  --foreground: 330 10% 95%;
+  /* ... (rest of dark mode values if needed, keeping simple for now) */
 }
 
 @layer base {
@@ -117,6 +91,27 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
   h1, h2, h3, h4, h5, h6 {
-    @apply font-serif;
+    @apply font-serif tracking-tight;
+  }
+  
+  /* Modern scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full hover:bg-muted-foreground/40 transition-colors;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    @apply bg-white/70 backdrop-blur-xl border border-white/50 shadow-xl;
+  }
+  
+  .text-balance {
+    text-wrap: balance;
   }
 }
