@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
-import artisanImg from "@assets/image_1764359432547.png"; // Reusing the hand image
+import artisanImg from "@assets/image_1764360953696.png";
 
 export default function About() {
   return (
