@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { LayoutDashboard, ShoppingBag, Package, Settings, LogOut, Menu, X, Home } from "lucide-react";
+import { LayoutDashboard, ShoppingBag, Package, Settings, LogOut, Menu, X, Home, MessageSquare } from "lucide-react";
 import { useAdmin } from "@/lib/admin-context";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -40,6 +40,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       >
         <Package className="w-4 h-4" />
         Products
+      </Link>
+      <Link 
+        href="/admin/inquiries"
+        onClick={onClick}
+        className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/inquiries') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
+      >
+        <MessageSquare className="w-4 h-4" />
+        Inquiries
       </Link>
       <Link 
         href="/admin/settings"
