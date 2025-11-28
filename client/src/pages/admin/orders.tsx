@@ -7,8 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { ShoppingBag, Eye } from "lucide-react";
+import { ShoppingBag, Eye, Palette, Gift, Sparkles, Flower } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+
+interface CustomizationDetails {
+  flowerCount: number;
+  pricePerFlower: number;
+  selectedColors: { colorId: string; name: string; hex: string; price: number }[];
+  presentation: { presentationId: string; name: string; price: number };
+  addOns: { addOnId: string; name: string; price: number }[];
+}
 
 interface OrderItem {
   productId: string;
@@ -16,6 +24,8 @@ interface OrderItem {
   price: string;
   quantity: number;
   imageUrl: string;
+  type?: "catalog" | "custom";
+  customization?: CustomizationDetails;
 }
 
 interface OrderData {
@@ -274,17 +284,89 @@ export default function AdminOrders() {
 
               <div>
                 <h4 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Order Items</h4>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {selectedOrder.orderData?.items?.map((item, idx) => (
-                    <div key={idx} className="flex items-center gap-4 p-3 bg-secondary/10 rounded-lg">
-                      <div className="w-12 h-12 bg-secondary/30 rounded overflow-hidden flex-shrink-0">
-                        <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                    <div key={idx} className="bg-secondary/10 rounded-lg overflow-hidden">
+                      <div className="flex items-center gap-4 p-3">
+                        <div className="w-12 h-12 bg-secondary/30 rounded overflow-hidden flex-shrink-0">
+                          <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-sm">{item.title}</p>
+                          <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                          {item.type === "custom" && (
+                            <Badge className="bg-primary/10 text-primary border-0 text-[10px] mt-1">Custom Order</Badge>
+                          )}
+                        </div>
+                        <span className="font-medium text-sm">{item.price}</span>
                       </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-sm">{item.title}</p>
-                        <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
-                      </div>
-                      <span className="font-medium text-sm">{item.price}</span>
+
+                      {/* Custom Order Details */}
+                      {item.type === "custom" && item.customization && (
+                        <div className="border-t border-border/30 p-3 space-y-3 bg-white/50">
+                          {/* Flower Count */}
+                          <div className="flex items-start gap-2">
+                            <Flower className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                            <div>
+                              <span className="text-xs font-medium text-foreground">Flower Count</span>
+                              <p className="text-xs text-muted-foreground">{item.customization.flowerCount} flowers @ {item.customization.pricePerFlower.toFixed(2)} K.D. each</p>
+                            </div>
+                          </div>
+
+                          {/* Colors */}
+                          <div className="flex items-start gap-2">
+                            <Palette className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                            <div>
+                              <span className="text-xs font-medium text-foreground block mb-1">Colors</span>
+                              <div className="flex flex-wrap gap-1.5">
+                                {item.customization.selectedColors.map((color) => (
+                                  <div key={color.colorId} className="flex items-center gap-1 bg-white rounded-full px-2 py-0.5 border border-border">
+                                    <div 
+                                      className="w-3 h-3 rounded-full border border-border/50" 
+                                      style={{ backgroundColor: color.hex }} 
+                                    />
+                                    <span className="text-[10px] text-muted-foreground">{color.name}</span>
+                                    {color.price > 0 && (
+                                      <span className="text-[10px] text-primary">+{color.price.toFixed(2)}</span>
+                                    )}
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Presentation */}
+                          <div className="flex items-start gap-2">
+                            <Gift className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                            <div>
+                              <span className="text-xs font-medium text-foreground">Presentation</span>
+                              <p className="text-xs text-muted-foreground">
+                                {item.customization.presentation.name}
+                                {item.customization.presentation.price > 0 && (
+                                  <span className="text-primary ml-1">+{item.customization.presentation.price.toFixed(2)} K.D.</span>
+                                )}
+                              </p>
+                            </div>
+                          </div>
+
+                          {/* Add-ons */}
+                          {item.customization.addOns.length > 0 && (
+                            <div className="flex items-start gap-2">
+                              <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                              <div>
+                                <span className="text-xs font-medium text-foreground block mb-1">Add-ons</span>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {item.customization.addOns.map((addon) => (
+                                    <span key={addon.addOnId} className="text-[10px] bg-white rounded-full px-2 py-0.5 border border-border text-muted-foreground">
+                                      {addon.name} <span className="text-primary">+{addon.price.toFixed(2)} K.D.</span>
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )) || <p className="text-sm text-muted-foreground">No item details available</p>}
                 </div>
