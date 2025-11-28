@@ -1,6 +1,6 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { type Server } from "http";
-import { Product, Order, Color, Presentation, AddOn, Setting, CustomOrder } from "./models";
+import { Product, Order, Color, Presentation, AddOn, Setting, CustomOrder, Inquiry } from "./models";
 import { body, validationResult } from "express-validator";
 import multer from "multer";
 import path from "path";
@@ -514,6 +514,63 @@ export async function registerRoutes(
       });
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch stats" });
+    }
+  });
+
+  app.post("/api/inquiries", [
+    body("name").isLength({ min: 1 }).trim(),
+    body("email").isEmail().normalizeEmail(),
+    body("subject").isLength({ min: 1 }).trim(),
+    body("message").isLength({ min: 1 }).trim()
+  ], async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      const inquiryId = `INQ-${Date.now()}`;
+      const inquiry = await new Inquiry({ inquiryId, ...req.body }).save();
+      res.status(201).json({ success: true, message: "Message sent successfully" });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to send message" });
+    }
+  });
+
+  app.get("/api/inquiries", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const inquiries = await Inquiry.find().sort({ createdAt: -1 });
+      res.json(inquiries);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to fetch inquiries" });
+    }
+  });
+
+  app.put("/api/inquiries/:id", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const inquiry = await Inquiry.findByIdAndUpdate(
+        req.params.id,
+        { status: req.body.status },
+        { new: true }
+      );
+      if (!inquiry) {
+        return res.status(404).json({ error: "Inquiry not found" });
+      }
+      res.json(inquiry);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to update inquiry" });
+    }
+  });
+
+  app.delete("/api/inquiries/:id", requireAuth, async (req: Request, res: Response) => {
+    try {
+      const inquiry = await Inquiry.findByIdAndDelete(req.params.id);
+      if (!inquiry) {
+        return res.status(404).json({ error: "Inquiry not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ error: "Failed to delete inquiry" });
     }
   });
 
