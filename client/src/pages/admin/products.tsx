@@ -78,10 +78,13 @@ export default function AdminProducts() {
     }
     
     try {
+      const priceValue = parseFloat(newProduct.price) || 0;
+      const formattedPrice = `${priceValue.toFixed(2)} K.D.`;
+      
       await addProduct({
         productId: `prod-${Date.now()}`,
         title: newProduct.title,
-        price: newProduct.price,
+        price: formattedPrice,
         description: newProduct.description || "",
         longDescription: newProduct.longDescription || "",
         imageUrl: images[0],
