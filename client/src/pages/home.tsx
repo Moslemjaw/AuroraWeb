@@ -2,6 +2,7 @@ import ProductCard from "@/components/product-card";
 import CustomOrderForm from "@/components/custom-order-form";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Instagram, ShoppingBag, Star, Check, TrendingUp, Menu } from "lucide-react";
+import { Link } from "wouter";
 
 // Assets imports
 import peonyImg from "@assets/generated_images/handmade_fabric_peony_bouquet.png";
@@ -26,20 +27,22 @@ export default function Home() {
          
          <div className="hidden md:flex items-center gap-8">
             <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-white/90 hover:text-white transition-colors items-center">
-              <a href="#products" className="hover:text-white transition-colors">Shop</a>
-              <a href="#about" className="hover:text-white transition-colors">About Us</a>
-              <a href="#contact" className="hover:text-white transition-colors">Contact</a>
+              <Link href="/"><a className="hover:text-white transition-colors">Shop</a></Link>
+              <Link href="/about"><a className="hover:text-white transition-colors">About Us</a></Link>
+              <Link href="/contact"><a className="hover:text-white transition-colors">Contact</a></Link>
             </div>
             
             <div className="w-px h-4 bg-white/40 mx-2" />
             
-            <Button variant="ghost" size="sm" className="hover:bg-white/10 hover:text-white px-0 gap-2 text-xs font-bold tracking-widest uppercase text-white/90">
-               Cart
-               <div className="relative">
-                 <ShoppingBag className="w-5 h-5" />
-                 <div className="absolute -top-2 -right-2 bg-white text-primary text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">0</div>
-               </div>
-            </Button>
+            <Link href="/cart">
+              <Button variant="ghost" size="sm" className="hover:bg-white/10 hover:text-white px-0 gap-2 text-xs font-bold tracking-widest uppercase text-white/90">
+                 Cart
+                 <div className="relative">
+                   <ShoppingBag className="w-5 h-5" />
+                   <div className="absolute -top-2 -right-2 bg-white text-primary text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">0</div>
+                 </div>
+              </Button>
+            </Link>
          </div>
 
          <Button variant="ghost" size="icon" className="md:hidden text-white"><Menu className="w-6 h-6" /></Button>
@@ -101,18 +104,21 @@ export default function Home() {
           
           <div className="grid md:grid-cols-3 gap-12">
             <ProductCard 
+              id="peony-bouquet"
               image={peonyImg}
               title="Blushing Peony"
               price="15.00 K.D."
               description="Delicate layers of fabric handcrafted into a stunning bloom."
             />
             <ProductCard 
+              id="velvet-rose"
               image={roseImg}
               title="Royal Velvet Rose"
               price="6.00 K.D."
               description="Deep red velvet textures for a romantic, classic look."
             />
             <ProductCard 
+              id="pastel-tulips"
               image={tulipImg}
               title="Pastel Tulip Set"
               price="10.50 K.D."
@@ -176,18 +182,21 @@ export default function Home() {
           
           <div className="grid md:grid-cols-3 gap-8">
             <ProductCard 
+              id="azure-hydrangea"
               image={hydrangeaImg}
               title="Azure Hydrangea"
               price="18.00 K.D."
               description="Voluminous blooms of hand-dyed blue fabric petals."
             />
             <ProductCard 
+              id="imperial-orchid"
               image={orchidImg}
               title="Imperial Orchid"
               price="22.00 K.D."
               description="Elegant, architectural stems of pure white orchids."
             />
             <ProductCard 
+              id="rustic-sunflower"
               image={sunflowerImg}
               title="Rustic Sunflower"
               price="16.50 K.D."

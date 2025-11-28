@@ -1,15 +1,17 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
 
 interface ProductCardProps {
+  id?: string;
   image: string;
   title: string;
   price: string;
   description: string;
 }
 
-export default function ProductCard({ image, title, price, description }: ProductCardProps) {
-  return (
-    <div className="group flex flex-col space-y-4">
+export default function ProductCard({ id, image, title, price, description }: ProductCardProps) {
+  const Content = (
+    <div className="group flex flex-col space-y-4 cursor-pointer">
       <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-secondary/20">
         <img 
           src={image} 
@@ -21,7 +23,7 @@ export default function ProductCard({ image, title, price, description }: Produc
         
         <div className="absolute inset-x-4 bottom-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out">
            <Button className="w-full bg-white text-foreground hover:bg-primary hover:text-white shadow-lg rounded-none uppercase tracking-widest text-xs font-bold h-10 border-none">
-             Add to Cart
+             View Details
            </Button>
         </div>
       </div>
@@ -33,4 +35,10 @@ export default function ProductCard({ image, title, price, description }: Produc
       </div>
     </div>
   );
+
+  if (id) {
+    return <Link href={`/product/${id}`}>{Content}</Link>;
+  }
+
+  return Content;
 }
