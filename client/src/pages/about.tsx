@@ -8,18 +8,16 @@ export default function About() {
     <div className="min-h-screen bg-background font-sans">
       <nav className="sticky top-0 left-0 w-full z-50 px-6 py-6 flex items-center justify-between bg-white border-b border-border/40">
          <div className="flex items-center gap-3">
-           <Link href="/">
-             <a className="flex items-center gap-3">
-               <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain" />
-               <span className="font-serif text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
-             </a>
+           <Link href="/" className="flex items-center gap-3">
+             <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain" />
+             <span className="font-serif text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
            </Link>
          </div>
          <div className="hidden md:flex items-center gap-8">
             <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-muted-foreground/80">
-              <Link href="/"><a className="hover:text-primary transition-colors">Shop</a></Link>
-              <Link href="/about"><a className="text-primary transition-colors">About Us</a></Link>
-              <Link href="/contact"><a className="hover:text-primary transition-colors">Contact</a></Link>
+              <Link href="/" className="hover:text-primary transition-colors">Shop</Link>
+              <Link href="/about" className="text-primary transition-colors">About Us</Link>
+              <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
             </div>
          </div>
       </nav>
