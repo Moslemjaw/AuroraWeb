@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { productAPI, orderAPI, colorAPI, adminAPI } from "./api";
+import { productAPI, orderAPI, colorAPI, presentationAPI, addOnAPI, settingsAPI, adminAPI } from "./api";
 
 // Define types
 export type Product = {
@@ -30,6 +30,29 @@ export type Color = {
   colorId: string;
   name: string;
   hex: string;
+  price: number;
+};
+
+export type Presentation = {
+  _id?: string;
+  presentationId: string;
+  name: string;
+  description?: string;
+  price: number;
+};
+
+export type AddOn = {
+  _id?: string;
+  addOnId: string;
+  name: string;
+  description?: string;
+  price: number;
+};
+
+export type Settings = {
+  flowerCountMin: number;
+  flowerCountMax: number;
+  pricePerFlower: number;
 };
 
 type AdminContextType = {
@@ -51,8 +74,22 @@ type AdminContextType = {
   loadStats: () => Promise<void>;
   colors: Color[];
   loadColors: () => Promise<void>;
-  addColor: (color: { name: string; hex: string }) => Promise<void>;
+  addColor: (color: { name: string; hex: string; price: number }) => Promise<void>;
+  updateColor: (colorId: string, updates: Partial<Color>) => Promise<void>;
   removeColor: (colorId: string) => Promise<void>;
+  presentations: Presentation[];
+  loadPresentations: () => Promise<void>;
+  addPresentation: (presentation: { name: string; description?: string; price: number }) => Promise<void>;
+  updatePresentation: (presentationId: string, updates: Partial<Presentation>) => Promise<void>;
+  removePresentation: (presentationId: string) => Promise<void>;
+  addOns: AddOn[];
+  loadAddOns: () => Promise<void>;
+  addAddOn: (addOn: { name: string; description?: string; price: number }) => Promise<void>;
+  updateAddOn: (addOnId: string, updates: Partial<AddOn>) => Promise<void>;
+  removeAddOn: (addOnId: string) => Promise<void>;
+  settings: Settings;
+  loadSettings: () => Promise<void>;
+  updateSettings: (updates: Partial<Settings>) => Promise<void>;
 };
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -62,6 +99,13 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [colors, setColors] = useState<Color[]>([]);
+  const [presentations, setPresentations] = useState<Presentation[]>([]);
+  const [addOns, setAddOns] = useState<AddOn[]>([]);
+  const [settings, setSettings] = useState<Settings>({
+    flowerCountMin: 1,
+    flowerCountMax: 50,
+    pricePerFlower: 5.0,
+  });
   const [stats, setStats] = useState({
     totalSales: "0.00 K.D.",
     totalOrders: 0,
@@ -81,6 +125,9 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     loadProducts();
     loadColors();
+    loadPresentations();
+    loadAddOns();
+    loadSettings();
   }, []);
 
   const login = async (password: string) => {
@@ -143,14 +190,89 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const addColor = async (color: { name: string; hex: string }) => {
+  const addColor = async (color: { name: string; hex: string; price: number }) => {
     const created = await colorAPI.create(color);
     setColors([...colors, created]);
+  };
+
+  const updateColor = async (colorId: string, updates: Partial<Color>) => {
+    const updated = await colorAPI.update(colorId, updates);
+    setColors(colors.map((c) => (c.colorId === colorId ? updated : c)));
   };
 
   const removeColor = async (colorId: string) => {
     await colorAPI.delete(colorId);
     setColors(colors.filter((c) => c.colorId !== colorId));
+  };
+
+  const loadPresentations = async () => {
+    try {
+      const data = await presentationAPI.getAll();
+      setPresentations(data);
+    } catch (error) {
+      console.error("Failed to load presentations:", error);
+    }
+  };
+
+  const addPresentation = async (presentation: { name: string; description?: string; price: number }) => {
+    const created = await presentationAPI.create(presentation);
+    setPresentations([...presentations, created]);
+  };
+
+  const updatePresentation = async (presentationId: string, updates: Partial<Presentation>) => {
+    const updated = await presentationAPI.update(presentationId, updates);
+    setPresentations(presentations.map((p) => (p.presentationId === presentationId ? updated : p)));
+  };
+
+  const removePresentation = async (presentationId: string) => {
+    await presentationAPI.delete(presentationId);
+    setPresentations(presentations.filter((p) => p.presentationId !== presentationId));
+  };
+
+  const loadAddOns = async () => {
+    try {
+      const data = await addOnAPI.getAll();
+      setAddOns(data);
+    } catch (error) {
+      console.error("Failed to load add-ons:", error);
+    }
+  };
+
+  const addAddOn = async (addOn: { name: string; description?: string; price: number }) => {
+    const created = await addOnAPI.create(addOn);
+    setAddOns([...addOns, created]);
+  };
+
+  const updateAddOn = async (addOnId: string, updates: Partial<AddOn>) => {
+    const updated = await addOnAPI.update(addOnId, updates);
+    setAddOns(addOns.map((a) => (a.addOnId === addOnId ? updated : a)));
+  };
+
+  const removeAddOn = async (addOnId: string) => {
+    await addOnAPI.delete(addOnId);
+    setAddOns(addOns.filter((a) => a.addOnId !== addOnId));
+  };
+
+  const loadSettings = async () => {
+    try {
+      const data = await settingsAPI.get();
+      setSettings({
+        flowerCountMin: data.flowerCountMin ?? 1,
+        flowerCountMax: data.flowerCountMax ?? 50,
+        pricePerFlower: data.pricePerFlower ?? 5.0,
+      });
+    } catch (error) {
+      console.error("Failed to load settings:", error);
+    }
+  };
+
+  const updateSettings = async (updates: Partial<Settings>) => {
+    const updated = await settingsAPI.update(updates);
+    setSettings({
+      flowerCountMin: updated.flowerCountMin ?? settings.flowerCountMin,
+      flowerCountMax: updated.flowerCountMax ?? settings.flowerCountMax,
+      pricePerFlower: updated.pricePerFlower ?? settings.pricePerFlower,
+    });
   };
 
   const loadStats = async () => {
@@ -180,7 +302,21 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         colors,
         loadColors,
         addColor,
+        updateColor,
         removeColor,
+        presentations,
+        loadPresentations,
+        addPresentation,
+        updatePresentation,
+        removePresentation,
+        addOns,
+        loadAddOns,
+        addAddOn,
+        updateAddOn,
+        removeAddOn,
+        settings,
+        loadSettings,
+        updateSettings,
       }}
     >
       {children}

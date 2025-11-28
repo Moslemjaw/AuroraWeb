@@ -38,7 +38,30 @@ export const orderAPI = {
 export const colorAPI = {
   getAll: () => apiCall("/colors"),
   create: (color: any) => apiCall("/colors", { method: "POST", body: JSON.stringify(color) }),
+  update: (colorId: string, updates: any) => apiCall(`/colors/${colorId}`, { method: "PATCH", body: JSON.stringify(updates) }),
   delete: (colorId: string) => apiCall(`/colors/${colorId}`, { method: "DELETE" }),
+};
+
+// Presentations
+export const presentationAPI = {
+  getAll: () => apiCall("/presentations"),
+  create: (presentation: any) => apiCall("/presentations", { method: "POST", body: JSON.stringify(presentation) }),
+  update: (presentationId: string, updates: any) => apiCall(`/presentations/${presentationId}`, { method: "PATCH", body: JSON.stringify(updates) }),
+  delete: (presentationId: string) => apiCall(`/presentations/${presentationId}`, { method: "DELETE" }),
+};
+
+// Add-ons
+export const addOnAPI = {
+  getAll: () => apiCall("/addons"),
+  create: (addOn: any) => apiCall("/addons", { method: "POST", body: JSON.stringify(addOn) }),
+  update: (addOnId: string, updates: any) => apiCall(`/addons/${addOnId}`, { method: "PATCH", body: JSON.stringify(updates) }),
+  delete: (addOnId: string) => apiCall(`/addons/${addOnId}`, { method: "DELETE" }),
+};
+
+// Settings
+export const settingsAPI = {
+  get: () => apiCall("/settings"),
+  update: (settings: any) => apiCall("/settings", { method: "PATCH", body: JSON.stringify(settings) }),
 };
 
 // Custom Orders
