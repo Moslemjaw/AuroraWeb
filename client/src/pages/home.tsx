@@ -10,7 +10,7 @@ import tulipImg from "@assets/generated_images/pastel_fabric_tulips.png";
 import hydrangeaImg from "@assets/generated_images/blue_fabric_hydrangea.png";
 import orchidImg from "@assets/generated_images/white_fabric_orchid.png";
 import sunflowerImg from "@assets/generated_images/fabric_sunflower_bouquet.png";
-import logoImg from "@assets/image_1764356989830.png";
+import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 import luxuryBouquetImg from "@assets/image_1764358990214.png";
 
 export default function Home() {
@@ -20,7 +20,7 @@ export default function Home() {
       {/* Navigation - Clean & Fixed on Mobile, integrated on Desktop */}
       <nav className="fixed lg:absolute top-0 left-0 w-full lg:w-[45%] z-50 px-6 py-6 flex items-center justify-between bg-white/90 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none lg:px-12 lg:py-10">
          <div className="flex items-center gap-3">
-           <img src={logoImg} alt="Logo" className="w-6 h-6 lg:w-8 lg:h-8 object-contain" />
+           <img src={logoImg} alt="Logo" className="w-10 h-10 lg:w-12 lg:h-12 object-contain" />
            <span className="font-serif text-lg lg:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
          </div>
          <div className="hidden md:flex gap-8 text-xs font-bold tracking-widest uppercase text-muted-foreground">
