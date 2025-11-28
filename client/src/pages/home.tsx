@@ -25,7 +25,7 @@ export default function Home() {
          </div>
          
          <div className="hidden md:flex items-center gap-8">
-            <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-white/90 hover:text-white transition-colors">
+            <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-white/90 hover:text-white transition-colors items-center">
               <a href="#products" className="hover:text-white transition-colors">Shop</a>
               <a href="#about" className="hover:text-white transition-colors">About Us</a>
               <a href="#contact" className="hover:text-white transition-colors">Contact</a>
@@ -33,10 +33,12 @@ export default function Home() {
             
             <div className="w-px h-4 bg-white/40 mx-2" />
             
-            <Button variant="ghost" size="sm" className="hover:bg-white/10 hover:text-white px-2 gap-2 text-xs font-bold tracking-widest uppercase text-white/90">
+            <Button variant="ghost" size="sm" className="hover:bg-white/10 hover:text-white px-0 gap-2 text-xs font-bold tracking-widest uppercase text-white/90">
                Cart
-               <ShoppingBag className="w-4 h-4 mb-0.5" />
-               <span className="bg-white text-primary text-[10px] w-4 h-4 flex items-center justify-center rounded-full ml-[-4px] -mt-2">0</span>
+               <div className="relative">
+                 <ShoppingBag className="w-5 h-5" />
+                 <div className="absolute -top-2 -right-2 bg-white text-primary text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">0</div>
+               </div>
             </Button>
          </div>
 
