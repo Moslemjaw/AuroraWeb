@@ -1,13 +1,15 @@
-import SplineFlower from "@/components/3d-flower";
 import ProductCard from "@/components/product-card";
 import CustomOrderForm from "@/components/custom-order-form";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Instagram, ShoppingBag, Star, Check } from "lucide-react";
+import { ArrowRight, Instagram, ShoppingBag, Star, Check, TrendingUp } from "lucide-react";
 
 // Assets imports
 import peonyImg from "@assets/generated_images/handmade_fabric_peony_bouquet.png";
 import roseImg from "@assets/generated_images/fabric_rose_close_up.png";
 import tulipImg from "@assets/generated_images/pastel_fabric_tulips.png";
+import hydrangeaImg from "@assets/generated_images/blue_fabric_hydrangea.png";
+import orchidImg from "@assets/generated_images/white_fabric_orchid.png";
+import sunflowerImg from "@assets/generated_images/fabric_sunflower_bouquet.png";
 import logoImg from "@assets/image_1764356989830.png";
 
 export default function Home() {
@@ -28,6 +30,7 @@ export default function Home() {
           <div className="hidden md:flex items-center gap-10">
             <a href="#products" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Collections</a>
             <a href="#custom" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Custom Studio</a>
+            <a href="#bestsellers" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Best Sellers</a>
             <a href="#about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Our Story</a>
           </div>
 
@@ -180,6 +183,48 @@ export default function Home() {
               </div>
             </div>
 
+          </div>
+        </div>
+      </section>
+
+      {/* Best Selling Section */}
+      <section id="bestsellers" className="py-24 bg-gradient-to-b from-secondary/20 to-white border-t border-border/40">
+        <div className="container mx-auto container-padding">
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <div className="inline-flex items-center gap-2 text-primary font-bold tracking-widest uppercase text-xs mb-2">
+              <TrendingUp className="w-4 h-4" /> Client Favorites
+            </div>
+            <h2 className="font-serif text-4xl md:text-5xl text-foreground">Best Selling Collections</h2>
+            <p className="text-muted-foreground text-lg">
+              Discover the arrangements that our community loves most. Each piece is a testament to our commitment to quality and design.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            <ProductCard 
+              image={hydrangeaImg}
+              title="Azure Hydrangea"
+              price="$55.00"
+              description="Voluminous blooms of hand-dyed blue fabric petals that bring serenity to any room."
+            />
+            <ProductCard 
+              image={orchidImg}
+              title="Imperial White Orchid"
+              price="$65.00"
+              description="Elegant, architectural stems of pure white orchids. Minimalist luxury at its finest."
+            />
+            <ProductCard 
+              image={sunflowerImg}
+              title="Rustic Sunflower Bundle"
+              price="$48.00"
+              description="Warm and inviting sunflowers wrapped in natural burlap for a charming farmhouse feel."
+            />
+          </div>
+          
+          <div className="mt-16 flex justify-center">
+            <Button size="lg" variant="outline" className="rounded-full px-10 h-12 border-primary text-primary hover:bg-primary hover:text-white transition-colors">
+              Shop All Best Sellers
+            </Button>
           </div>
         </div>
       </section>
