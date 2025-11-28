@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, Redirect } from "wouter";
+import { Redirect } from "wouter";
 import { useAdmin } from "@/lib/admin-context";
+import AdminLayout from "@/components/admin-layout";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { LayoutDashboard, Package, Settings, ShoppingBag, LogOut, ChevronRight, Eye } from "lucide-react";
+import { ShoppingBag, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface OrderItem {
@@ -42,7 +43,7 @@ interface Order {
 }
 
 export default function AdminOrders() {
-  const { isAuthenticated, logout } = useAdmin();
+  const { isAuthenticated } = useAdmin();
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -101,36 +102,10 @@ export default function AdminOrders() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <aside className="w-64 bg-white border-r border-border hidden lg:block">
-        <div className="p-6">
-          <Link href="/" className="font-serif text-xl font-medium text-foreground">Fabric & Blooms</Link>
-          <p className="text-xs text-muted-foreground mt-1">Admin Dashboard</p>
-        </div>
-        <nav className="px-4 space-y-1">
-          <Link href="/admin/dashboard" className="flex items-center gap-3 px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors">
-            <LayoutDashboard className="w-4 h-4" /> Dashboard
-          </Link>
-          <Link href="/admin/products" className="flex items-center gap-3 px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors">
-            <Package className="w-4 h-4" /> Products
-          </Link>
-          <Link href="/admin/orders" className="flex items-center gap-3 px-4 py-3 text-sm text-foreground bg-primary/10 rounded-lg">
-            <ShoppingBag className="w-4 h-4" /> Orders
-          </Link>
-          <Link href="/admin/settings" className="flex items-center gap-3 px-4 py-3 text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-lg transition-colors">
-            <Settings className="w-4 h-4" /> Settings
-          </Link>
-        </nav>
-        <div className="absolute bottom-0 left-0 w-64 p-4 border-t border-border">
-          <Button variant="ghost" onClick={logout} className="w-full justify-start text-muted-foreground hover:text-foreground">
-            <LogOut className="w-4 h-4 mr-2" /> Logout
-          </Button>
-        </div>
-      </aside>
-
-      <main className="flex-1 p-4 sm:p-8 overflow-auto">
-        <div className="mb-8">
-          <h1 className="font-serif text-2xl sm:text-3xl text-foreground mb-2">Orders</h1>
+    <AdminLayout>
+      <div className="space-y-6 sm:space-y-8">
+        <div>
+          <h1 className="font-serif text-2xl sm:text-3xl text-foreground mb-1 sm:mb-2">Orders</h1>
           <p className="text-sm text-muted-foreground">Manage customer orders and track deliveries</p>
         </div>
 
@@ -142,73 +117,126 @@ export default function AdminOrders() {
             <p className="text-muted-foreground">No orders yet</p>
           </div>
         ) : (
-          <div className="bg-white rounded-lg border border-border overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="w-full" data-testid="orders-table">
-                <thead className="bg-secondary/30">
-                  <tr>
-                    <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Order ID</th>
-                    <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Customer</th>
-                    <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Items</th>
-                    <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Total</th>
-                    <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Payment</th>
-                    <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Status</th>
-                    <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Date</th>
-                    <th className="text-right px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  {orders.map((order) => (
-                    <tr key={order._id} className="hover:bg-secondary/10" data-testid={`order-row-${order.orderId}`}>
-                      <td className="px-4 py-4 text-sm font-medium">{order.orderId}</td>
-                      <td className="px-4 py-4">
-                        <div className="text-sm font-medium">{order.customerName}</div>
-                        {order.customerPhone && <div className="text-xs text-muted-foreground">{order.customerPhone}</div>}
-                      </td>
-                      <td className="px-4 py-4 text-sm">{order.items}</td>
-                      <td className="px-4 py-4 text-sm font-medium text-primary">{order.total}</td>
-                      <td className="px-4 py-4 text-xs">
-                        {order.orderData?.paymentMethod ? getPaymentMethodLabel(order.orderData.paymentMethod) : "N/A"}
-                      </td>
-                      <td className="px-4 py-4">
-                        <Select
-                          value={order.status}
-                          onValueChange={(value) => updateStatusMutation.mutate({ orderId: order.orderId, status: value })}
-                        >
-                          <SelectTrigger className="w-32 h-8 text-xs">
-                            <Badge className={`${getStatusColor(order.status)} border-0`}>
-                              {order.status}
-                            </Badge>
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="Pending">Pending</SelectItem>
-                            <SelectItem value="Processing">Processing</SelectItem>
-                            <SelectItem value="Completed">Completed</SelectItem>
-                            <SelectItem value="Cancelled">Cancelled</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </td>
-                      <td className="px-4 py-4 text-xs text-muted-foreground">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-4 py-4 text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setSelectedOrder(order)}
-                          data-testid={`view-order-${order.orderId}`}
-                        >
-                          <Eye className="w-4 h-4 mr-1" /> View
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+          <>
+            {/* Mobile Card Layout */}
+            <div className="lg:hidden space-y-4">
+              {orders.map((order) => (
+                <div key={order._id} className="bg-white rounded-lg border border-border p-4 shadow-sm" data-testid={`order-card-${order.orderId}`}>
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <p className="font-medium text-sm">{order.orderId}</p>
+                      <p className="text-xs text-muted-foreground">{order.customerName}</p>
+                      {order.customerPhone && <p className="text-xs text-muted-foreground">{order.customerPhone}</p>}
+                    </div>
+                    <Select
+                      value={order.status}
+                      onValueChange={(value) => updateStatusMutation.mutate({ orderId: order.orderId, status: value })}
+                    >
+                      <SelectTrigger className="w-28 h-7 text-xs">
+                        <Badge className={`${getStatusColor(order.status)} border-0 text-[10px]`}>
+                          {order.status}
+                        </Badge>
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Pending">Pending</SelectItem>
+                        <SelectItem value="Processing">Processing</SelectItem>
+                        <SelectItem value="Completed">Completed</SelectItem>
+                        <SelectItem value="Cancelled">Cancelled</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="flex justify-between items-center text-xs border-t border-border/50 pt-3">
+                    <div>
+                      <span className="text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</span>
+                      <span className="mx-2">·</span>
+                      <span className="text-muted-foreground">{order.items} items</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-primary">{order.total}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2"
+                        onClick={() => setSelectedOrder(order)}
+                        data-testid={`view-order-mobile-${order.orderId}`}
+                      >
+                        <Eye className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-          </div>
+
+            {/* Desktop Table Layout */}
+            <div className="hidden lg:block bg-white rounded-lg border border-border overflow-hidden shadow-sm">
+              <div className="overflow-x-auto">
+                <table className="w-full" data-testid="orders-table">
+                  <thead className="bg-secondary/30">
+                    <tr>
+                      <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Order ID</th>
+                      <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Customer</th>
+                      <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Items</th>
+                      <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Total</th>
+                      <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Payment</th>
+                      <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Status</th>
+                      <th className="text-left px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Date</th>
+                      <th className="text-right px-4 py-3 text-xs font-bold uppercase tracking-wider text-muted-foreground">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border">
+                    {orders.map((order) => (
+                      <tr key={order._id} className="hover:bg-secondary/10" data-testid={`order-row-${order.orderId}`}>
+                        <td className="px-4 py-4 text-sm font-medium">{order.orderId}</td>
+                        <td className="px-4 py-4">
+                          <div className="text-sm font-medium">{order.customerName}</div>
+                          {order.customerPhone && <div className="text-xs text-muted-foreground">{order.customerPhone}</div>}
+                        </td>
+                        <td className="px-4 py-4 text-sm">{order.items}</td>
+                        <td className="px-4 py-4 text-sm font-medium text-primary">{order.total}</td>
+                        <td className="px-4 py-4 text-xs">
+                          {order.orderData?.paymentMethod ? getPaymentMethodLabel(order.orderData.paymentMethod) : "N/A"}
+                        </td>
+                        <td className="px-4 py-4">
+                          <Select
+                            value={order.status}
+                            onValueChange={(value) => updateStatusMutation.mutate({ orderId: order.orderId, status: value })}
+                          >
+                            <SelectTrigger className="w-32 h-8 text-xs">
+                              <Badge className={`${getStatusColor(order.status)} border-0`}>
+                                {order.status}
+                              </Badge>
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Pending">Pending</SelectItem>
+                              <SelectItem value="Processing">Processing</SelectItem>
+                              <SelectItem value="Completed">Completed</SelectItem>
+                              <SelectItem value="Cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </td>
+                        <td className="px-4 py-4 text-xs text-muted-foreground">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </td>
+                        <td className="px-4 py-4 text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedOrder(order)}
+                            data-testid={`view-order-${order.orderId}`}
+                          >
+                            <Eye className="w-4 h-4 mr-1" /> View
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
         )}
-      </main>
+      </div>
 
       <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -283,6 +311,6 @@ export default function AdminOrders() {
           )}
         </DialogContent>
       </Dialog>
-    </div>
+    </AdminLayout>
   );
 }
