@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-// Admin User Schema
 const adminUserSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
@@ -8,7 +7,6 @@ const adminUserSchema = new mongoose.Schema({
 
 export const AdminUser = mongoose.model("AdminUser", adminUserSchema);
 
-// Product Schema
 const productSchema = new mongoose.Schema({
   productId: { type: String, required: true, unique: true },
   title: { type: String, required: true },
@@ -23,7 +21,6 @@ const productSchema = new mongoose.Schema({
 
 export const Product = mongoose.model("Product", productSchema);
 
-// Order Schema
 const orderSchema = new mongoose.Schema({
   orderId: { type: String, required: true, unique: true },
   customerName: { type: String, required: true },
@@ -32,21 +29,45 @@ const orderSchema = new mongoose.Schema({
   total: { type: String, required: true },
   status: { type: String, default: "Pending", enum: ["Pending", "Processing", "Completed", "Cancelled"] },
   items: { type: Number, required: true },
-  orderData: { type: Object }, // Store cart items
+  orderData: { type: Object },
 }, { timestamps: true });
 
 export const Order = mongoose.model("Order", orderSchema);
 
-// Color Schema
 const colorSchema = new mongoose.Schema({
   colorId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   hex: { type: String, required: true },
+  price: { type: Number, default: 0 },
 }, { timestamps: true });
 
 export const Color = mongoose.model("Color", colorSchema);
 
-// Custom Order Schema
+const presentationSchema = new mongoose.Schema({
+  presentationId: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  description: { type: String },
+  price: { type: Number, default: 0 },
+}, { timestamps: true });
+
+export const Presentation = mongoose.model("Presentation", presentationSchema);
+
+const addOnSchema = new mongoose.Schema({
+  addOnId: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  description: { type: String },
+  price: { type: Number, default: 0 },
+}, { timestamps: true });
+
+export const AddOn = mongoose.model("AddOn", addOnSchema);
+
+const settingSchema = new mongoose.Schema({
+  key: { type: String, required: true, unique: true },
+  value: { type: mongoose.Schema.Types.Mixed, required: true },
+}, { timestamps: true });
+
+export const Setting = mongoose.model("Setting", settingSchema);
+
 const customOrderSchema = new mongoose.Schema({
   customOrderId: { type: String, required: true, unique: true },
   customerName: { type: String },
@@ -54,7 +75,8 @@ const customOrderSchema = new mongoose.Schema({
   customerPhone: { type: String },
   quantity: { type: Number, required: true },
   selectedColors: [{ type: String }],
-  wrappingStyle: { type: String },
+  selectedPresentation: { type: String },
+  selectedAddOns: [{ type: String }],
   totalPrice: { type: String, required: true },
   status: { type: String, default: "Pending" },
 }, { timestamps: true });

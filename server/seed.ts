@@ -1,4 +1,4 @@
-import { storage } from "./storage";
+import { Product, Color, Presentation, AddOn, Setting } from "./models";
 
 const seedProducts = [
   {
@@ -9,8 +9,8 @@ const seedProducts = [
     longDescription: "Our signature Blushing Peony bouquet features three hand-shaped blooms created from premium silk and organza.",
     imageUrl: "/attached_assets/generated_images/handmade_fabric_peony_bouquet.png",
     category: "Bouquets",
-    isCurated: "true",
-    isBestSeller: "false",
+    isCurated: true,
+    isBestSeller: false,
   },
   {
     productId: "velvet-rose",
@@ -20,8 +20,8 @@ const seedProducts = [
     longDescription: "A symbol of timeless love, our Royal Velvet Rose is crafted from rich, deep red velvet that catches the light beautifully.",
     imageUrl: "/attached_assets/generated_images/fabric_rose_close_up.png",
     category: "Single Stems",
-    isCurated: "true",
-    isBestSeller: "false",
+    isCurated: true,
+    isBestSeller: false,
   },
   {
     productId: "pastel-tulips",
@@ -31,8 +31,8 @@ const seedProducts = [
     longDescription: "Bring the freshness of spring indoors year-round with our Pastel Tulip Set.",
     imageUrl: "/attached_assets/generated_images/pastel_fabric_tulips.png",
     category: "Bundles",
-    isCurated: "true",
-    isBestSeller: "false",
+    isCurated: true,
+    isBestSeller: false,
   },
   {
     productId: "azure-hydrangea",
@@ -42,8 +42,8 @@ const seedProducts = [
     longDescription: "Our Azure Hydrangea is a masterpiece of volume and texture.",
     imageUrl: "/attached_assets/generated_images/blue_fabric_hydrangea.png",
     category: "Stems",
-    isCurated: "false",
-    isBestSeller: "true",
+    isCurated: false,
+    isBestSeller: true,
   },
   {
     productId: "imperial-orchid",
@@ -53,8 +53,8 @@ const seedProducts = [
     longDescription: "Minimalist and sophisticated, the Imperial Orchid features a tall, arching stem with five pristine white blooms.",
     imageUrl: "/attached_assets/generated_images/white_fabric_orchid.png",
     category: "Potted",
-    isCurated: "false",
-    isBestSeller: "true",
+    isCurated: false,
+    isBestSeller: true,
   },
   {
     productId: "rustic-sunflower",
@@ -64,8 +64,8 @@ const seedProducts = [
     longDescription: "Radiate happiness with our Rustic Sunflower arrangement.",
     imageUrl: "/attached_assets/generated_images/fabric_sunflower_bouquet.png",
     category: "Bouquets",
-    isCurated: "false",
-    isBestSeller: "true",
+    isCurated: false,
+    isBestSeller: true,
   },
 ];
 
@@ -101,43 +101,33 @@ const seedSettings = [
 
 export async function seedDatabase() {
   try {
-    const existingProducts = await storage.findProducts();
-    if (existingProducts.length === 0) {
-      for (const product of seedProducts) {
-        await storage.createProduct(product);
-      }
+    const productCount = await Product.countDocuments();
+    if (productCount === 0) {
+      await Product.insertMany(seedProducts);
       console.log("✓ Database seeded with products");
     }
 
-    const existingColors = await storage.findColors();
-    if (existingColors.length === 0) {
-      for (const color of seedColors) {
-        await storage.createColor(color);
-      }
+    const colorCount = await Color.countDocuments();
+    if (colorCount === 0) {
+      await Color.insertMany(seedColors);
       console.log("✓ Database seeded with colors");
     }
 
-    const existingPresentations = await storage.findPresentations();
-    if (existingPresentations.length === 0) {
-      for (const presentation of seedPresentations) {
-        await storage.createPresentation(presentation);
-      }
+    const presentationCount = await Presentation.countDocuments();
+    if (presentationCount === 0) {
+      await Presentation.insertMany(seedPresentations);
       console.log("✓ Database seeded with presentations");
     }
 
-    const existingAddons = await storage.findAddOns();
-    if (existingAddons.length === 0) {
-      for (const addon of seedAddons) {
-        await storage.createAddOn(addon);
-      }
+    const addonCount = await AddOn.countDocuments();
+    if (addonCount === 0) {
+      await AddOn.insertMany(seedAddons);
       console.log("✓ Database seeded with add-ons");
     }
 
-    const existingSettings = await storage.findSettings();
-    if (existingSettings.length === 0) {
-      for (const setting of seedSettings) {
-        await storage.updateSetting(setting.key, setting.value);
-      }
+    const settingCount = await Setting.countDocuments();
+    if (settingCount === 0) {
+      await Setting.insertMany(seedSettings);
       console.log("✓ Database seeded with settings");
     }
   } catch (error) {

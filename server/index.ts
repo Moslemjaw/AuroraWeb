@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { connectDB } from "./db";
 import session from "express-session";
 
 const app = express();
@@ -72,6 +73,8 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  await connectDB();
+  
   const { seedDatabase } = await import("./seed");
   await seedDatabase();
   

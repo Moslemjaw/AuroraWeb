@@ -1,6 +1,6 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { type Server } from "http";
-import { storage } from "./storage";
+import { Product, Order, Color, Presentation, AddOn, Setting, CustomOrder } from "./models";
 import { body, validationResult } from "express-validator";
 
 declare module "express-session" {
@@ -58,7 +58,7 @@ export async function registerRoutes(
 
   app.get("/api/products", async (req: Request, res: Response) => {
     try {
-      const products = await storage.findProducts();
+      const products = await Product.find().sort({ createdAt: -1 });
       res.json(products);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch products" });
@@ -67,7 +67,7 @@ export async function registerRoutes(
 
   app.get("/api/products/:productId", async (req: Request, res: Response) => {
     try {
-      const product = await storage.findProductByProductId(req.params.productId);
+      const product = await Product.findOne({ productId: req.params.productId });
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
@@ -91,10 +91,10 @@ export async function registerRoutes(
     }
 
     try {
-      const product = await storage.createProduct(req.body);
+      const product = await new Product(req.body).save();
       res.status(201).json(product);
     } catch (error: any) {
-      if (error.code === "23505") {
+      if (error.code === 11000) {
         return res.status(400).json({ error: "Product ID already exists" });
       }
       res.status(500).json({ error: "Failed to create product" });
@@ -103,7 +103,11 @@ export async function registerRoutes(
 
   app.patch("/api/products/:productId", requireAuth, async (req: Request, res: Response) => {
     try {
-      const product = await storage.updateProduct(req.params.productId, req.body);
+      const product = await Product.findOneAndUpdate(
+        { productId: req.params.productId },
+        { $set: req.body },
+        { new: true }
+      );
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
@@ -115,7 +119,7 @@ export async function registerRoutes(
 
   app.delete("/api/products/:productId", requireAuth, async (req: Request, res: Response) => {
     try {
-      const product = await storage.deleteProduct(req.params.productId);
+      const product = await Product.findOneAndDelete({ productId: req.params.productId });
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
@@ -127,7 +131,7 @@ export async function registerRoutes(
 
   app.get("/api/orders", requireAuth, async (req: Request, res: Response) => {
     try {
-      const orders = await storage.findOrders();
+      const orders = await Order.find().sort({ createdAt: -1 });
       res.json(orders);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch orders" });
@@ -146,7 +150,7 @@ export async function registerRoutes(
 
     try {
       const orderId = `ORD-${Date.now()}`;
-      const order = await storage.createOrder({ orderId, ...req.body });
+      const order = await new Order({ orderId, ...req.body }).save();
       res.status(201).json(order);
     } catch (error) {
       res.status(500).json({ error: "Failed to create order" });
@@ -155,7 +159,11 @@ export async function registerRoutes(
 
   app.patch("/api/orders/:orderId", requireAuth, async (req: Request, res: Response) => {
     try {
-      const order = await storage.updateOrder(req.params.orderId, req.body);
+      const order = await Order.findOneAndUpdate(
+        { orderId: req.params.orderId },
+        { $set: req.body },
+        { new: true }
+      );
       if (!order) {
         return res.status(404).json({ error: "Order not found" });
       }
@@ -167,7 +175,7 @@ export async function registerRoutes(
 
   app.get("/api/colors", async (req: Request, res: Response) => {
     try {
-      const colors = await storage.findColors();
+      const colors = await Color.find().sort({ createdAt: 1 });
       res.json(colors);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch colors" });
@@ -186,7 +194,7 @@ export async function registerRoutes(
 
     try {
       const colorId = `color-${Date.now()}`;
-      const color = await storage.createColor({ colorId, ...req.body });
+      const color = await new Color({ colorId, ...req.body }).save();
       res.status(201).json(color);
     } catch (error) {
       res.status(500).json({ error: "Failed to create color" });
@@ -195,7 +203,11 @@ export async function registerRoutes(
 
   app.patch("/api/colors/:colorId", requireAuth, async (req: Request, res: Response) => {
     try {
-      const color = await storage.updateColor(req.params.colorId, req.body);
+      const color = await Color.findOneAndUpdate(
+        { colorId: req.params.colorId },
+        { $set: req.body },
+        { new: true }
+      );
       if (!color) {
         return res.status(404).json({ error: "Color not found" });
       }
@@ -207,7 +219,7 @@ export async function registerRoutes(
 
   app.delete("/api/colors/:colorId", requireAuth, async (req: Request, res: Response) => {
     try {
-      const color = await storage.deleteColor(req.params.colorId);
+      const color = await Color.findOneAndDelete({ colorId: req.params.colorId });
       if (!color) {
         return res.status(404).json({ error: "Color not found" });
       }
@@ -219,7 +231,7 @@ export async function registerRoutes(
 
   app.get("/api/presentations", async (req: Request, res: Response) => {
     try {
-      const presentations = await storage.findPresentations();
+      const presentations = await Presentation.find().sort({ createdAt: 1 });
       res.json(presentations);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch presentations" });
@@ -237,7 +249,7 @@ export async function registerRoutes(
 
     try {
       const presentationId = `pres-${Date.now()}`;
-      const presentation = await storage.createPresentation({ presentationId, ...req.body });
+      const presentation = await new Presentation({ presentationId, ...req.body }).save();
       res.status(201).json(presentation);
     } catch (error) {
       res.status(500).json({ error: "Failed to create presentation" });
@@ -246,7 +258,11 @@ export async function registerRoutes(
 
   app.patch("/api/presentations/:presentationId", requireAuth, async (req: Request, res: Response) => {
     try {
-      const presentation = await storage.updatePresentation(req.params.presentationId, req.body);
+      const presentation = await Presentation.findOneAndUpdate(
+        { presentationId: req.params.presentationId },
+        { $set: req.body },
+        { new: true }
+      );
       if (!presentation) {
         return res.status(404).json({ error: "Presentation not found" });
       }
@@ -258,7 +274,7 @@ export async function registerRoutes(
 
   app.delete("/api/presentations/:presentationId", requireAuth, async (req: Request, res: Response) => {
     try {
-      const presentation = await storage.deletePresentation(req.params.presentationId);
+      const presentation = await Presentation.findOneAndDelete({ presentationId: req.params.presentationId });
       if (!presentation) {
         return res.status(404).json({ error: "Presentation not found" });
       }
@@ -270,7 +286,7 @@ export async function registerRoutes(
 
   app.get("/api/addons", async (req: Request, res: Response) => {
     try {
-      const addOns = await storage.findAddOns();
+      const addOns = await AddOn.find().sort({ createdAt: 1 });
       res.json(addOns);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch add-ons" });
@@ -288,7 +304,7 @@ export async function registerRoutes(
 
     try {
       const addOnId = `addon-${Date.now()}`;
-      const addOn = await storage.createAddOn({ addOnId, ...req.body });
+      const addOn = await new AddOn({ addOnId, ...req.body }).save();
       res.status(201).json(addOn);
     } catch (error) {
       res.status(500).json({ error: "Failed to create add-on" });
@@ -297,7 +313,11 @@ export async function registerRoutes(
 
   app.patch("/api/addons/:addOnId", requireAuth, async (req: Request, res: Response) => {
     try {
-      const addOn = await storage.updateAddOn(req.params.addOnId, req.body);
+      const addOn = await AddOn.findOneAndUpdate(
+        { addOnId: req.params.addOnId },
+        { $set: req.body },
+        { new: true }
+      );
       if (!addOn) {
         return res.status(404).json({ error: "Add-on not found" });
       }
@@ -309,7 +329,7 @@ export async function registerRoutes(
 
   app.delete("/api/addons/:addOnId", requireAuth, async (req: Request, res: Response) => {
     try {
-      const addOn = await storage.deleteAddOn(req.params.addOnId);
+      const addOn = await AddOn.findOneAndDelete({ addOnId: req.params.addOnId });
       if (!addOn) {
         return res.status(404).json({ error: "Add-on not found" });
       }
@@ -321,8 +341,8 @@ export async function registerRoutes(
 
   app.get("/api/settings", async (req: Request, res: Response) => {
     try {
-      const allSettings = await storage.findSettings();
-      const settingsObj = allSettings.reduce((acc: any, s: any) => {
+      const settings = await Setting.find();
+      const settingsObj = settings.reduce((acc: any, s: any) => {
         acc[s.key] = s.value;
         return acc;
       }, {});
@@ -336,10 +356,14 @@ export async function registerRoutes(
     try {
       const updates = req.body;
       for (const [key, value] of Object.entries(updates)) {
-        await storage.updateSetting(key, value);
+        await Setting.findOneAndUpdate(
+          { key },
+          { $set: { key, value } },
+          { upsert: true, new: true }
+        );
       }
-      const allSettings = await storage.findSettings();
-      const settingsObj = allSettings.reduce((acc: any, s: any) => {
+      const settings = await Setting.find();
+      const settingsObj = settings.reduce((acc: any, s: any) => {
         acc[s.key] = s.value;
         return acc;
       }, {});
@@ -360,7 +384,7 @@ export async function registerRoutes(
 
     try {
       const customOrderId = `CUSTOM-${Date.now()}`;
-      const customOrder = await storage.createCustomOrder({ customOrderId, ...req.body });
+      const customOrder = await new CustomOrder({ customOrderId, ...req.body }).save();
       res.status(201).json(customOrder);
     } catch (error) {
       res.status(500).json({ error: "Failed to create custom order" });
@@ -369,7 +393,7 @@ export async function registerRoutes(
 
   app.get("/api/custom-orders", requireAuth, async (req: Request, res: Response) => {
     try {
-      const customOrders = await storage.findCustomOrders();
+      const customOrders = await CustomOrder.find().sort({ createdAt: -1 });
       res.json(customOrders);
     } catch (error) {
       res.status(500).json({ error: "Failed to fetch custom orders" });
@@ -378,8 +402,8 @@ export async function registerRoutes(
 
   app.get("/api/admin/stats", requireAuth, async (req: Request, res: Response) => {
     try {
-      const totalOrders = await storage.countOrders();
-      const orders = await storage.findOrders();
+      const totalOrders = await Order.countDocuments();
+      const orders = await Order.find();
       
       const totalSales = orders.reduce((sum: number, order: any) => {
         const amount = parseFloat(order.total.replace(/[^0-9.]/g, ''));

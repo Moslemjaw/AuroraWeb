@@ -1,13 +1,28 @@
-import { Pool, neonConfig } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-serverless";
-import ws from "ws";
-import * as schema from "@shared/schema";
+import mongoose from "mongoose";
 
-neonConfig.webSocketConstructor = ws;
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://user:ltFRuVcClyIoJXLn@cluster0.rnndcqr.mongodb.net/fabric-blooms?retryWrites=true&w=majority";
 
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL must be set. Did you forget to provision a database?");
+export let isMongoConnected = false;
+
+export async function connectDB() {
+  try {
+    await mongoose.connect(MONGODB_URI, {
+      serverSelectionTimeoutMS: 10000,
+    });
+    isMongoConnected = true;
+    console.log("✓ MongoDB connected successfully");
+  } catch (error: any) {
+    console.error("MongoDB connection failed:", error.message);
+    isMongoConnected = false;
+  }
 }
 
-export const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-export const db = drizzle({ client: pool, schema });
+mongoose.connection.on("disconnected", () => {
+  console.log("MongoDB disconnected");
+  isMongoConnected = false;
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error("MongoDB error:", err);
+  isMongoConnected = false;
+});

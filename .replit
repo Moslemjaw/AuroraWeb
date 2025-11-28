@@ -53,3 +53,8 @@ waitForPort = 5000
 
 [agent]
 mockupState = "FULLSTACK"
+
+[userenv]
+
+[userenv.shared]
+MONGODB_URI = "mongodb+srv://user:ltFRuVcClyIoJXLn@cluster0.rnndcqr.mongodb.net/fabric-blooms?retryWrites=true&w=majority"
