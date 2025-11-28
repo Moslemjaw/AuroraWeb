@@ -4,6 +4,7 @@ const API_BASE = "/api";
 async function apiCall(endpoint: string, options?: RequestInit) {
   const response = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
       ...options?.headers,
