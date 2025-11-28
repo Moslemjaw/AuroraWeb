@@ -76,16 +76,15 @@ export default function Home() {
         </div>
 
         {/* Right Panel - Hero Image */}
-        <div className="w-full lg:w-[55%] h-[50vh] lg:h-auto relative order-1 lg:order-2 flex items-center justify-center bg-white p-6 lg:p-12 overflow-hidden">
-          <div className="relative w-full h-full max-h-[90vh] rounded-[2rem] overflow-hidden shadow-2xl shadow-black/5">
-             <img 
-               src={luxuryBouquetImg} 
-               alt="Luxury Fabric Bouquet" 
-               className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-[2000ms]"
-             />
-             {/* Subtle overlay for depth */}
-             <div className="absolute inset-0 ring-1 ring-inset ring-black/5 rounded-[2rem] pointer-events-none" />
-          </div>
+        <div className="w-full lg:w-[55%] h-[50vh] lg:h-auto relative order-1 lg:order-2 overflow-hidden">
+          <div className="absolute inset-0 bg-black/5 z-10 pointer-events-none" />
+          {/* Gradient fade to blend image with the next section */}
+          <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white via-white/50 to-transparent z-20" />
+          <img 
+            src={luxuryBouquetImg} 
+            alt="Luxury Fabric Bouquet" 
+            className="w-full h-full object-cover object-center scale-105 hover:scale-100 transition-transform duration-[2000ms]"
+          />
         </div>
 
       </header>
