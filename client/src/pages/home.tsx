@@ -73,20 +73,22 @@ export default function Home() {
          <MobileNav isLight={false} />
       </nav>
 
-      {/* Hero Image - Full Width on Mobile */}
-      <div className="w-full lg:hidden">
+      {/* Hero Image - Full Width on Mobile with Blend */}
+      <div className="w-full lg:hidden relative">
         <img 
           src={luxuryBouquetImg} 
           alt="Luxury Fabric Bouquet" 
           className="w-full h-auto object-cover"
         />
+        {/* Gradient fade to blend with content */}
+        <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white via-white/70 to-transparent" />
       </div>
 
       {/* Hero Section */}
-      <header className="relative w-full flex flex-col lg:flex-row lg:min-h-[calc(100vh-80px)]">
+      <header className="relative w-full flex flex-col lg:flex-row lg:min-h-[calc(100vh-80px)] -mt-16 lg:mt-0">
         
         {/* Left Panel - Content */}
-        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-center items-start p-6 sm:p-8 md:p-16 lg:p-24 z-10">
+        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-center items-start p-6 sm:p-8 md:p-16 lg:p-24 z-10 pt-0 lg:pt-24">
              
              <span className="text-primary font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-[10px] sm:text-xs mb-4 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                EST. 2024
