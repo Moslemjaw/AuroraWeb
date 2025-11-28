@@ -14,6 +14,7 @@ const productSchema = new mongoose.Schema({
   description: { type: String, required: true },
   longDescription: { type: String },
   imageUrl: { type: String, required: true },
+  images: [{ type: String }],
   category: { type: String, required: true },
   isCurated: { type: Boolean, default: false },
   isBestSeller: { type: Boolean, default: false },

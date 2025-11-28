@@ -10,6 +10,7 @@ export type Product = {
   description: string;
   longDescription?: string;
   imageUrl: string;
+  images?: string[];
   category: string;
   isBestSeller?: boolean;
   isCurated?: boolean;
