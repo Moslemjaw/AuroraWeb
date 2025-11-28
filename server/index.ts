@@ -4,16 +4,24 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { connectDB } from "./db";
 import session from "express-session";
+import MongoStore from "connect-mongo";
 
 const app = express();
 const httpServer = createServer(app);
 
 app.set('trust proxy', 1);
 
+const mongoUri = process.env.MONGODB_URI || "mongodb+srv://user:ltFRuVcClyIoJXLn@cluster0.rnndcqr.mongodb.net/fabric-blooms";
+
 app.use(session({
   secret: process.env.SESSION_SECRET || "fabric-blooms-secret-key-change-in-production",
-  resave: true,
+  resave: false,
   saveUninitialized: false,
+  store: MongoStore.create({
+    mongoUrl: mongoUri,
+    collectionName: 'sessions',
+    ttl: 7 * 24 * 60 * 60
+  }),
   cookie: {
     secure: process.env.NODE_ENV === "production",
     httpOnly: true,
