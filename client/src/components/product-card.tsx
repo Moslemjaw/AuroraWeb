@@ -1,4 +1,3 @@
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 
 interface ProductCardProps {
@@ -10,26 +9,28 @@ interface ProductCardProps {
 
 export default function ProductCard({ image, title, price, description }: ProductCardProps) {
   return (
-    <Card className="overflow-hidden border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 group bg-white">
-      <CardContent className="p-0 relative aspect-[4/5] overflow-hidden bg-secondary/20">
+    <div className="group flex flex-col space-y-4">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-secondary/20">
         <img 
           src={image} 
           alt={title}
           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out" 
         />
-        {/* Clean Overlay */}
-        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      </CardContent>
-      <CardFooter className="flex flex-col items-start p-6 space-y-3">
-        <div className="flex w-full justify-between items-start">
-          <h3 className="font-serif text-lg font-medium text-foreground">{title}</h3>
-          <span className="font-sans font-bold text-primary">{price}</span>
+        {/* Quick Add Overlay */}
+        <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        
+        <div className="absolute inset-x-4 bottom-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out">
+           <Button className="w-full bg-white text-foreground hover:bg-primary hover:text-white shadow-lg rounded-none uppercase tracking-widest text-xs font-bold h-10 border-none">
+             Add to Cart
+           </Button>
         </div>
-        <p className="text-muted-foreground text-sm leading-relaxed line-clamp-2">{description}</p>
-        <Button variant="outline" className="w-full mt-2 border-primary/20 text-primary hover:bg-primary hover:text-white hover:border-primary transition-all rounded-full">
-          Add to Cart
-        </Button>
-      </CardFooter>
-    </Card>
+      </div>
+      
+      <div className="space-y-1 text-center pt-2">
+        <h3 className="font-serif text-xl text-foreground font-normal">{title}</h3>
+        <p className="text-muted-foreground text-sm line-clamp-1 mb-1">{description}</p>
+        <span className="font-sans font-bold text-primary block pt-1">{price}</span>
+      </div>
+    </div>
   );
 }
