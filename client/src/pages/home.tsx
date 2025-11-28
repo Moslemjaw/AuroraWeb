@@ -18,7 +18,7 @@ export default function Home() {
     <div className="min-h-screen bg-background font-sans selection:bg-primary/10">
       
       {/* Navigation - Clean & Fixed on Mobile, integrated on Desktop */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-6 flex items-center justify-between bg-white/95 backdrop-blur-md border-b border-border/40 transition-all duration-300">
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-6 flex items-center justify-between bg-transparent border-b border-transparent transition-all duration-300">
          <div className="flex items-center gap-3">
            <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain" />
            <span className="font-serif text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
