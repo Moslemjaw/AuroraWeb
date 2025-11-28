@@ -5,24 +5,17 @@ import { body, validationResult } from "express-validator";
 import multer from "multer";
 import path from "path";
 import fs from "fs";
+import sharp from "sharp";
 
 const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
+const memoryStorage = multer.memoryStorage();
 
 const upload = multer({
-  storage,
+  storage: memoryStorage,
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
@@ -34,6 +27,34 @@ const upload = multer({
     cb(new Error("Only image files are allowed"));
   }
 });
+
+async function compressAndSaveImage(buffer: Buffer, originalName: string): Promise<string> {
+  const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+  const ext = path.extname(originalName).toLowerCase();
+  const isGif = ext === '.gif';
+  
+  let outputFilename: string;
+  let outputPath: string;
+  
+  if (isGif) {
+    outputFilename = uniqueSuffix + '.gif';
+    outputPath = path.join(uploadDir, outputFilename);
+    await fs.promises.writeFile(outputPath, buffer);
+  } else {
+    outputFilename = uniqueSuffix + '.webp';
+    outputPath = path.join(uploadDir, outputFilename);
+    
+    await sharp(buffer)
+      .resize(1600, 1600, { 
+        fit: 'inside', 
+        withoutEnlargement: true 
+      })
+      .webp({ quality: 80 })
+      .toFile(outputPath);
+  }
+  
+  return outputFilename;
+}
 
 declare module "express-session" {
   interface SessionData {
@@ -63,21 +84,37 @@ export async function registerRoutes(
     }
   });
 
-  app.post("/api/upload", requireAuth, upload.single("image"), (req: Request, res: Response) => {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded" });
+  app.post("/api/upload", requireAuth, upload.single("image"), async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No file uploaded" });
+      }
+      const filename = await compressAndSaveImage(req.file.buffer, req.file.originalname);
+      const imageUrl = `/uploads/${filename}`;
+      res.json({ imageUrl, filename });
+    } catch (error) {
+      console.error("Image compression error:", error);
+      res.status(500).json({ error: "Failed to process image" });
     }
-    const imageUrl = `/uploads/${req.file.filename}`;
-    res.json({ imageUrl, filename: req.file.filename });
   });
 
-  app.post("/api/upload/multiple", requireAuth, upload.array("images", 10), (req: Request, res: Response) => {
-    const files = req.files as Express.Multer.File[];
-    if (!files || files.length === 0) {
-      return res.status(400).json({ error: "No files uploaded" });
+  app.post("/api/upload/multiple", requireAuth, upload.array("images", 10), async (req: Request, res: Response) => {
+    try {
+      const files = req.files as Express.Multer.File[];
+      if (!files || files.length === 0) {
+        return res.status(400).json({ error: "No files uploaded" });
+      }
+      const imageUrls = await Promise.all(
+        files.map(async (file) => {
+          const filename = await compressAndSaveImage(file.buffer, file.originalname);
+          return `/uploads/${filename}`;
+        })
+      );
+      res.json({ imageUrls });
+    } catch (error) {
+      console.error("Image compression error:", error);
+      res.status(500).json({ error: "Failed to process images" });
     }
-    const imageUrls = files.map(file => `/uploads/${file.filename}`);
-    res.json({ imageUrls });
   });
   
   app.post("/api/admin/login", [
