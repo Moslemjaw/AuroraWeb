@@ -1,5 +1,13 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
+interface CustomizationDetails {
+  flowerCount: number;
+  pricePerFlower: number;
+  selectedColors: { colorId: string; name: string; hex: string; price: number }[];
+  presentation: { presentationId: string; name: string; price: number };
+  addOns: { addOnId: string; name: string; price: number }[];
+}
+
 interface CartItem {
   productId: string;
   title: string;
@@ -7,11 +15,14 @@ interface CartItem {
   imageUrl: string;
   category: string;
   quantity: number;
+  type: "catalog" | "custom";
+  customization?: CustomizationDetails;
 }
 
 interface CartContextType {
   items: CartItem[];
-  addToCart: (product: Omit<CartItem, "quantity">, quantity?: number) => void;
+  addToCart: (product: Omit<CartItem, "quantity" | "type">, quantity?: number) => void;
+  addCustomToCart: (customItem: Omit<CartItem, "quantity"> & { type: "custom"; customization: CustomizationDetails }) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
@@ -32,18 +43,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("cart", JSON.stringify(items));
   }, [items]);
 
-  const addToCart = (product: Omit<CartItem, "quantity">, quantity = 1) => {
+  const addToCart = (product: Omit<CartItem, "quantity" | "type">, quantity = 1) => {
     setItems((prev) => {
-      const existing = prev.find((item) => item.productId === product.productId);
+      const existing = prev.find((item) => item.productId === product.productId && item.type !== "custom");
       if (existing) {
         return prev.map((item) =>
-          item.productId === product.productId
+          item.productId === product.productId && item.type !== "custom"
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       }
-      return [...prev, { ...product, quantity }];
+      return [...prev, { ...product, quantity, type: "catalog" as const }];
     });
+  };
+
+  const addCustomToCart = (customItem: Omit<CartItem, "quantity"> & { type: "custom"; customization: CustomizationDetails }) => {
+    setItems((prev) => [...prev, { ...customItem, quantity: 1 }]);
   };
 
   const removeFromCart = (productId: string) => {
@@ -84,6 +99,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       value={{
         items,
         addToCart,
+        addCustomToCart,
         removeFromCart,
         updateQuantity,
         clearCart,

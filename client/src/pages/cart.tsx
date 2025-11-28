@@ -1,7 +1,7 @@
 import { useCart } from "@/lib/cart-context";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { ArrowLeft, ShoppingBag, Minus, Plus, X, Trash2 } from "lucide-react";
+import { ArrowLeft, ShoppingBag, Minus, Plus, Trash2, Palette, Gift, Sparkles } from "lucide-react";
 import MobileNav from "@/components/mobile-nav";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 
@@ -41,49 +41,103 @@ export default function Cart() {
           <div className="grid lg:grid-cols-3 gap-8 sm:gap-12">
             <div className="lg:col-span-2 space-y-4 sm:space-y-6">
               {items.map((item) => (
-                <div key={item.productId} className="flex gap-4 sm:gap-6 py-4 sm:py-6 border-b border-border" data-testid={`cart-item-${item.productId}`}>
-                  <Link href={`/product/${item.productId}`} className="w-20 h-24 sm:w-28 sm:h-36 bg-secondary/20 rounded-sm overflow-hidden flex-shrink-0">
-                    <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover hover:scale-105 transition-transform" />
-                  </Link>
-                  <div className="flex-1 flex flex-col justify-between min-w-0">
-                    <div className="flex justify-between items-start gap-2">
-                      <div className="min-w-0">
-                        <Link href={`/product/${item.productId}`}>
-                          <h3 className="font-serif text-base sm:text-xl text-foreground truncate hover:text-primary transition-colors">{item.title}</h3>
-                        </Link>
-                        <p className="text-xs sm:text-sm text-muted-foreground">{item.category}</p>
-                      </div>
-                      <span className="font-sans font-bold text-primary text-sm sm:text-base whitespace-nowrap">{item.price}</span>
+                <div key={item.productId} className="py-4 sm:py-6 border-b border-border" data-testid={`cart-item-${item.productId}`}>
+                  <div className="flex gap-4 sm:gap-6">
+                    <div className="w-20 h-24 sm:w-28 sm:h-36 bg-secondary/20 rounded-sm overflow-hidden flex-shrink-0">
+                      <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                     </div>
-                    
-                    <div className="flex justify-between items-center mt-3 sm:mt-0">
-                      <div className="flex items-center border border-border rounded-sm">
+                    <div className="flex-1 flex flex-col justify-between min-w-0">
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="min-w-0">
+                          <h3 className="font-serif text-base sm:text-xl text-foreground">{item.title}</h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground">{item.category}</p>
+                        </div>
+                        <span className="font-sans font-bold text-primary text-sm sm:text-base whitespace-nowrap">{item.price}</span>
+                      </div>
+                      
+                      <div className="flex justify-between items-center mt-3 sm:mt-0">
+                        {item.type !== "custom" ? (
+                          <div className="flex items-center border border-border rounded-sm">
+                            <button 
+                              onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                              className="p-1.5 sm:p-2 hover:bg-secondary/50 transition-colors"
+                              data-testid={`decrease-${item.productId}`}
+                            >
+                              <Minus className="w-3 h-3" />
+                            </button>
+                            <span className="w-8 sm:w-10 text-center text-xs sm:text-sm font-medium">{item.quantity}</span>
+                            <button 
+                              onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                              className="p-1.5 sm:p-2 hover:bg-secondary/50 transition-colors"
+                              data-testid={`increase-${item.productId}`}
+                            >
+                              <Plus className="w-3 h-3" />
+                            </button>
+                          </div>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">Custom Order</span>
+                        )}
                         <button 
-                          onClick={() => updateQuantity(item.productId, item.quantity - 1)}
-                          className="p-1.5 sm:p-2 hover:bg-secondary/50 transition-colors"
-                          data-testid={`decrease-${item.productId}`}
+                          onClick={() => removeFromCart(item.productId)}
+                          className="flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground hover:text-destructive transition-colors"
+                          data-testid={`remove-${item.productId}`}
                         >
-                          <Minus className="w-3 h-3" />
-                        </button>
-                        <span className="w-8 sm:w-10 text-center text-xs sm:text-sm font-medium">{item.quantity}</span>
-                        <button 
-                          onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          className="p-1.5 sm:p-2 hover:bg-secondary/50 transition-colors"
-                          data-testid={`increase-${item.productId}`}
-                        >
-                          <Plus className="w-3 h-3" />
+                          <Trash2 className="w-3 h-3" />
+                          Remove
                         </button>
                       </div>
-                      <button 
-                        onClick={() => removeFromCart(item.productId)}
-                        className="flex items-center gap-1 text-[10px] sm:text-xs text-muted-foreground hover:text-destructive transition-colors"
-                        data-testid={`remove-${item.productId}`}
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        Remove
-                      </button>
                     </div>
                   </div>
+
+                  {/* Custom Order Details */}
+                  {item.type === "custom" && item.customization && (
+                    <div className="mt-4 ml-24 sm:ml-34 space-y-3 bg-secondary/10 rounded-lg p-3 sm:p-4">
+                      {/* Colors */}
+                      <div className="flex items-start gap-2">
+                        <Palette className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-xs font-medium text-foreground block mb-1">Colors</span>
+                          <div className="flex flex-wrap gap-1.5">
+                            {item.customization.selectedColors.map((color) => (
+                              <div key={color.colorId} className="flex items-center gap-1 bg-white rounded-full px-2 py-0.5 border border-border">
+                                <div 
+                                  className="w-3 h-3 rounded-full border border-border/50" 
+                                  style={{ backgroundColor: color.hex }} 
+                                />
+                                <span className="text-[10px] text-muted-foreground">{color.name}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Presentation */}
+                      <div className="flex items-start gap-2">
+                        <Gift className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                        <div>
+                          <span className="text-xs font-medium text-foreground block mb-0.5">Presentation</span>
+                          <span className="text-[10px] text-muted-foreground">{item.customization.presentation.name}</span>
+                        </div>
+                      </div>
+
+                      {/* Add-ons */}
+                      {item.customization.addOns.length > 0 && (
+                        <div className="flex items-start gap-2">
+                          <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                          <div>
+                            <span className="text-xs font-medium text-foreground block mb-1">Add-ons</span>
+                            <div className="flex flex-wrap gap-1.5">
+                              {item.customization.addOns.map((addon) => (
+                                <span key={addon.addOnId} className="text-[10px] bg-white rounded-full px-2 py-0.5 border border-border text-muted-foreground">
+                                  {addon.name}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

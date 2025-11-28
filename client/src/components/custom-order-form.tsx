@@ -1,9 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { toast } from "@/hooks/use-toast";
-import { Palette, Gift, Sparkles, Flower, Check } from "lucide-react";
-import { colorAPI, presentationAPI, addOnAPI, settingsAPI, customOrderAPI } from "@/lib/api";
+import { Palette, Gift, Sparkles, Flower, Check, ShoppingCart } from "lucide-react";
+import { colorAPI, presentationAPI, addOnAPI, settingsAPI } from "@/lib/api";
+import { useCart } from "@/lib/cart-context";
 
 type Color = {
   colorId: string;
@@ -33,6 +35,9 @@ type Settings = {
 };
 
 export default function CustomOrderForm() {
+  const [, setLocation] = useLocation();
+  const { addCustomToCart } = useCart();
+  
   const [colors, setColors] = useState<Color[]>([]);
   const [presentations, setPresentations] = useState<Presentation[]>([]);
   const [addOns, setAddOns] = useState<AddOn[]>([]);
@@ -46,7 +51,6 @@ export default function CustomOrderForm() {
   const [selectedColors, setSelectedColors] = useState<string[]>([]);
   const [selectedPresentation, setSelectedPresentation] = useState<string>("");
   const [selectedAddOns, setSelectedAddOns] = useState<string[]>([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -64,40 +68,30 @@ export default function CustomOrderForm() {
         pricePerFlower: settingsData.pricePerFlower ?? 5.0,
       };
       setSettings(newSettings);
-      // Initialize quantity to minimum
       setQuantity(newSettings.flowerCountMin);
-      // Set default presentation
       if (presentationsData.length > 0) {
         setSelectedPresentation(presentationsData[0].presentationId);
       }
     }).catch(console.error);
   }, []);
 
-  // Calculate color surcharge per flower (average of selected color prices)
   const colorSurchargePerFlower = useMemo(() => {
     if (selectedColors.length === 0) return 0;
     const totalColorPrice = selectedColors.reduce((sum, colorId) => {
       const color = colors.find(c => c.colorId === colorId);
       return sum + (color?.price || 0);
     }, 0);
-    // Color prices are per-flower surcharges, averaged across selections
     return totalColorPrice / selectedColors.length;
   }, [selectedColors, colors]);
 
   const totalPrice = useMemo(() => {
-    // Base price: quantity * (price per flower + color surcharge per flower)
     let total = quantity * (settings.pricePerFlower + colorSurchargePerFlower);
-
-    // Add presentation price (one-time)
     const presentation = presentations.find(p => p.presentationId === selectedPresentation);
     if (presentation) total += presentation.price;
-
-    // Add add-ons prices (one-time each)
     selectedAddOns.forEach(addOnId => {
       const addOn = addOns.find(a => a.addOnId === addOnId);
       if (addOn) total += addOn.price;
     });
-
     return total;
   }, [quantity, colorSurchargePerFlower, selectedPresentation, selectedAddOns, presentations, addOns, settings]);
 
@@ -117,7 +111,7 @@ export default function CustomOrderForm() {
     );
   };
 
-  const handleSubmit = async () => {
+  const handleAddToCart = () => {
     if (selectedColors.length === 0) {
       toast({
         title: "Please select at least one color",
@@ -134,38 +128,54 @@ export default function CustomOrderForm() {
       return;
     }
 
-    setIsSubmitting(true);
-    try {
-      await customOrderAPI.create({
-        quantity,
-        selectedColors,
-        selectedPresentation,
-        selectedAddOns,
-        totalPrice: `${totalPrice.toFixed(2)} K.D.`,
-        status: "Pending",
-      });
-      
-      toast({
-        title: "Order Submitted!",
-        description: `Your custom arrangement for ${quantity} flowers has been received.`,
-      });
+    const selectedColorDetails = selectedColors.map(colorId => {
+      const color = colors.find(c => c.colorId === colorId)!;
+      return { colorId: color.colorId, name: color.name, hex: color.hex, price: color.price };
+    });
 
-      // Reset form
-      setQuantity(settings.flowerCountMin);
-      setSelectedColors([]);
-      setSelectedAddOns([]);
-      if (presentations.length > 0) {
-        setSelectedPresentation(presentations[0].presentationId);
-      }
-    } catch (error) {
-      toast({
-        title: "Submission Failed",
-        description: "Please try again later.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
+    const presentationDetails = presentations.find(p => p.presentationId === selectedPresentation)!;
+    
+    const selectedAddOnDetails = selectedAddOns.map(addOnId => {
+      const addOn = addOns.find(a => a.addOnId === addOnId)!;
+      return { addOnId: addOn.addOnId, name: addOn.name, price: addOn.price };
+    });
+
+    const colorNames = selectedColorDetails.map(c => c.name).join(", ");
+    const title = `Custom Bouquet (${quantity} flowers)`;
+
+    addCustomToCart({
+      productId: `custom-${Date.now()}`,
+      title,
+      price: `${totalPrice.toFixed(2)} K.D.`,
+      imageUrl: "/attached_assets/generated_images/handmade_fabric_peony_bouquet.png",
+      category: "Custom Order",
+      type: "custom",
+      customization: {
+        flowerCount: quantity,
+        pricePerFlower: settings.pricePerFlower,
+        selectedColors: selectedColorDetails,
+        presentation: {
+          presentationId: presentationDetails.presentationId,
+          name: presentationDetails.name,
+          price: presentationDetails.price,
+        },
+        addOns: selectedAddOnDetails,
+      },
+    });
+
+    toast({
+      title: "Added to Cart!",
+      description: `Your custom ${quantity}-flower arrangement has been added to your cart.`,
+    });
+
+    setQuantity(settings.flowerCountMin);
+    setSelectedColors([]);
+    setSelectedAddOns([]);
+    if (presentations.length > 0) {
+      setSelectedPresentation(presentations[0].presentationId);
     }
+
+    setLocation("/cart");
   };
 
   return (
@@ -354,11 +364,11 @@ export default function CustomOrderForm() {
             type="button" 
             size="lg" 
             className="w-full h-12 sm:h-14 text-base sm:text-lg rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all"
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            data-testid="button-submit-order"
+            onClick={handleAddToCart}
+            data-testid="button-add-to-cart"
           >
-            {isSubmitting ? "Submitting..." : "Begin Order"}
+            <ShoppingCart className="w-5 h-5 mr-2" />
+            Add to Cart
           </Button>
         </div>
       </div>
