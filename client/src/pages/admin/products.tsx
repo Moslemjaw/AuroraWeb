@@ -1,25 +1,57 @@
 import { useAdmin, Product } from "@/lib/admin-context";
 import AdminLayout from "@/components/admin-layout";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash, Edit, Star, TrendingUp, X, Image } from "lucide-react";
-import { useState } from "react";
+import { Plus, Trash, Edit, Star, TrendingUp, X, Image, Upload } from "lucide-react";
+import { useState, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminProducts() {
   const { products, addProduct, updateProduct, deleteProduct } = useAdmin();
+  const { toast } = useToast();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newProduct, setNewProduct] = useState<Partial<Product & { images: string[] }>>({ images: [] });
-  const [newImageUrl, setNewImageUrl] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAddImage = () => {
-    if (newImageUrl.trim()) {
+  const handleFileUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    
+    setIsUploading(true);
+    const formData = new FormData();
+    
+    for (let i = 0; i < files.length; i++) {
+      formData.append("images", files[i]);
+    }
+
+    try {
+      const response = await fetch("/api/upload/multiple", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
       const currentImages = newProduct.images || [];
       setNewProduct({
         ...newProduct,
-        images: [...currentImages, newImageUrl.trim()],
-        imageUrl: newProduct.imageUrl || newImageUrl.trim()
+        images: [...currentImages, ...data.imageUrls],
+        imageUrl: newProduct.imageUrl || data.imageUrls[0]
       });
-      setNewImageUrl('');
+      
+      toast({ title: "Images uploaded successfully" });
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({ title: "Failed to upload images", variant: "destructive" });
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   };
 
@@ -34,9 +66,16 @@ export default function AdminProducts() {
   };
 
   const handleSaveProduct = async () => {
-    if (!newProduct.title || !newProduct.price) return;
+    if (!newProduct.title || !newProduct.price) {
+      toast({ title: "Please fill in title and price", variant: "destructive" });
+      return;
+    }
     
     const images = newProduct.images || [];
+    if (images.length === 0) {
+      toast({ title: "Please add at least one image", variant: "destructive" });
+      return;
+    }
     
     try {
       await addProduct({
@@ -45,7 +84,7 @@ export default function AdminProducts() {
         price: newProduct.price,
         description: newProduct.description || "",
         longDescription: newProduct.longDescription || "",
-        imageUrl: images[0] || newProduct.imageUrl || "",
+        imageUrl: images[0],
         images: images,
         category: "Flowers",
         isCurated: false,
@@ -53,9 +92,10 @@ export default function AdminProducts() {
       });
       setIsAddModalOpen(false);
       setNewProduct({ images: [] });
-      setNewImageUrl('');
+      toast({ title: "Product added successfully" });
     } catch (error) {
       console.error("Failed to add product:", error);
+      toast({ title: "Failed to add product", variant: "destructive" });
     }
   };
 
@@ -71,7 +111,6 @@ export default function AdminProducts() {
             setIsAddModalOpen(open);
             if (!open) {
               setNewProduct({ images: [] });
-              setNewImageUrl('');
             }
           }}>
             <DialogTrigger asChild>
@@ -111,23 +150,40 @@ export default function AdminProducts() {
                    />
                 </div>
                 
-                {/* Multiple Images Section */}
+                {/* File Upload Section */}
                 <div className="space-y-3">
                   <label className="text-xs font-medium">Product Images</label>
-                  <div className="flex gap-2">
-                    <input 
-                      type="text"
-                      placeholder="Paste image URL" 
-                      className="flex-1 h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
-                      value={newImageUrl}
-                      onChange={e => setNewImageUrl(e.target.value)}
-                      onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleAddImage())}
-                      data-testid="input-image-url"
-                    />
-                    <Button type="button" onClick={handleAddImage} size="icon" className="h-10 w-10" data-testid="button-add-image">
-                      <Plus className="w-4 h-4" />
-                    </Button>
-                  </div>
+                  
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => handleFileUpload(e.target.files)}
+                    data-testid="input-file-upload"
+                  />
+                  
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="w-full flex items-center justify-center gap-2 h-24 border-2 border-dashed border-border rounded-lg hover:border-primary hover:bg-secondary/30 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    data-testid="button-upload-images"
+                  >
+                    {isUploading ? (
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                        <span className="text-sm">Uploading...</span>
+                      </div>
+                    ) : (
+                      <div className="text-center text-muted-foreground">
+                        <Upload className="w-6 h-6 mx-auto mb-1" />
+                        <span className="text-sm">Click to upload images</span>
+                        <span className="text-xs block mt-0.5">PNG, JPG, GIF up to 10MB</span>
+                      </div>
+                    )}
+                  </button>
                   
                   {/* Image Preview Grid */}
                   {(newProduct.images?.length ?? 0) > 0 && (
@@ -150,18 +206,11 @@ export default function AdminProducts() {
                       ))}
                     </div>
                   )}
-                  
-                  {(newProduct.images?.length ?? 0) === 0 && (
-                    <div className="flex items-center justify-center h-24 border-2 border-dashed border-border rounded-lg text-muted-foreground">
-                      <div className="text-center">
-                        <Image className="w-6 h-6 mx-auto mb-1 opacity-50" />
-                        <span className="text-xs">Add product images</span>
-                      </div>
-                    </div>
-                  )}
                 </div>
                 
-                <Button onClick={handleSaveProduct} data-testid="button-save-product">Save Product</Button>
+                <Button onClick={handleSaveProduct} disabled={isUploading} data-testid="button-save-product">
+                  Save Product
+                </Button>
               </div>
             </DialogContent>
           </Dialog>

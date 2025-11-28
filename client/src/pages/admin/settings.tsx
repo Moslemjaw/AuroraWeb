@@ -1,10 +1,12 @@
 import { useAdmin } from "@/lib/admin-context";
 import AdminLayout from "@/components/admin-layout";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash, Save, Image, X } from "lucide-react";
-import { useState } from "react";
+import { Plus, Trash, Save, Upload, X } from "lucide-react";
+import { useState, useRef } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminSettings() {
+  const { toast } = useToast();
   const { 
     colors, addColor, updateColor, removeColor,
     presentations, addPresentation, updatePresentation, removePresentation,
@@ -14,6 +16,9 @@ export default function AdminSettings() {
 
   const [newColor, setNewColor] = useState({ name: '', hex: '#f97a9d', imageUrl: '', price: 0 });
   const [useImageForColor, setUseImageForColor] = useState(false);
+  const [isUploadingFabric, setIsUploadingFabric] = useState(false);
+  const fabricFileRef = useRef<HTMLInputElement>(null);
+  
   const [newPresentation, setNewPresentation] = useState({ name: '', description: '', price: 0 });
   const [newAddOn, setNewAddOn] = useState({ name: '', description: '', price: 0 });
   const [flowerSettings, setFlowerSettings] = useState({
@@ -21,9 +26,38 @@ export default function AdminSettings() {
     max: settings.flowerCountMax,
     pricePerFlower: settings.pricePerFlower
   });
-  const [editingColor, setEditingColor] = useState<string | null>(null);
-  const [editingPresentation, setEditingPresentation] = useState<string | null>(null);
-  const [editingAddOn, setEditingAddOn] = useState<string | null>(null);
+
+  const handleFabricUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    
+    setIsUploadingFabric(true);
+    const formData = new FormData();
+    formData.append("image", files[0]);
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Upload failed");
+      }
+
+      const data = await response.json();
+      setNewColor({ ...newColor, imageUrl: data.imageUrl });
+      toast({ title: "Image uploaded successfully" });
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast({ title: "Failed to upload image", variant: "destructive" });
+    } finally {
+      setIsUploadingFabric(false);
+      if (fabricFileRef.current) {
+        fabricFileRef.current.value = "";
+      }
+    }
+  };
 
   const handleAddColor = async () => {
     if (newColor.name && (newColor.hex || newColor.imageUrl)) {
@@ -36,8 +70,10 @@ export default function AdminSettings() {
         });
         setNewColor({ name: '', hex: '#f97a9d', imageUrl: '', price: 0 });
         setUseImageForColor(false);
+        toast({ title: "Color added successfully" });
       } catch (error) {
         console.error("Failed to add color:", error);
+        toast({ title: "Failed to add color", variant: "destructive" });
       }
     }
   };
@@ -47,8 +83,10 @@ export default function AdminSettings() {
       try {
         await addPresentation({ ...newPresentation });
         setNewPresentation({ name: '', description: '', price: 0 });
+        toast({ title: "Presentation added successfully" });
       } catch (error) {
         console.error("Failed to add presentation:", error);
+        toast({ title: "Failed to add presentation", variant: "destructive" });
       }
     }
   };
@@ -58,8 +96,10 @@ export default function AdminSettings() {
       try {
         await addAddOn({ ...newAddOn });
         setNewAddOn({ name: '', description: '', price: 0 });
+        toast({ title: "Add-on added successfully" });
       } catch (error) {
         console.error("Failed to add add-on:", error);
+        toast({ title: "Failed to add add-on", variant: "destructive" });
       }
     }
   };
@@ -71,8 +111,10 @@ export default function AdminSettings() {
         flowerCountMax: flowerSettings.max,
         pricePerFlower: flowerSettings.pricePerFlower
       });
+      toast({ title: "Settings saved successfully" });
     } catch (error) {
       console.error("Failed to save settings:", error);
+      toast({ title: "Failed to save settings", variant: "destructive" });
     }
   };
 
@@ -132,7 +174,7 @@ export default function AdminSettings() {
           {/* Color/Fabric Management */}
           <div className="bg-white p-4 sm:p-6 rounded-lg border border-border shadow-sm">
             <h3 className="font-serif text-base sm:text-lg font-medium mb-3 sm:mb-4">Colors & Fabric Patterns</h3>
-            <p className="text-xs text-muted-foreground mb-4">Add solid colors or fabric pattern images for custom orders.</p>
+            <p className="text-xs text-muted-foreground mb-4">Add solid colors or upload fabric pattern images for custom orders.</p>
             <div className="space-y-4">
               {/* Toggle between color and image */}
               <div className="flex items-center gap-4 mb-2">
@@ -141,7 +183,10 @@ export default function AdminSettings() {
                     type="radio" 
                     name="colorType" 
                     checked={!useImageForColor}
-                    onChange={() => setUseImageForColor(false)}
+                    onChange={() => {
+                      setUseImageForColor(false);
+                      setNewColor({ ...newColor, imageUrl: '' });
+                    }}
                     className="accent-primary"
                   />
                   <span className="text-sm">Solid Color</span>
@@ -183,12 +228,18 @@ export default function AdminSettings() {
                       data-testid="input-color-price"
                     />
                   </div>
-                  <Button onClick={handleAddColor} size="icon" className="h-10 w-10" data-testid="button-add-color">
+                  <Button 
+                    onClick={handleAddColor} 
+                    size="icon" 
+                    className="h-10 w-10" 
+                    disabled={isUploadingFabric || (useImageForColor && !newColor.imageUrl)}
+                    data-testid="button-add-color"
+                  >
                     <Plus className="w-4 h-4" />
                   </Button>
                 </div>
 
-                {/* Color picker or Image URL based on toggle */}
+                {/* Color picker or Image Upload based on toggle */}
                 {!useImageForColor ? (
                   <div>
                     <label className="text-xs text-muted-foreground mb-1 block">Color</label>
@@ -205,18 +256,47 @@ export default function AdminSettings() {
                   </div>
                 ) : (
                   <div>
-                    <label className="text-xs text-muted-foreground mb-1 block">Fabric Pattern Image URL</label>
-                    <input 
-                      type="text" 
-                      placeholder="https://example.com/pattern.jpg"
-                      className="w-full h-10 rounded-md border border-input px-3 py-2 text-sm"
-                      value={newColor.imageUrl}
-                      onChange={e => setNewColor({...newColor, imageUrl: e.target.value})}
-                      data-testid="input-fabric-image"
+                    <label className="text-xs text-muted-foreground mb-1 block">Fabric Pattern Image</label>
+                    <input
+                      ref={fabricFileRef}
+                      type="file"
+                      accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                      className="hidden"
+                      onChange={(e) => handleFabricUpload(e.target.files)}
                     />
-                    {newColor.imageUrl && (
-                      <div className="mt-2 w-16 h-16 rounded-lg border border-border overflow-hidden bg-secondary/20">
-                        <img src={newColor.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                    
+                    {!newColor.imageUrl ? (
+                      <button
+                        type="button"
+                        onClick={() => fabricFileRef.current?.click()}
+                        disabled={isUploadingFabric}
+                        className="w-full flex items-center justify-center gap-2 h-20 border-2 border-dashed border-border rounded-lg hover:border-primary hover:bg-secondary/30 transition-colors cursor-pointer disabled:opacity-50"
+                        data-testid="button-upload-fabric"
+                      >
+                        {isUploadingFabric ? (
+                          <div className="flex items-center gap-2 text-muted-foreground">
+                            <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                            <span className="text-xs">Uploading...</span>
+                          </div>
+                        ) : (
+                          <div className="text-center text-muted-foreground">
+                            <Upload className="w-5 h-5 mx-auto mb-1" />
+                            <span className="text-xs">Click to upload fabric image</span>
+                          </div>
+                        )}
+                      </button>
+                    ) : (
+                      <div className="flex items-center gap-3">
+                        <div className="w-16 h-16 rounded-lg border border-border overflow-hidden bg-secondary/20">
+                          <img src={newColor.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setNewColor({ ...newColor, imageUrl: '' })}
+                          className="text-xs text-muted-foreground hover:text-destructive flex items-center gap-1"
+                        >
+                          <X className="w-3 h-3" /> Remove
+                        </button>
                       </div>
                     )}
                   </div>
@@ -240,9 +320,7 @@ export default function AdminSettings() {
                       <div className="min-w-0">
                         <span className="text-sm font-medium truncate block">{color.name}</span>
                         {color.imageUrl && (
-                          <span className="text-[10px] text-muted-foreground flex items-center gap-1">
-                            <Image className="w-3 h-3" /> Pattern
-                          </span>
+                          <span className="text-[10px] text-muted-foreground">Pattern</span>
                         )}
                       </div>
                     </div>
