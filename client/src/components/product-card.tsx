@@ -11,7 +11,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ id, image, title, price, description }: ProductCardProps) {
   const Content = (
-    <div className="group flex flex-col space-y-4 cursor-pointer">
+    <div className="group flex flex-col space-y-4 cursor-pointer bg-white rounded-sm shadow-md hover:shadow-lg transition-shadow duration-300">
       <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-secondary/20">
         <img 
           src={image} 
@@ -28,7 +28,7 @@ export default function ProductCard({ id, image, title, price, description }: Pr
         </div>
       </div>
       
-      <div className="space-y-1 text-center pt-2">
+      <div className="space-y-1 text-center p-4 pt-2">
         <h3 className="font-serif text-lg sm:text-xl text-foreground font-normal">{title}</h3>
         <p className="text-muted-foreground text-xs sm:text-sm line-clamp-1 mb-1">{description}</p>
         <span className="font-sans font-bold text-primary block pt-1 text-sm sm:text-base">{price}</span>
