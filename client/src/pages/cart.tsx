@@ -17,11 +17,9 @@ export default function Cart() {
     <div className="min-h-screen bg-background font-sans">
       <nav className="sticky top-0 left-0 w-full z-50 px-4 sm:px-6 py-4 sm:py-6 flex items-center justify-between bg-white border-b border-border/40">
          <div className="flex items-center gap-2 sm:gap-3">
-           <Link href="/">
-             <a className="flex items-center gap-2 sm:gap-3">
-               <img src={logoImg} alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
-               <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
-             </a>
+           <Link href="/" className="flex items-center gap-2 sm:gap-3">
+             <img src={logoImg} alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
+             <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
            </Link>
          </div>
          <MobileNav />
@@ -29,10 +27,8 @@ export default function Cart() {
 
       <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24 py-6 sm:py-12">
         <div className="mb-8 sm:mb-12">
-          <Link href="/">
-            <a className="inline-flex items-center text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors mb-4 sm:mb-6">
-              <ArrowLeft className="w-4 h-4 mr-2" /> Continue Shopping
-            </a>
+          <Link href="/" className="inline-flex items-center text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors mb-4 sm:mb-6">
+            <ArrowLeft className="w-4 h-4 mr-2" /> Continue Shopping
           </Link>
           <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground">Your Shopping Cart</h1>
         </div>

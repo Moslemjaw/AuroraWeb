@@ -47,46 +47,42 @@ export default function MobileNav({ isLight = false }: MobileNavProps) {
 
           <nav className="flex-1 p-6">
             <div className="space-y-6">
-              <Link href="/">
-                <a 
-                  className="block text-lg font-medium text-foreground hover:text-primary transition-colors"
-                  onClick={() => setIsOpen(false)}
-                  data-testid="link-mobile-shop"
-                >
-                  Shop
-                </a>
+              <Link 
+                href="/"
+                className="block text-lg font-medium text-foreground hover:text-primary transition-colors"
+                onClick={() => setIsOpen(false)}
+                data-testid="link-mobile-shop"
+              >
+                Shop
               </Link>
-              <Link href="/about">
-                <a 
-                  className="block text-lg font-medium text-foreground hover:text-primary transition-colors"
-                  onClick={() => setIsOpen(false)}
-                  data-testid="link-mobile-about"
-                >
-                  About Us
-                </a>
+              <Link 
+                href="/about"
+                className="block text-lg font-medium text-foreground hover:text-primary transition-colors"
+                onClick={() => setIsOpen(false)}
+                data-testid="link-mobile-about"
+              >
+                About Us
               </Link>
-              <Link href="/contact">
-                <a 
-                  className="block text-lg font-medium text-foreground hover:text-primary transition-colors"
-                  onClick={() => setIsOpen(false)}
-                  data-testid="link-mobile-contact"
-                >
-                  Contact
-                </a>
+              <Link 
+                href="/contact"
+                className="block text-lg font-medium text-foreground hover:text-primary transition-colors"
+                onClick={() => setIsOpen(false)}
+                data-testid="link-mobile-contact"
+              >
+                Contact
               </Link>
             </div>
           </nav>
 
           <div className="p-6 border-t border-border">
-            <Link href="/cart">
-              <a 
-                className="flex items-center justify-center gap-3 w-full h-12 bg-primary text-white rounded-none font-medium uppercase tracking-wider text-sm"
-                onClick={() => setIsOpen(false)}
-                data-testid="link-mobile-cart"
-              >
-                <ShoppingBag className="w-5 h-5" />
-                View Cart
-              </a>
+            <Link 
+              href="/cart"
+              className="flex items-center justify-center gap-3 w-full h-12 bg-primary text-white rounded-none font-medium uppercase tracking-wider text-sm"
+              onClick={() => setIsOpen(false)}
+              data-testid="link-mobile-cart"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              View Cart
             </Link>
           </div>
         </div>

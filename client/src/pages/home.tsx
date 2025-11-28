@@ -52,9 +52,9 @@ export default function Home() {
          
          <div className="hidden md:flex items-center gap-8">
             <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-white/90 hover:text-white transition-colors items-center">
-              <Link href="/"><a className="hover:text-white transition-colors">Shop</a></Link>
-              <Link href="/about"><a className="hover:text-white transition-colors">About Us</a></Link>
-              <Link href="/contact"><a className="hover:text-white transition-colors">Contact</a></Link>
+              <Link href="/" className="hover:text-white transition-colors">Shop</Link>
+              <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
+              <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
             </div>
             
             <div className="w-px h-4 bg-white/40 mx-2" />

@@ -17,34 +17,28 @@ export default function ProductDetail() {
     <div className="min-h-screen bg-background font-sans">
       <nav className="sticky top-0 left-0 w-full z-50 px-4 sm:px-6 py-4 sm:py-6 flex items-center justify-between bg-white border-b border-border/40">
          <div className="flex items-center gap-2 sm:gap-3">
-           <Link href="/">
-             <a className="flex items-center gap-2 sm:gap-3">
-               <img src={logoImg} alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
-               <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
-             </a>
+           <Link href="/" className="flex items-center gap-2 sm:gap-3">
+             <img src={logoImg} alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
+             <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
            </Link>
          </div>
          <div className="hidden md:flex items-center gap-8">
             <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-muted-foreground/80">
-              <Link href="/"><a className="hover:text-primary transition-colors">Shop</a></Link>
-              <Link href="/about"><a className="hover:text-primary transition-colors">About Us</a></Link>
-              <Link href="/contact"><a className="hover:text-primary transition-colors">Contact</a></Link>
+              <Link href="/" className="hover:text-primary transition-colors">Shop</Link>
+              <Link href="/about" className="hover:text-primary transition-colors">About Us</Link>
+              <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
             </div>
             <div className="w-px h-4 bg-border/60 mx-2" />
-            <Link href="/cart">
-              <a className="flex items-center gap-2 hover:text-primary transition-colors">
-                <ShoppingBag className="w-4 h-4" />
-              </a>
+            <Link href="/cart" className="flex items-center gap-2 hover:text-primary transition-colors">
+              <ShoppingBag className="w-4 h-4" />
             </Link>
          </div>
          <MobileNav />
       </nav>
 
       <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24 py-6 sm:py-12">
-        <Link href="/">
-          <a className="inline-flex items-center text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors mb-6 sm:mb-8">
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Collection
-          </a>
+        <Link href="/" className="inline-flex items-center text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors mb-6 sm:mb-8">
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Collection
         </Link>
 
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-start">

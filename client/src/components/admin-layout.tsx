@@ -17,41 +17,37 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const NavLinks = ({ onClick }: { onClick?: () => void }) => (
     <>
-      <Link href="/admin/dashboard">
-        <a 
-          onClick={onClick}
-          className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/dashboard') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
-        >
-          <LayoutDashboard className="w-4 h-4" />
-          Dashboard
-        </a>
+      <Link 
+        href="/admin/dashboard"
+        onClick={onClick}
+        className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/dashboard') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
+      >
+        <LayoutDashboard className="w-4 h-4" />
+        Dashboard
       </Link>
-      <Link href="/admin/orders">
-        <a 
-          onClick={onClick}
-          className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/orders') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
-        >
-          <ShoppingBag className="w-4 h-4" />
-          Orders
-        </a>
+      <Link 
+        href="/admin/orders"
+        onClick={onClick}
+        className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/orders') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
+      >
+        <ShoppingBag className="w-4 h-4" />
+        Orders
       </Link>
-      <Link href="/admin/products">
-        <a 
-          onClick={onClick}
-          className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/products') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
-        >
-          <Package className="w-4 h-4" />
-          Products
-        </a>
+      <Link 
+        href="/admin/products"
+        onClick={onClick}
+        className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/products') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
+      >
+        <Package className="w-4 h-4" />
+        Products
       </Link>
-      <Link href="/admin/settings">
-        <a 
-          onClick={onClick}
-          className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/settings') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
-        >
-          <Settings className="w-4 h-4" />
-          Settings
-        </a>
+      <Link 
+        href="/admin/settings"
+        onClick={onClick}
+        className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/settings') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
+      >
+        <Settings className="w-4 h-4" />
+        Settings
       </Link>
     </>
   );
@@ -101,14 +97,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="p-4 border-t border-border/50 space-y-2">
-          <Link href="/">
-            <a 
-              onClick={() => setSidebarOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium text-muted-foreground hover:bg-secondary/50 transition-colors w-full"
-            >
-              <Home className="w-4 h-4" />
-              Back to Store
-            </a>
+          <Link 
+            href="/"
+            onClick={() => setSidebarOpen(false)}
+            className="flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium text-muted-foreground hover:bg-secondary/50 transition-colors w-full"
+          >
+            <Home className="w-4 h-4" />
+            Back to Store
           </Link>
           <button 
             onClick={handleLogout} 
