@@ -43,41 +43,41 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/10">
       
-      {/* Navigation - Absolute positioned over Hero */}
-      <nav className="absolute top-0 left-0 w-full z-50 px-4 sm:px-6 py-4 sm:py-8 flex items-center justify-between bg-transparent">
+      {/* Navigation - Separate from Hero */}
+      <nav className="sticky top-0 w-full z-50 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between bg-white border-b border-border shadow-sm">
          <div className="flex items-center gap-2 sm:gap-3 cursor-pointer" onClick={handleLogoClick}>
-           <img src={logoImg} alt="Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-md" />
-           <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-white lg:text-foreground transition-colors drop-shadow-sm lg:drop-shadow-none">Fabric & Blooms</span>
+           <img src={logoImg} alt="Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
+           <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
          </div>
          
          <div className="hidden md:flex items-center gap-8">
-            <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-white/90 hover:text-white transition-colors items-center">
-              <Link href="/" className="hover:text-white transition-colors">Shop</Link>
-              <Link href="/about" className="hover:text-white transition-colors">About Us</Link>
-              <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
+            <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-foreground/80 items-center">
+              <Link href="/" className="hover:text-primary transition-colors">Shop</Link>
+              <Link href="/about" className="hover:text-primary transition-colors">About Us</Link>
+              <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
             </div>
             
-            <div className="w-px h-4 bg-white/40 mx-2" />
+            <div className="w-px h-4 bg-border mx-2" />
             
             <Link href="/cart">
-              <Button variant="ghost" size="sm" className="hover:bg-white/10 hover:text-white px-0 gap-2 text-xs font-bold tracking-widest uppercase text-white/90">
+              <Button variant="ghost" size="sm" className="hover:bg-secondary px-0 gap-2 text-xs font-bold tracking-widest uppercase text-foreground/80 hover:text-primary">
                  Cart
                  <div className="relative">
                    <ShoppingBag className="w-5 h-5" />
-                   <div className="absolute -top-2 -right-2 bg-white text-primary text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">0</div>
+                   <div className="absolute -top-2 -right-2 bg-primary text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">0</div>
                  </div>
               </Button>
             </Link>
          </div>
 
-         <MobileNav isLight={true} />
+         <MobileNav isLight={false} />
       </nav>
 
       {/* Hero Section - Redesigned Left Side */}
-      <header className="relative w-full min-h-screen flex flex-col lg:flex-row">
+      <header className="relative w-full flex flex-col lg:flex-row lg:min-h-[calc(100vh-80px)]">
         
         {/* Left Panel - Cleaner, Minimalist Content */}
-        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-center items-start p-6 sm:p-8 md:p-16 lg:p-24 z-10 order-2 lg:order-1 pt-8 lg:pt-0">
+        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-center items-start p-6 sm:p-8 md:p-16 lg:p-24 z-10 order-2 lg:order-1">
              
              <span className="text-primary font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-[10px] sm:text-xs mb-4 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                EST. 2024
@@ -92,14 +92,14 @@ export default function Home() {
                Handcrafted fabric flowers that capture the fleeting beauty of nature in a permanent form. Sustainable luxury for your home.
              </p>
              
-             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-10 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 w-full sm:w-auto mt-2">
+             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-10 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 w-full sm:w-auto mt-2 mb-8 sm:mb-0">
                <Button 
                  variant="outline" 
                  className="rounded-none border border-foreground/80 bg-transparent text-foreground hover:bg-primary hover:text-white hover:border-primary px-8 sm:px-12 h-12 sm:h-14 text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold transition-all w-full sm:w-auto"
                >
                  View Collections
                </Button>
-               <a href="#custom" className="text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold text-muted-foreground/80 hover:text-foreground transition-colors text-center sm:text-left w-full sm:w-auto py-2">
+               <a href="#custom" className="text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold text-muted-foreground/80 hover:text-foreground transition-colors text-center sm:text-left w-full sm:w-auto py-3">
                  Custom Orders
                </a>
              </div>
@@ -120,7 +120,7 @@ export default function Home() {
       </header>
 
       {/* Simplified Products Grid - Editorial Style */}
-      <section id="products" className="pt-8 sm:pt-12 pb-16 sm:pb-32 bg-white relative z-20 -mt-8 sm:-mt-12">
+      <section id="products" className="pt-16 sm:pt-24 pb-16 sm:pb-32 bg-white relative z-20">
         <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24">
           <div className="text-center mb-10 sm:mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
              <p className="text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] text-muted-foreground uppercase mb-2 sm:mb-3">Shop The Look</p>
