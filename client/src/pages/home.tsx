@@ -17,47 +17,47 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/10">
       
-      {/* Split Hero Section - Twig & Twine Style */}
+      {/* Navigation - Clean & Fixed on Mobile, integrated on Desktop */}
+      <nav className="fixed lg:absolute top-0 left-0 w-full lg:w-[45%] z-50 px-6 py-6 flex items-center justify-between bg-white/90 backdrop-blur-sm lg:bg-transparent lg:backdrop-blur-none lg:px-12 lg:py-10">
+         <div className="flex items-center gap-3">
+           <img src={logoImg} alt="Logo" className="w-6 h-6 lg:w-8 lg:h-8 object-contain" />
+           <span className="font-serif text-lg lg:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
+         </div>
+         <div className="hidden md:flex gap-8 text-xs font-bold tracking-widest uppercase text-muted-foreground">
+            <a href="#products" className="hover:text-primary transition-colors">Shop</a>
+            <a href="#about" className="hover:text-primary transition-colors">Studio</a>
+            <a href="#contact" className="hover:text-primary transition-colors">Contact</a>
+         </div>
+         <Button variant="ghost" size="icon" className="md:hidden"><Menu className="w-5 h-5" /></Button>
+      </nav>
+
+      {/* Hero Section - Redesigned Left Side */}
       <header className="relative w-full min-h-screen flex flex-col lg:flex-row">
         
-        {/* Left Panel - Content */}
-        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-between p-8 md:p-16 lg:p-20 z-10 order-2 lg:order-1">
-          {/* Mobile Nav Toggle */}
-          <div className="lg:hidden absolute top-6 right-6">
-            <Button variant="ghost" size="icon"><Menu className="w-6 h-6" /></Button>
-          </div>
-
-          {/* Logo / Brand Area */}
-          <div className="flex-1 flex flex-col justify-center items-start space-y-8">
-             <div className="space-y-2">
-               <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl leading-[0.9] text-foreground tracking-tight">
-                 fabric <br/>
-                 <span className="text-primary">&</span> blooms
-               </h1>
-               <p className="text-sm md:text-base tracking-[0.2em] text-muted-foreground font-bold uppercase pt-4 pl-1">
-                 Floral Design Studio
-               </p>
-             </div>
-
-             <nav className="flex flex-col items-start space-y-3 text-sm font-medium text-muted-foreground pt-8">
-                <a href="#products" className="hover:text-primary transition-colors tracking-wide uppercase">Collections</a>
-                <a href="#custom" className="hover:text-primary transition-colors tracking-wide uppercase">Custom Studio</a>
-                <a href="#bestsellers" className="hover:text-primary transition-colors tracking-wide uppercase">Best Sellers</a>
-                <a href="#about" className="hover:text-primary transition-colors tracking-wide uppercase">Our Story</a>
-             </nav>
+        {/* Left Panel - Cleaner, Minimalist Content */}
+        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-center items-start p-8 md:p-16 lg:p-24 z-10 order-2 lg:order-1 pt-32 lg:pt-0">
              
-             <div className="pt-8">
-               <Button className="rounded-full px-8 h-12 bg-foreground text-background hover:bg-primary hover:text-white transition-all uppercase tracking-widest text-xs font-bold">
-                 Shop Latest
-               </Button>
-             </div>
-          </div>
+             <span className="text-primary font-bold tracking-[0.3em] uppercase text-xs mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+               EST. 2024
+             </span>
 
-          {/* Footer of left panel */}
-          <div className="hidden lg:flex gap-6 text-muted-foreground pt-12">
-            <a href="#" className="hover:text-primary transition-colors"><Instagram className="w-5 h-5"/></a>
-            <a href="#" className="hover:text-primary transition-colors"><ShoppingBag className="w-5 h-5"/></a>
-          </div>
+             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] text-foreground tracking-tight mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
+               Timeless <br/>
+               <span className="italic font-light text-foreground/80">Botanicals.</span>
+             </h1>
+
+             <p className="text-lg text-muted-foreground/80 leading-relaxed max-w-md mb-12 font-light animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+               Handcrafted fabric flowers that capture the fleeting beauty of nature in a permanent form. Sustainable luxury for your home.
+             </p>
+             
+             <div className="flex gap-8 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 items-center">
+               <Button className="rounded-none border-b-2 border-primary bg-transparent text-foreground hover:bg-transparent hover:border-foreground px-0 h-auto pb-1 text-sm tracking-widest uppercase font-bold transition-all">
+                 View Collections
+               </Button>
+               <a href="#custom" className="text-sm tracking-widest uppercase font-bold text-muted-foreground hover:text-foreground transition-colors">
+                 Custom Orders
+               </a>
+             </div>
         </div>
 
         {/* Right Panel - Hero Image */}
