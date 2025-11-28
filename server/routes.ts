@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { type Server } from "http";
 import { Product, Order, Color, CustomOrder, AdminUser } from "./models";
 import bcrypt from "bcryptjs";
@@ -13,7 +13,7 @@ declare module "express-session" {
 }
 
 // Auth middleware
-function requireAuth(req: any, res: any, next: any) {
+function requireAuth(req: Request, res: Response, next: NextFunction) {
   if (req.session && req.session.isAuthenticated) {
     return next();
   }
