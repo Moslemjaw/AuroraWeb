@@ -46,8 +46,8 @@ export default function Home() {
       {/* Navigation - Absolute positioned over Hero */}
       <nav className="absolute top-0 left-0 w-full z-50 px-4 sm:px-6 py-4 sm:py-8 flex items-center justify-between bg-transparent">
          <div className="flex items-center gap-2 sm:gap-3 cursor-pointer" onClick={handleLogoClick}>
-           <img src={logoImg} alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain brightness-0 invert lg:filter-none transition-all" />
-           <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-white lg:text-foreground transition-colors">Fabric & Blooms</span>
+           <img src={logoImg} alt="Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-md" />
+           <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-white lg:text-foreground transition-colors drop-shadow-sm lg:drop-shadow-none">Fabric & Blooms</span>
          </div>
          
          <div className="hidden md:flex items-center gap-8">
@@ -92,14 +92,14 @@ export default function Home() {
                Handcrafted fabric flowers that capture the fleeting beauty of nature in a permanent form. Sustainable luxury for your home.
              </p>
              
-             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 w-full sm:w-auto">
+             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-10 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 w-full sm:w-auto mt-2">
                <Button 
                  variant="outline" 
-                 className="rounded-none border border-foreground/80 bg-transparent text-foreground hover:bg-primary hover:text-white hover:border-primary px-6 sm:px-10 h-11 sm:h-12 text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold transition-all w-full sm:w-auto"
+                 className="rounded-none border border-foreground/80 bg-transparent text-foreground hover:bg-primary hover:text-white hover:border-primary px-8 sm:px-12 h-12 sm:h-14 text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold transition-all w-full sm:w-auto"
                >
                  View Collections
                </Button>
-               <a href="#custom" className="text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold text-muted-foreground/80 hover:text-foreground transition-colors text-center sm:text-left w-full sm:w-auto">
+               <a href="#custom" className="text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold text-muted-foreground/80 hover:text-foreground transition-colors text-center sm:text-left w-full sm:w-auto py-2">
                  Custom Orders
                </a>
              </div>
