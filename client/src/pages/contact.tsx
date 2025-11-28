@@ -68,7 +68,7 @@ export default function Contact() {
          <div className="flex items-center gap-3">
            <Link href="/" className="flex items-center gap-3">
              <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain" />
-             <span className="font-serif text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
+             <span className="font-serif text-xl font-medium tracking-tight text-foreground">Aurora Flowers</span>
            </Link>
          </div>
          <div className="hidden md:flex items-center gap-8">

@@ -139,7 +139,7 @@ export default function Home() {
       <nav className="sticky top-0 w-full z-50 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between bg-white border-b border-border shadow-sm">
          <div className="flex items-center gap-2 sm:gap-3 cursor-pointer" onClick={handleLogoClick}>
            <img src={logoImg} alt="Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
-           <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
+           <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Aurora Flowers</span>
          </div>
          
          <div className="hidden md:flex items-center gap-8">
@@ -299,13 +299,13 @@ export default function Home() {
       <footer className="bg-white py-12 sm:py-16 md:py-24 border-t border-border">
         <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24 text-center">
           <div className="flex justify-center items-center gap-2 sm:gap-3 mb-6 sm:mb-10">
-            <span className="font-serif text-2xl sm:text-3xl tracking-tight">fabric <span className="text-primary">&</span> blooms</span>
+            <span className="font-serif text-2xl sm:text-3xl tracking-tight">Aurora <span className="text-primary">Flowers</span></span>
           </div>
           
           <nav className="flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-12 mb-8 sm:mb-12 text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-widest">
-            <a href="#" className="hover:text-primary transition-colors">Shop</a>
-            <a href="#" className="hover:text-primary transition-colors">About Us</a>
-            <a href="#" className="hover:text-primary transition-colors">Contact</a>
+            <Link href="/" className="hover:text-primary transition-colors">Shop</Link>
+            <Link href="/about" className="hover:text-primary transition-colors">About Us</Link>
+            <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
           </nav>
 
           <div className="flex justify-center gap-4 sm:gap-6 mb-8 sm:mb-12">
@@ -317,7 +317,7 @@ export default function Home() {
           </div>
           
           <p className="text-[10px] sm:text-xs text-muted-foreground/60 uppercase tracking-widest">
-            © 2025 Fabric Blooms Studio. All rights reserved.
+            © 2025 Aurora Flowers. All rights reserved.
           </p>
         </div>
       </footer>

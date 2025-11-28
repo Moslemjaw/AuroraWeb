@@ -10,7 +10,7 @@ export default function About() {
          <div className="flex items-center gap-3">
            <Link href="/" className="flex items-center gap-3">
              <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain" />
-             <span className="font-serif text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
+             <span className="font-serif text-xl font-medium tracking-tight text-foreground">Aurora Flowers</span>
            </Link>
          </div>
          <div className="hidden md:flex items-center gap-8">
@@ -37,7 +37,7 @@ export default function About() {
           <div className="space-y-8">
             <h2 className="font-serif text-3xl text-foreground">The Art of Fabric Floristry</h2>
             <p className="text-lg text-muted-foreground font-light leading-relaxed">
-              Fabric & Blooms was born from a desire to capture the fleeting beauty of nature in a permanent form. We believe that flowers should be enjoyed not just for a week, but for a lifetime.
+              Aurora Flowers was born from a desire to capture the fleeting beauty of nature in a permanent form. We believe that flowers should be enjoyed not just for a week, but for a lifetime.
             </p>
             <p className="text-lg text-muted-foreground font-light leading-relaxed">
               Every petal is individually cut, dyed, and shaped by hand in our Kuwait studio. We use premium fabrics like silk, organza, and velvet to create textures that rival real blooms.

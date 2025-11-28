@@ -45,7 +45,7 @@ export default function ProductDetail() {
          <div className="flex items-center gap-2 sm:gap-3">
            <Link href="/" className="flex items-center gap-2 sm:gap-3">
              <img src={logoImg} alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
-             <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
+             <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Aurora Flowers</span>
            </Link>
          </div>
          <div className="hidden md:flex items-center gap-8">
