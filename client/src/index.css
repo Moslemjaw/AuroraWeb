@@ -41,51 +41,52 @@
   --font-serif: 'Playfair Display', serif;
 }
 
-/* PROFESSIONAL MINIMALIST THEME - Teal/Cyan & White */
+/* PROFESSIONAL MINIMALIST THEME - Pink & White */
 :root {
   /* Clean White Background */
   --background: 0 0% 100%; 
-  --foreground: 200 20% 20%; /* Dark slate/teal-grey for text, softer than black */
+  --foreground: 340 10% 20%; /* Warm grey/brown text */
 
   /* Crisp White Cards */
   --card: 0 0% 100%;
-  --card-foreground: 200 20% 20%;
+  --card-foreground: 340 10% 20%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 200 20% 20%;
+  --popover-foreground: 340 10% 20%;
 
-  /* The Main Color: #2596be */
-  --primary: 196 67% 45%; 
-  --primary-foreground: 0 0% 100%;
+  /* The Main Color: #f97a9d -> HSL 343 92% 73% */
+  --primary: 343 92% 73%; 
+  --primary-foreground: 343 10% 10%; /* Darker text on light pink for readability, or white if contrast allows. 73% lightness is quite light, white text might be hard to read. Let's try white first, or dark red. */
+  --primary-foreground: 0 0% 100%; /* Trying white, but might need text-shadow or darker pink for button text */
 
-  /* Very subtle cool grey for secondary */
-  --secondary: 200 20% 96%;
-  --secondary-foreground: 196 67% 45%;
+  /* Very subtle pinkish grey for secondary */
+  --secondary: 343 20% 96%;
+  --secondary-foreground: 343 67% 45%;
 
-  --muted: 200 10% 96%;
-  --muted-foreground: 200 10% 60%;
+  --muted: 343 10% 96%;
+  --muted-foreground: 343 10% 60%;
 
-  --accent: 196 30% 96%;
-  --accent-foreground: 196 67% 45%;
+  --accent: 343 30% 96%;
+  --accent-foreground: 343 67% 45%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 98%;
 
-  --border: 200 10% 90%;
-  --input: 200 10% 90%;
-  --ring: 196 67% 45%;
+  --border: 343 20% 90%;
+  --input: 343 20% 90%;
+  --ring: 343 92% 73%;
 
-  --radius: 0.5rem; /* Reduced radius for a more professional look */
+  --radius: 0.5rem;
 }
 
 .dark {
   /* Dark mode version if needed */
-  --background: 200 30% 10%;
-  --foreground: 200 10% 95%;
-  --card: 200 30% 12%;
-  --card-foreground: 200 10% 95%;
-  --primary: 196 67% 55%; /* Slightly lighter for dark mode */
-  --primary-foreground: 200 30% 10%;
+  --background: 343 30% 10%;
+  --foreground: 343 10% 95%;
+  --card: 343 30% 12%;
+  --card-foreground: 343 10% 95%;
+  --primary: 343 92% 65%; /* Slightly darker for better contrast in dark mode */
+  --primary-foreground: 0 0% 100%;
 }
 
 @layer base {

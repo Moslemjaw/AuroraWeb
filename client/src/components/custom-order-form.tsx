@@ -93,8 +93,8 @@ export default function CustomOrderForm() {
                       className="grid grid-cols-3 gap-3"
                     >
                       {[
-                        { id: "teal-blue", name: "Ocean Teal", color: "bg-[#2596be]" },
-                        { id: "soft-pink", name: "Blush Pink", color: "bg-pink-200" },
+                        { id: "signature-pink", name: "Signature Pink", color: "bg-[#f97a9d]" },
+                        { id: "ocean-teal", name: "Ocean Teal", color: "bg-[#2596be]" },
                         { id: "creamy-white", name: "Pure White", color: "bg-stone-100" },
                         { id: "lavender", name: "Lavender", color: "bg-purple-200" },
                         { id: "ruby-red", name: "Ruby Red", color: "bg-red-700" },
