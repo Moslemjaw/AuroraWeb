@@ -206,8 +206,7 @@ export default function Home() {
           
           <nav className="flex flex-wrap justify-center gap-8 md:gap-12 mb-12 text-sm font-medium text-muted-foreground uppercase tracking-widest">
             <a href="#" className="hover:text-primary transition-colors">Shop</a>
-            <a href="#" className="hover:text-primary transition-colors">About</a>
-            <a href="#" className="hover:text-primary transition-colors">Journal</a>
+            <a href="#" className="hover:text-primary transition-colors">About Us</a>
             <a href="#" className="hover:text-primary transition-colors">Contact</a>
           </nav>
 
