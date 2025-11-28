@@ -1,7 +1,7 @@
 import ProductCard from "@/components/product-card";
 import CustomOrderForm from "@/components/custom-order-form";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Instagram, ShoppingBag, Star, Check, TrendingUp } from "lucide-react";
+import { ArrowRight, Instagram, ShoppingBag, Star, Check, TrendingUp, Menu } from "lucide-react";
 
 // Assets imports
 import peonyImg from "@assets/generated_images/handmade_fabric_peony_bouquet.png";
@@ -11,108 +11,76 @@ import hydrangeaImg from "@assets/generated_images/blue_fabric_hydrangea.png";
 import orchidImg from "@assets/generated_images/white_fabric_orchid.png";
 import sunflowerImg from "@assets/generated_images/fabric_sunflower_bouquet.png";
 import logoImg from "@assets/image_1764356989830.png";
+import luxuryBouquetImg from "@assets/image_1764358990214.png";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/10">
       
-      {/* Minimalist Sticky Nav */}
-      <nav className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-border/40">
-        <div className="container mx-auto container-padding h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-               {/* Using a colored version of the logo or just the icon if simpler */}
-               <img src={logoImg} alt="Logo" className="w-5 h-5 object-contain" />
-            </div>
-            <span className="font-serif text-xl font-medium tracking-tight text-foreground">Fabric Blooms</span>
-          </div>
-          
-          <div className="hidden md:flex items-center gap-10">
-            <a href="#products" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Collections</a>
-            <a href="#custom" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Custom Studio</a>
-            <a href="#bestsellers" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Best Sellers</a>
-            <a href="#about" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">Our Story</a>
+      {/* Split Hero Section - Twig & Twine Style */}
+      <header className="relative w-full min-h-screen flex flex-col lg:flex-row">
+        
+        {/* Left Panel - Content */}
+        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-between p-8 md:p-16 lg:p-20 z-10 order-2 lg:order-1">
+          {/* Mobile Nav Toggle */}
+          <div className="lg:hidden absolute top-6 right-6">
+            <Button variant="ghost" size="icon"><Menu className="w-6 h-6" /></Button>
           </div>
 
-          <div className="flex items-center gap-4">
-            <span className="hidden md:block text-sm font-medium text-primary cursor-pointer hover:underline underline-offset-4">Sign In</span>
-            <Button size="sm" className="rounded-full px-6 bg-primary hover:bg-primary/90 text-white shadow-md shadow-primary/20">
-              Cart (0)
-            </Button>
+          {/* Logo / Brand Area */}
+          <div className="flex-1 flex flex-col justify-center items-start space-y-8">
+             <div className="space-y-2">
+               <h1 className="font-serif text-6xl md:text-7xl lg:text-8xl leading-[0.9] text-foreground tracking-tight">
+                 fabric <br/>
+                 <span className="text-primary">&</span> blooms
+               </h1>
+               <p className="text-sm md:text-base tracking-[0.2em] text-muted-foreground font-bold uppercase pt-4 pl-1">
+                 Floral Design Studio
+               </p>
+             </div>
+
+             <nav className="flex flex-col items-start space-y-3 text-sm font-medium text-muted-foreground pt-8">
+                <a href="#products" className="hover:text-primary transition-colors tracking-wide uppercase">Collections</a>
+                <a href="#custom" className="hover:text-primary transition-colors tracking-wide uppercase">Custom Studio</a>
+                <a href="#bestsellers" className="hover:text-primary transition-colors tracking-wide uppercase">Best Sellers</a>
+                <a href="#about" className="hover:text-primary transition-colors tracking-wide uppercase">Our Story</a>
+             </nav>
+             
+             <div className="pt-8">
+               <Button className="rounded-full px-8 h-12 bg-foreground text-background hover:bg-primary hover:text-white transition-all uppercase tracking-widest text-xs font-bold">
+                 Shop Latest
+               </Button>
+             </div>
+          </div>
+
+          {/* Footer of left panel */}
+          <div className="hidden lg:flex gap-6 text-muted-foreground pt-12">
+            <a href="#" className="hover:text-primary transition-colors"><Instagram className="w-5 h-5"/></a>
+            <a href="#" className="hover:text-primary transition-colors"><ShoppingBag className="w-5 h-5"/></a>
           </div>
         </div>
-      </nav>
 
-      {/* Clean Hero Section */}
-      <section className="pt-20 pb-32 overflow-hidden">
-        <div className="container mx-auto container-padding">
-          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
-            
-            {/* Text Content - More breathing room */}
-            <div className="flex-1 space-y-8 text-center lg:text-left max-w-2xl">
-              <div className="inline-block">
-                <span className="px-3 py-1 rounded-full bg-secondary text-primary text-xs font-bold tracking-wider uppercase mb-4 inline-block">
-                  Handcrafted Excellence
-                </span>
-              </div>
-              
-              <h1 className="font-serif text-5xl md:text-7xl leading-[1.1] text-foreground tracking-tight">
-                Artistry in <br/>
-                <span className="text-primary">Every Petal.</span>
-              </h1>
-              
-              <p className="text-lg text-muted-foreground leading-relaxed max-w-lg mx-auto lg:mx-0">
-                We create bespoke fabric flowers that capture nature's beauty in a form that lasts forever. 
-                Sustainable, elegant, and uniquely yours.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
-                <Button size="lg" className="h-14 px-8 rounded-full text-base bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-transform hover:-translate-y-0.5">
-                  Explore Collection
-                </Button>
-                <Button size="lg" variant="ghost" className="h-14 px-8 rounded-full text-base hover:bg-secondary text-foreground">
-                  Custom Request <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-              </div>
-
-              <div className="pt-8 flex items-center justify-center lg:justify-start gap-6 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-primary" /> <span>Lifetime Durability</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-primary" /> <span>Eco-Friendly Materials</span>
-                </div>
-              </div>
-            </div>
-            
-            {/* Static Visual - Clean and Uncluttered */}
-            <div className="flex-1 w-full h-[500px] lg:h-[600px] relative flex items-center justify-center p-4">
-               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-[3rem] -z-10 transform rotate-3" />
-               <div className="absolute inset-0 border border-primary/10 rounded-[3rem] -z-10 transform -rotate-3" />
-               <img 
-                 src={peonyImg} 
-                 alt="Handcrafted Peony Bouquet" 
-                 className="w-full h-full object-cover rounded-[2.5rem] shadow-2xl shadow-primary/10 hover:scale-[1.02] transition-transform duration-700"
-               />
-            </div>
-          </div>
+        {/* Right Panel - Hero Image */}
+        <div className="w-full lg:w-[55%] h-[50vh] lg:h-auto relative order-1 lg:order-2 overflow-hidden">
+          <div className="absolute inset-0 bg-black/5 z-10 pointer-events-none" />
+          <img 
+            src={luxuryBouquetImg} 
+            alt="Luxury Fabric Bouquet" 
+            className="w-full h-full object-cover object-center scale-105 hover:scale-100 transition-transform duration-[2000ms]"
+          />
         </div>
-      </section>
 
-      {/* Simplified Products Grid */}
-      <section id="products" className="py-24 bg-secondary/30 border-y border-border/40">
-        <div className="container mx-auto container-padding">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
-            <div>
-               <h2 className="font-serif text-4xl text-foreground mb-4">Featured Works</h2>
-               <p className="text-muted-foreground text-lg">Timeless pieces for the modern home.</p>
-            </div>
-            <a href="#" className="text-primary font-medium hover:underline underline-offset-4 flex items-center gap-1">
-              View All Products <ArrowRight className="w-4 h-4" />
-            </a>
+      </header>
+
+      {/* Simplified Products Grid - Editorial Style */}
+      <section id="products" className="py-32 bg-white">
+        <div className="container mx-auto px-6 md:px-12 lg:px-24">
+          <div className="text-center mb-20">
+             <h2 className="font-serif text-4xl md:text-5xl text-foreground mb-4">Curated Collections</h2>
+             <div className="w-12 h-1 bg-primary mx-auto" />
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-12">
             <ProductCard 
               image={peonyImg}
               title="Blushing Peony"
@@ -135,69 +103,56 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Professional Custom Order Section */}
-      <section id="custom" className="py-24 bg-white">
-        <div className="container mx-auto container-padding">
-          <div className="grid lg:grid-cols-2 gap-20 items-start">
+      {/* Professional Custom Order Section - Clean Background */}
+      <section id="custom" className="py-32 bg-secondary/20">
+        <div className="container mx-auto px-6 md:px-12 lg:px-24">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
             
-            <div className="space-y-10 sticky top-24">
+            <div className="space-y-10">
               <div className="space-y-6">
+                <span className="text-primary font-bold tracking-widest uppercase text-xs">Bespoke Service</span>
                 <h2 className="font-serif text-4xl md:text-5xl text-foreground leading-tight">
                   Design Your Own <br/>
-                  <span className="text-primary">Masterpiece.</span>
+                  Masterpiece.
                 </h2>
-                <p className="text-muted-foreground text-lg leading-relaxed">
+                <p className="text-muted-foreground text-lg leading-relaxed font-light">
                   Our Custom Studio allows you to commission a unique arrangement. 
                   Select your preferences, and our artisans will craft a piece specifically for your space.
                 </p>
               </div>
 
-              <div className="space-y-6">
-                <div className="flex gap-4 items-start">
-                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center shrink-0 text-primary font-bold font-serif">1</div>
-                  <div>
-                    <h4 className="font-medium text-foreground mb-1">Select Quantity</h4>
-                    <p className="text-sm text-muted-foreground">Choose the perfect size for your vase or bouquet.</p>
-                  </div>
+              <div className="space-y-8 font-serif text-xl text-foreground/80">
+                <div className="flex items-center gap-4">
+                  <span className="text-primary text-2xl">01.</span> Select Quantity
                 </div>
-                <div className="flex gap-4 items-start">
-                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center shrink-0 text-primary font-bold font-serif">2</div>
-                  <div>
-                    <h4 className="font-medium text-foreground mb-1">Choose Palette</h4>
-                    <p className="text-sm text-muted-foreground">From soft pastels to vibrant statement colors.</p>
-                  </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-primary text-2xl">02.</span> Choose Palette
                 </div>
-                <div className="flex gap-4 items-start">
-                  <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center shrink-0 text-primary font-bold font-serif">3</div>
-                  <div>
-                    <h4 className="font-medium text-foreground mb-1">We Create</h4>
-                    <p className="text-sm text-muted-foreground">Expertly crafted and shipped within 3-5 business days.</p>
-                  </div>
+                <div className="flex items-center gap-4">
+                  <span className="text-primary text-2xl">03.</span> We Create
                 </div>
               </div>
             </div>
 
-            <div className="w-full">
-              <div className="bg-white rounded-2xl shadow-2xl shadow-primary/5 border border-border/50 p-1">
-                <CustomOrderForm />
-              </div>
+            <div className="w-full bg-white p-8 md:p-12 shadow-xl shadow-black/5">
+               <CustomOrderForm />
             </div>
 
           </div>
         </div>
       </section>
 
-      {/* Best Selling Section */}
-      <section id="bestsellers" className="py-24 bg-gradient-to-b from-secondary/20 to-white border-t border-border/40">
-        <div className="container mx-auto container-padding">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <div className="inline-flex items-center gap-2 text-primary font-bold tracking-widest uppercase text-xs mb-2">
-              <TrendingUp className="w-4 h-4" /> Client Favorites
+      {/* Best Selling Section - Gallery Style */}
+      <section id="bestsellers" className="py-32 bg-white">
+        <div className="container mx-auto px-6 md:px-12 lg:px-24">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div className="space-y-4">
+              <span className="text-primary font-bold tracking-widest uppercase text-xs">Client Favorites</span>
+              <h2 className="font-serif text-4xl md:text-5xl text-foreground">Best Sellers</h2>
             </div>
-            <h2 className="font-serif text-4xl md:text-5xl text-foreground">Best Selling Collections</h2>
-            <p className="text-muted-foreground text-lg">
-              Discover the arrangements that our community loves most. Each piece is a testament to our commitment to quality and design.
-            </p>
+            <Button variant="outline" className="rounded-none border-b-2 border-transparent border-b-primary hover:border-b-primary hover:bg-transparent px-0 h-auto text-foreground font-medium uppercase tracking-widest text-xs">
+              View All Favorites
+            </Button>
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -205,71 +160,46 @@ export default function Home() {
               image={hydrangeaImg}
               title="Azure Hydrangea"
               price="$55.00"
-              description="Voluminous blooms of hand-dyed blue fabric petals that bring serenity to any room."
+              description="Voluminous blooms of hand-dyed blue fabric petals."
             />
             <ProductCard 
               image={orchidImg}
-              title="Imperial White Orchid"
+              title="Imperial Orchid"
               price="$65.00"
-              description="Elegant, architectural stems of pure white orchids. Minimalist luxury at its finest."
+              description="Elegant, architectural stems of pure white orchids."
             />
             <ProductCard 
               image={sunflowerImg}
-              title="Rustic Sunflower Bundle"
+              title="Rustic Sunflower"
               price="$48.00"
-              description="Warm and inviting sunflowers wrapped in natural burlap for a charming farmhouse feel."
+              description="Warm and inviting sunflowers wrapped in natural burlap."
             />
-          </div>
-          
-          <div className="mt-16 flex justify-center">
-            <Button size="lg" variant="outline" className="rounded-full px-10 h-12 border-primary text-primary hover:bg-primary hover:text-white transition-colors">
-              Shop All Best Sellers
-            </Button>
           </div>
         </div>
       </section>
 
-      {/* Minimal Footer */}
-      <footer className="bg-foreground text-white py-20">
-        <div className="container mx-auto container-padding">
-          <div className="grid md:grid-cols-4 gap-12 border-b border-white/10 pb-12 mb-12">
-            <div className="col-span-2 md:pr-12">
-              <div className="flex items-center gap-3 mb-6">
-                <img src={logoImg} alt="Logo" className="w-8 h-8 brightness-0 invert opacity-80" />
-                <span className="font-serif text-2xl">Fabric Blooms</span>
-              </div>
-              <p className="text-white/60 leading-relaxed">
-                We are dedicated to the art of fabric floristry. 
-                Combining traditional techniques with modern design to create sustainable beauty.
-              </p>
-            </div>
-            
-            <div>
-              <h4 className="font-bold mb-6 text-white">Customer Care</h4>
-              <ul className="space-y-4 text-sm text-white/60">
-                <li><a href="#" className="hover:text-primary transition-colors">Shipping & Returns</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Care Instructions</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">FAQ</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-bold mb-6 text-white">Connect</h4>
-              <div className="flex gap-4 mb-6">
-                 <a href="#" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"><Instagram className="w-4 h-4"/></a>
-                 <a href="#" className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-primary transition-colors"><Star className="w-4 h-4"/></a>
-              </div>
-              <p className="text-sm text-white/60">hello@fabricblooms.com</p>
-            </div>
+      {/* Minimal Footer - Centered */}
+      <footer className="bg-white py-24 border-t border-border">
+        <div className="container mx-auto px-6 md:px-12 lg:px-24 text-center">
+          <div className="flex justify-center items-center gap-3 mb-10">
+            <span className="font-serif text-3xl tracking-tight">fabric <span className="text-primary">&</span> blooms</span>
           </div>
           
-          <div className="flex flex-col md:flex-row justify-between items-center text-xs text-white/40">
-            <p>© 2025 Fabric Blooms Studio. All rights reserved.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <a href="#" className="hover:text-white">Privacy</a>
-              <a href="#" className="hover:text-white">Terms</a>
-            </div>
+          <nav className="flex flex-wrap justify-center gap-8 md:gap-12 mb-12 text-sm font-medium text-muted-foreground uppercase tracking-widest">
+            <a href="#" className="hover:text-primary transition-colors">Shop</a>
+            <a href="#" className="hover:text-primary transition-colors">About</a>
+            <a href="#" className="hover:text-primary transition-colors">Journal</a>
+            <a href="#" className="hover:text-primary transition-colors">Contact</a>
+          </nav>
+
+          <div className="flex justify-center gap-6 mb-12">
+             <a href="#" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors"><Instagram className="w-4 h-4"/></a>
+             <a href="#" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors"><ShoppingBag className="w-4 h-4"/></a>
           </div>
+          
+          <p className="text-xs text-muted-foreground/60 uppercase tracking-widest">
+            © 2025 Fabric Blooms Studio. All rights reserved.
+          </p>
         </div>
       </footer>
     </div>
