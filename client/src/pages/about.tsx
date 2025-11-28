@@ -34,7 +34,7 @@ export default function About() {
 
         <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
           <div className="relative aspect-[4/5] bg-secondary/20 overflow-hidden">
-             <img src={artisanImg} alt="Artisan working" className="object-cover w-full h-full" />
+             <img src={artisanImg} alt="Artisan working" className="object-cover w-full h-full scale-105" />
           </div>
           <div className="space-y-8">
             <h2 className="font-serif text-3xl text-foreground">The Art of Fabric Floristry</h2>
