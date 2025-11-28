@@ -50,11 +50,14 @@ export default function Home() {
                Handcrafted fabric flowers that capture the fleeting beauty of nature in a permanent form. Sustainable luxury for your home.
              </p>
              
-             <div className="flex gap-8 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 items-center">
-               <Button className="rounded-none border-b-2 border-primary bg-transparent text-foreground hover:bg-transparent hover:border-foreground px-0 h-auto pb-1 text-sm tracking-widest uppercase font-bold transition-all">
+             <div className="flex items-center gap-8 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
+               <Button 
+                 variant="outline" 
+                 className="rounded-none border border-foreground/80 bg-transparent text-foreground hover:bg-primary hover:text-white hover:border-primary px-10 h-12 text-xs tracking-[0.2em] uppercase font-bold transition-all"
+               >
                  View Collections
                </Button>
-               <a href="#custom" className="text-sm tracking-widest uppercase font-bold text-muted-foreground hover:text-foreground transition-colors">
+               <a href="#custom" className="text-xs tracking-[0.2em] uppercase font-bold text-muted-foreground/80 hover:text-foreground transition-colors">
                  Custom Orders
                </a>
              </div>
