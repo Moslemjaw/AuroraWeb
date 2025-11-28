@@ -82,11 +82,15 @@ export default function Home() {
               </div>
             </div>
             
-            {/* 3D Visual - Clean and Uncluttered */}
-            <div className="flex-1 w-full h-[500px] lg:h-[600px] relative">
+            {/* Static Visual - Clean and Uncluttered */}
+            <div className="flex-1 w-full h-[500px] lg:h-[600px] relative flex items-center justify-center p-4">
                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent rounded-[3rem] -z-10 transform rotate-3" />
                <div className="absolute inset-0 border border-primary/10 rounded-[3rem] -z-10 transform -rotate-3" />
-               <SplineFlower />
+               <img 
+                 src={peonyImg} 
+                 alt="Handcrafted Peony Bouquet" 
+                 className="w-full h-full object-cover rounded-[2.5rem] shadow-2xl shadow-primary/10 hover:scale-[1.02] transition-transform duration-700"
+               />
             </div>
           </div>
         </div>
