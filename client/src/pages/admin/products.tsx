@@ -12,29 +12,33 @@ export default function AdminProducts() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [formData, setFormData] = useState<Partial<Product & { images: string[] }>>({ images: [] });
+  const [formTitle, setFormTitle] = useState("");
+  const [formPrice, setFormPrice] = useState("");
+  const [formDescription, setFormDescription] = useState("");
+  const [formImages, setFormImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const editFileInputRef = useRef<HTMLInputElement>(null);
 
   const resetForm = () => {
-    setFormData({ images: [] });
+    setFormTitle("");
+    setFormPrice("");
+    setFormDescription("");
+    setFormImages([]);
     setEditingProduct(null);
   };
 
   const openEditModal = (product: Product) => {
     setEditingProduct(product);
     const priceNumber = product.price.replace(/[^0-9.]/g, '');
-    setFormData({
-      title: product.title,
-      price: priceNumber,
-      description: product.description,
-      images: product.images || [product.imageUrl],
-      imageUrl: product.imageUrl
-    });
+    setFormTitle(product.title);
+    setFormPrice(priceNumber);
+    setFormDescription(product.description || "");
+    setFormImages(product.images || [product.imageUrl]);
     setIsEditModalOpen(true);
   };
 
-  const handleFileUpload = async (files: FileList | null) => {
+  const handleFileUpload = async (files: FileList | null, isEdit: boolean = false) => {
     if (!files || files.length === 0) return;
     
     setIsUploading(true);
@@ -56,59 +60,48 @@ export default function AdminProducts() {
       }
 
       const data = await response.json();
-      const currentImages = formData.images || [];
-      setFormData({
-        ...formData,
-        images: [...currentImages, ...data.imageUrls],
-        imageUrl: formData.imageUrl || data.imageUrls[0]
-      });
-      
+      setFormImages(prev => [...prev, ...data.imageUrls]);
       toast({ title: "Images uploaded successfully" });
     } catch (error) {
       console.error("Upload error:", error);
       toast({ title: "Failed to upload images", variant: "destructive" });
     } finally {
       setIsUploading(false);
-      if (fileInputRef.current) {
+      if (isEdit && editFileInputRef.current) {
+        editFileInputRef.current.value = "";
+      } else if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
     }
   };
 
   const handleRemoveImage = (index: number) => {
-    const currentImages = formData.images || [];
-    const updatedImages = currentImages.filter((_, i) => i !== index);
-    setFormData({
-      ...formData,
-      images: updatedImages,
-      imageUrl: updatedImages[0] || ''
-    });
+    setFormImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSaveProduct = async () => {
-    if (!formData.title || !formData.price) {
+    if (!formTitle || !formPrice) {
       toast({ title: "Please fill in title and price", variant: "destructive" });
       return;
     }
     
-    const images = formData.images || [];
-    if (images.length === 0) {
+    if (formImages.length === 0) {
       toast({ title: "Please add at least one image", variant: "destructive" });
       return;
     }
     
     try {
-      const priceValue = parseFloat(formData.price as string) || 0;
+      const priceValue = parseFloat(formPrice) || 0;
       const formattedPrice = `${priceValue.toFixed(2)} K.D.`;
       
       await addProduct({
         productId: `prod-${Date.now()}`,
-        title: formData.title,
+        title: formTitle,
         price: formattedPrice,
-        description: formData.description || "",
-        longDescription: formData.longDescription || "",
-        imageUrl: images[0],
-        images: images,
+        description: formDescription,
+        longDescription: "",
+        imageUrl: formImages[0],
+        images: formImages,
         category: "Flowers",
         isCurated: false,
         isBestSeller: false,
@@ -123,27 +116,26 @@ export default function AdminProducts() {
   };
 
   const handleUpdateProduct = async () => {
-    if (!editingProduct || !formData.title || !formData.price) {
+    if (!editingProduct || !formTitle || !formPrice) {
       toast({ title: "Please fill in title and price", variant: "destructive" });
       return;
     }
     
-    const images = formData.images || [];
-    if (images.length === 0) {
+    if (formImages.length === 0) {
       toast({ title: "Please add at least one image", variant: "destructive" });
       return;
     }
     
     try {
-      const priceValue = parseFloat(formData.price as string) || 0;
+      const priceValue = parseFloat(formPrice) || 0;
       const formattedPrice = `${priceValue.toFixed(2)} K.D.`;
       
       await updateProduct(editingProduct.productId, {
-        title: formData.title,
+        title: formTitle,
         price: formattedPrice,
-        description: formData.description || "",
-        imageUrl: images[0],
-        images: images,
+        description: formDescription,
+        imageUrl: formImages[0],
+        images: formImages,
       });
       setIsEditModalOpen(false);
       resetForm();
@@ -154,105 +146,6 @@ export default function AdminProducts() {
     }
   };
 
-  const ProductForm = ({ isEdit = false }: { isEdit?: boolean }) => (
-    <div className="grid gap-4 sm:gap-6 py-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <label className="text-xs font-medium">Product Title</label>
-          <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-            value={formData.title || ''} 
-            onChange={e => setFormData({...formData, title: e.target.value})}
-            data-testid="input-product-title"
-          />
-        </div>
-        <div className="space-y-2">
-          <label className="text-xs font-medium">Price (K.D.)</label>
-          <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-            type="number"
-            step="0.01"
-            value={formData.price || ''} 
-            onChange={e => setFormData({...formData, price: e.target.value})}
-            data-testid="input-product-price"
-          />
-        </div>
-      </div>
-      <div className="space-y-2">
-         <label className="text-xs font-medium">Short Description</label>
-         <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-            value={formData.description || ''} 
-            onChange={e => setFormData({...formData, description: e.target.value})}
-            data-testid="input-product-description"
-         />
-      </div>
-      
-      {/* File Upload Section */}
-      <div className="space-y-3">
-        <label className="text-xs font-medium">Product Images</label>
-        
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
-          multiple
-          className="hidden"
-          onChange={(e) => handleFileUpload(e.target.files)}
-          data-testid="input-file-upload"
-        />
-        
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={isUploading}
-          className="w-full flex items-center justify-center gap-2 h-24 border-2 border-dashed border-border rounded-lg hover:border-primary hover:bg-secondary/30 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-          data-testid="button-upload-images"
-        >
-          {isUploading ? (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-              <span className="text-sm">Uploading...</span>
-            </div>
-          ) : (
-            <div className="text-center text-muted-foreground">
-              <Upload className="w-6 h-6 mx-auto mb-1" />
-              <span className="text-sm">Click to upload images</span>
-              <span className="text-xs block mt-0.5">PNG, JPG, GIF up to 10MB</span>
-            </div>
-          )}
-        </button>
-        
-        {/* Image Preview Grid */}
-        {(formData.images?.length ?? 0) > 0 && (
-          <div className="grid grid-cols-3 gap-2 mt-3">
-            {formData.images?.map((img, index) => (
-              <div key={index} className="relative group aspect-square bg-secondary/20 rounded-lg overflow-hidden border border-border">
-                <img src={img} alt={`Product ${index + 1}`} className="w-full h-full object-cover" />
-                {index === 0 && (
-                  <span className="absolute top-1 left-1 bg-primary text-white text-[10px] px-1.5 py-0.5 rounded">Main</span>
-                )}
-                <button
-                  type="button"
-                  onClick={() => handleRemoveImage(index)}
-                  className="absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                  data-testid={`button-remove-image-${index}`}
-                >
-                  <X className="w-3 h-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-      
-      <Button 
-        onClick={isEdit ? handleUpdateProduct : handleSaveProduct} 
-        disabled={isUploading} 
-        data-testid={isEdit ? "button-update-product" : "button-save-product"}
-      >
-        {isEdit ? "Update Product" : "Save Product"}
-      </Button>
-    </div>
-  );
-
   return (
     <AdminLayout>
       <div className="space-y-6 sm:space-y-8">
@@ -261,6 +154,8 @@ export default function AdminProducts() {
             <h1 className="font-serif text-2xl sm:text-3xl text-foreground mb-1 sm:mb-2">Product Management</h1>
             <p className="text-sm text-muted-foreground">Add, edit, and organize your catalog.</p>
           </div>
+          
+          {/* Add Product Dialog */}
           <Dialog open={isAddModalOpen} onOpenChange={(open) => {
             setIsAddModalOpen(open);
             if (!open) resetForm();
@@ -274,12 +169,102 @@ export default function AdminProducts() {
               <DialogHeader>
                 <DialogTitle>Add New Product</DialogTitle>
               </DialogHeader>
-              <ProductForm isEdit={false} />
+              <div className="grid gap-4 sm:gap-6 py-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium">Product Title</label>
+                    <input 
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
+                      value={formTitle} 
+                      onChange={e => setFormTitle(e.target.value)}
+                      data-testid="input-product-title"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium">Price (K.D.)</label>
+                    <input 
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
+                      type="number"
+                      step="0.01"
+                      value={formPrice} 
+                      onChange={e => setFormPrice(e.target.value)}
+                      data-testid="input-product-price"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium">Short Description</label>
+                  <input 
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
+                    value={formDescription} 
+                    onChange={e => setFormDescription(e.target.value)}
+                    data-testid="input-product-description"
+                  />
+                </div>
+                
+                <div className="space-y-3">
+                  <label className="text-xs font-medium">Product Images</label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => handleFileUpload(e.target.files, false)}
+                    data-testid="input-file-upload"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploading}
+                    className="w-full flex items-center justify-center gap-2 h-24 border-2 border-dashed border-border rounded-lg hover:border-primary hover:bg-secondary/30 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    data-testid="button-upload-images"
+                  >
+                    {isUploading ? (
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                        <span className="text-sm">Uploading...</span>
+                      </div>
+                    ) : (
+                      <div className="text-center text-muted-foreground">
+                        <Upload className="w-6 h-6 mx-auto mb-1" />
+                        <span className="text-sm">Click to upload images</span>
+                        <span className="text-xs block mt-0.5">PNG, JPG, GIF up to 10MB</span>
+                      </div>
+                    )}
+                  </button>
+                  
+                  {formImages.length > 0 && (
+                    <div className="grid grid-cols-3 gap-2 mt-3">
+                      {formImages.map((img, index) => (
+                        <div key={img + index} className="relative group aspect-square bg-secondary/20 rounded-lg overflow-hidden border border-border">
+                          <img src={img} alt={`Product ${index + 1}`} className="w-full h-full object-cover" />
+                          {index === 0 && (
+                            <span className="absolute top-1 left-1 bg-primary text-white text-[10px] px-1.5 py-0.5 rounded">Main</span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            data-testid={`button-remove-image-${index}`}
+                          >
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                <Button onClick={handleSaveProduct} disabled={isUploading} data-testid="button-save-product">
+                  Save Product
+                </Button>
+              </div>
             </DialogContent>
           </Dialog>
         </div>
 
-        {/* Edit Modal */}
+        {/* Edit Product Dialog */}
         <Dialog open={isEditModalOpen} onOpenChange={(open) => {
           setIsEditModalOpen(open);
           if (!open) resetForm();
@@ -288,7 +273,97 @@ export default function AdminProducts() {
             <DialogHeader>
               <DialogTitle>Edit Product</DialogTitle>
             </DialogHeader>
-            <ProductForm isEdit={true} />
+            <div className="grid gap-4 sm:gap-6 py-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-medium">Product Title</label>
+                  <input 
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
+                    value={formTitle} 
+                    onChange={e => setFormTitle(e.target.value)}
+                    data-testid="input-edit-product-title"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-medium">Price (K.D.)</label>
+                  <input 
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
+                    type="number"
+                    step="0.01"
+                    value={formPrice} 
+                    onChange={e => setFormPrice(e.target.value)}
+                    data-testid="input-edit-product-price"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <label className="text-xs font-medium">Short Description</label>
+                <input 
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
+                  value={formDescription} 
+                  onChange={e => setFormDescription(e.target.value)}
+                  data-testid="input-edit-product-description"
+                />
+              </div>
+              
+              <div className="space-y-3">
+                <label className="text-xs font-medium">Product Images</label>
+                <input
+                  ref={editFileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => handleFileUpload(e.target.files, true)}
+                  data-testid="input-edit-file-upload"
+                />
+                <button
+                  type="button"
+                  onClick={() => editFileInputRef.current?.click()}
+                  disabled={isUploading}
+                  className="w-full flex items-center justify-center gap-2 h-24 border-2 border-dashed border-border rounded-lg hover:border-primary hover:bg-secondary/30 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  data-testid="button-edit-upload-images"
+                >
+                  {isUploading ? (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <div className="w-5 h-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                      <span className="text-sm">Uploading...</span>
+                    </div>
+                  ) : (
+                    <div className="text-center text-muted-foreground">
+                      <Upload className="w-6 h-6 mx-auto mb-1" />
+                      <span className="text-sm">Click to upload images</span>
+                      <span className="text-xs block mt-0.5">PNG, JPG, GIF up to 10MB</span>
+                    </div>
+                  )}
+                </button>
+                
+                {formImages.length > 0 && (
+                  <div className="grid grid-cols-3 gap-2 mt-3">
+                    {formImages.map((img, index) => (
+                      <div key={img + index} className="relative group aspect-square bg-secondary/20 rounded-lg overflow-hidden border border-border">
+                        <img src={img} alt={`Product ${index + 1}`} className="w-full h-full object-cover" />
+                        {index === 0 && (
+                          <span className="absolute top-1 left-1 bg-primary text-white text-[10px] px-1.5 py-0.5 rounded">Main</span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(index)}
+                          className="absolute top-1 right-1 bg-black/50 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                          data-testid={`button-edit-remove-image-${index}`}
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              
+              <Button onClick={handleUpdateProduct} disabled={isUploading} data-testid="button-update-product">
+                Update Product
+              </Button>
+            </div>
           </DialogContent>
         </Dialog>
 
