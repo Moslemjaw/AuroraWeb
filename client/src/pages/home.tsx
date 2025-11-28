@@ -92,7 +92,7 @@ export default function Home() {
       <header className="relative w-full flex flex-col lg:flex-row lg:min-h-[calc(100vh-80px)] -mt-24 lg:mt-0 z-10">
         
         {/* Left Panel - Content */}
-        <div className="w-full lg:w-[45%] bg-transparent lg:bg-white flex flex-col justify-center items-start p-6 sm:p-8 md:p-16 lg:p-24 z-10 pt-0 lg:pt-24">
+        <div className="w-full lg:w-[45%] bg-transparent lg:bg-white flex flex-col justify-center items-start px-6 py-4 sm:p-8 md:p-16 lg:p-24 z-10 lg:pt-24">
              
              <span className="text-primary font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-[10px] sm:text-xs mb-4 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                EST. 2024
@@ -156,7 +156,7 @@ export default function Home() {
       </section>
 
       {/* Professional Custom Order Section - Clean Background */}
-      <section id="custom" className="py-16 sm:py-24 md:py-32 bg-secondary/20">
+      <section id="custom" className="py-12 sm:py-16 md:py-20 bg-secondary/20">
         <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24">
           <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-20 items-center">
             
