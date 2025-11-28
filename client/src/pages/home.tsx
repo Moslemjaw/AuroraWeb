@@ -1,7 +1,8 @@
 import ProductCard from "@/components/product-card";
 import CustomOrderForm from "@/components/custom-order-form";
+import MobileNav from "@/components/mobile-nav";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Instagram, ShoppingBag, Star, Check, TrendingUp, Menu } from "lucide-react";
+import { ArrowRight, Instagram, ShoppingBag, Star, Check, TrendingUp } from "lucide-react";
 import { Link } from "wouter";
 
 // Assets imports
@@ -43,10 +44,10 @@ export default function Home() {
     <div className="min-h-screen bg-background font-sans selection:bg-primary/10">
       
       {/* Navigation - Absolute positioned over Hero */}
-      <nav className="absolute top-0 left-0 w-full z-50 px-6 py-8 flex items-center justify-between bg-transparent">
-         <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
-           <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain brightness-0 invert lg:filter-none transition-all" />
-           <span className="font-serif text-xl font-medium tracking-tight text-white lg:text-foreground transition-colors">Fabric & Blooms</span>
+      <nav className="absolute top-0 left-0 w-full z-50 px-4 sm:px-6 py-4 sm:py-8 flex items-center justify-between bg-transparent">
+         <div className="flex items-center gap-2 sm:gap-3 cursor-pointer" onClick={handleLogoClick}>
+           <img src={logoImg} alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain brightness-0 invert lg:filter-none transition-all" />
+           <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-white lg:text-foreground transition-colors">Fabric & Blooms</span>
          </div>
          
          <div className="hidden md:flex items-center gap-8">
@@ -69,46 +70,46 @@ export default function Home() {
             </Link>
          </div>
 
-         <Button variant="ghost" size="icon" className="md:hidden text-white"><Menu className="w-6 h-6" /></Button>
+         <MobileNav isLight={true} />
       </nav>
 
       {/* Hero Section - Redesigned Left Side */}
       <header className="relative w-full min-h-screen flex flex-col lg:flex-row">
         
         {/* Left Panel - Cleaner, Minimalist Content */}
-        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-center items-start p-8 md:p-16 lg:p-24 z-10 order-2 lg:order-1 pt-32 lg:pt-0">
+        <div className="w-full lg:w-[45%] bg-white flex flex-col justify-center items-start p-6 sm:p-8 md:p-16 lg:p-24 z-10 order-2 lg:order-1 pt-8 lg:pt-0">
              
-             <span className="text-primary font-bold tracking-[0.3em] uppercase text-xs mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+             <span className="text-primary font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-[10px] sm:text-xs mb-4 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                EST. 2024
              </span>
 
-             <h1 className="font-serif text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] text-foreground tracking-tight mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
+             <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] text-foreground tracking-tight mb-4 sm:mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
                Timeless <br/>
                <span className="italic font-light text-foreground/80">Botanicals.</span>
              </h1>
 
-             <p className="text-lg text-muted-foreground/80 leading-relaxed max-w-md mb-12 font-light animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+             <p className="text-base sm:text-lg text-muted-foreground/80 leading-relaxed max-w-md mb-8 sm:mb-12 font-light animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
                Handcrafted fabric flowers that capture the fleeting beauty of nature in a permanent form. Sustainable luxury for your home.
              </p>
              
-             <div className="flex items-center gap-8 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300">
+             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 w-full sm:w-auto">
                <Button 
                  variant="outline" 
-                 className="rounded-none border border-foreground/80 bg-transparent text-foreground hover:bg-primary hover:text-white hover:border-primary px-10 h-12 text-xs tracking-[0.2em] uppercase font-bold transition-all"
+                 className="rounded-none border border-foreground/80 bg-transparent text-foreground hover:bg-primary hover:text-white hover:border-primary px-6 sm:px-10 h-11 sm:h-12 text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold transition-all w-full sm:w-auto"
                >
                  View Collections
                </Button>
-               <a href="#custom" className="text-xs tracking-[0.2em] uppercase font-bold text-muted-foreground/80 hover:text-foreground transition-colors">
+               <a href="#custom" className="text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold text-muted-foreground/80 hover:text-foreground transition-colors text-center sm:text-left w-full sm:w-auto">
                  Custom Orders
                </a>
              </div>
         </div>
 
         {/* Right Panel - Hero Image */}
-        <div className="w-full lg:w-[55%] h-[50vh] lg:h-auto relative order-1 lg:order-2 overflow-hidden">
+        <div className="w-full lg:w-[55%] h-[45vh] sm:h-[50vh] lg:h-auto relative order-1 lg:order-2 overflow-hidden">
           <div className="absolute inset-0 bg-black/5 z-10 pointer-events-none" />
           {/* Gradient fade to blend image with the next section */}
-          <div className="absolute bottom-0 left-0 w-full h-40 bg-gradient-to-t from-white via-white/50 to-transparent z-20" />
+          <div className="absolute bottom-0 left-0 w-full h-24 sm:h-40 bg-gradient-to-t from-white via-white/50 to-transparent z-20" />
           <img 
             src={luxuryBouquetImg} 
             alt="Luxury Fabric Bouquet" 
@@ -119,14 +120,14 @@ export default function Home() {
       </header>
 
       {/* Simplified Products Grid - Editorial Style */}
-      <section id="products" className="pt-12 pb-32 bg-white relative z-20 -mt-12">
-        <div className="container mx-auto px-6 md:px-12 lg:px-24">
-          <div className="text-center mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
-             <p className="text-xs font-bold tracking-[0.3em] text-muted-foreground uppercase mb-3">Shop The Look</p>
-             <h2 className="font-serif text-4xl md:text-5xl text-foreground">Curated Collections</h2>
+      <section id="products" className="pt-8 sm:pt-12 pb-16 sm:pb-32 bg-white relative z-20 -mt-8 sm:-mt-12">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24">
+          <div className="text-center mb-10 sm:mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
+             <p className="text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] text-muted-foreground uppercase mb-2 sm:mb-3">Shop The Look</p>
+             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground">Curated Collections</h2>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 md:gap-12">
             {products.filter(p => p.isCurated).slice(0, 3).map((product) => (
               <ProductCard 
                 key={product.productId}
@@ -142,37 +143,37 @@ export default function Home() {
       </section>
 
       {/* Professional Custom Order Section - Clean Background */}
-      <section id="custom" className="py-32 bg-secondary/20">
-        <div className="container mx-auto px-6 md:px-12 lg:px-24">
-          <div className="grid lg:grid-cols-2 gap-20 items-center">
+      <section id="custom" className="py-16 sm:py-24 md:py-32 bg-secondary/20">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24">
+          <div className="grid lg:grid-cols-2 gap-10 sm:gap-16 lg:gap-20 items-center">
             
-            <div className="space-y-10">
-              <div className="space-y-6">
-                <span className="text-primary font-bold tracking-widest uppercase text-xs">Bespoke Service</span>
-                <h2 className="font-serif text-4xl md:text-5xl text-foreground leading-tight">
-                  Design Your Own <br/>
+            <div className="space-y-6 sm:space-y-10">
+              <div className="space-y-4 sm:space-y-6">
+                <span className="text-primary font-bold tracking-widest uppercase text-[10px] sm:text-xs">Bespoke Service</span>
+                <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground leading-tight">
+                  Design Your Own <br className="hidden sm:block"/>
                   Masterpiece.
                 </h2>
-                <p className="text-muted-foreground text-lg leading-relaxed font-light">
+                <p className="text-muted-foreground text-base sm:text-lg leading-relaxed font-light">
                   Our Custom Studio allows you to commission a unique arrangement. 
                   Select your preferences, and our artisans will craft a piece specifically for your space.
                 </p>
               </div>
 
-              <div className="space-y-8 font-serif text-xl text-foreground/80">
-                <div className="flex items-center gap-4">
-                  <span className="text-primary text-2xl">01.</span> Select Quantity
+              <div className="space-y-4 sm:space-y-8 font-serif text-lg sm:text-xl text-foreground/80">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <span className="text-primary text-xl sm:text-2xl">01.</span> Select Quantity
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-primary text-2xl">02.</span> Choose Palette
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <span className="text-primary text-xl sm:text-2xl">02.</span> Choose Palette
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-primary text-2xl">03.</span> We Create
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <span className="text-primary text-xl sm:text-2xl">03.</span> We Create
                 </div>
               </div>
             </div>
 
-            <div className="w-full bg-white p-8 md:p-12 shadow-xl shadow-black/5">
+            <div className="w-full bg-white p-6 sm:p-8 md:p-12 shadow-xl shadow-black/5">
                <CustomOrderForm />
             </div>
 
@@ -181,19 +182,19 @@ export default function Home() {
       </section>
 
       {/* Best Selling Section - Gallery Style */}
-      <section id="bestsellers" className="py-32 bg-white">
-        <div className="container mx-auto px-6 md:px-12 lg:px-24">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div className="space-y-4">
-              <span className="text-primary font-bold tracking-widest uppercase text-xs">Client Favorites</span>
-              <h2 className="font-serif text-4xl md:text-5xl text-foreground">Best Sellers</h2>
+      <section id="bestsellers" className="py-16 sm:py-24 md:py-32 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 sm:mb-16 gap-4 sm:gap-6">
+            <div className="space-y-2 sm:space-y-4">
+              <span className="text-primary font-bold tracking-widest uppercase text-[10px] sm:text-xs">Client Favorites</span>
+              <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground">Best Sellers</h2>
             </div>
-            <Button variant="outline" className="rounded-none border-b-2 border-transparent border-b-primary hover:border-b-primary hover:bg-transparent px-0 h-auto text-foreground font-medium uppercase tracking-widest text-xs">
+            <Button variant="outline" className="rounded-none border-b-2 border-transparent border-b-primary hover:border-b-primary hover:bg-transparent px-0 h-auto text-foreground font-medium uppercase tracking-widest text-[10px] sm:text-xs">
               View All Favorites
             </Button>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             {products.filter(p => p.isBestSeller).length > 0 ? 
               products.filter(p => p.isBestSeller).slice(0, 3).map(product => (
                 <ProductCard 
@@ -222,24 +223,24 @@ export default function Home() {
       </section>
 
       {/* Minimal Footer - Centered */}
-      <footer className="bg-white py-24 border-t border-border">
-        <div className="container mx-auto px-6 md:px-12 lg:px-24 text-center">
-          <div className="flex justify-center items-center gap-3 mb-10">
-            <span className="font-serif text-3xl tracking-tight">fabric <span className="text-primary">&</span> blooms</span>
+      <footer className="bg-white py-12 sm:py-16 md:py-24 border-t border-border">
+        <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24 text-center">
+          <div className="flex justify-center items-center gap-2 sm:gap-3 mb-6 sm:mb-10">
+            <span className="font-serif text-2xl sm:text-3xl tracking-tight">fabric <span className="text-primary">&</span> blooms</span>
           </div>
           
-          <nav className="flex flex-wrap justify-center gap-8 md:gap-12 mb-12 text-sm font-medium text-muted-foreground uppercase tracking-widest">
+          <nav className="flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-12 mb-8 sm:mb-12 text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-widest">
             <a href="#" className="hover:text-primary transition-colors">Shop</a>
             <a href="#" className="hover:text-primary transition-colors">About Us</a>
             <a href="#" className="hover:text-primary transition-colors">Contact</a>
           </nav>
 
-          <div className="flex justify-center gap-6 mb-12">
-             <a href="#" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors"><Instagram className="w-4 h-4"/></a>
-             <a href="#" className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors"><ShoppingBag className="w-4 h-4"/></a>
+          <div className="flex justify-center gap-4 sm:gap-6 mb-8 sm:mb-12">
+             <a href="#" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors"><Instagram className="w-4 h-4"/></a>
+             <a href="#" className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors"><ShoppingBag className="w-4 h-4"/></a>
           </div>
           
-          <p className="text-xs text-muted-foreground/60 uppercase tracking-widest">
+          <p className="text-[10px] sm:text-xs text-muted-foreground/60 uppercase tracking-widest">
             © 2025 Fabric Blooms Studio. All rights reserved.
           </p>
         </div>

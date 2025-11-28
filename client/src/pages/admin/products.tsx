@@ -20,7 +20,7 @@ export default function AdminProducts() {
         price: newProduct.price,
         description: newProduct.description || "",
         longDescription: newProduct.longDescription || "",
-        imageUrl: newProduct.imageUrl || "", // In a real app, this would be an upload
+        imageUrl: newProduct.imageUrl || "",
         category: newProduct.category || "Uncategorized",
         isCurated: false,
         isBestSeller: false,
@@ -34,24 +34,24 @@ export default function AdminProducts() {
 
   return (
     <AdminLayout>
-      <div className="space-y-8">
-        <div className="flex justify-between items-center">
+      <div className="space-y-6 sm:space-y-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 className="font-serif text-3xl text-foreground mb-2">Product Management</h1>
-            <p className="text-muted-foreground">Add, edit, and organize your catalog.</p>
+            <h1 className="font-serif text-2xl sm:text-3xl text-foreground mb-1 sm:mb-2">Product Management</h1>
+            <p className="text-sm text-muted-foreground">Add, edit, and organize your catalog.</p>
           </div>
           <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-primary text-white hover:bg-primary/90 gap-2">
+              <Button className="bg-primary text-white hover:bg-primary/90 gap-2 w-full sm:w-auto">
                 <Plus className="w-4 h-4" /> Add Product
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px]">
+            <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Add New Product</DialogTitle>
               </DialogHeader>
-              <div className="grid gap-6 py-4">
-                <div className="grid grid-cols-2 gap-4">
+              <div className="grid gap-4 sm:gap-6 py-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-xs font-medium">Product Title</label>
                     <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
@@ -84,7 +84,52 @@ export default function AdminProducts() {
           </Dialog>
         </div>
 
-        <div className="bg-white rounded-lg border border-border shadow-sm overflow-hidden">
+        {/* Mobile Card Layout */}
+        <div className="lg:hidden space-y-4">
+          {products.map((product) => (
+            <div key={product.productId} className="bg-white rounded-lg border border-border p-4 shadow-sm">
+              <div className="flex gap-4">
+                <div className="w-16 h-16 rounded-md bg-secondary/20 overflow-hidden flex-shrink-0">
+                  <img src={product.imageUrl} alt={product.title} className="w-full h-full object-cover" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-foreground truncate">{product.title}</h3>
+                  <p className="text-xs text-muted-foreground">{product.category}</p>
+                  <p className="text-sm font-bold text-primary mt-1">{product.price}</p>
+                </div>
+              </div>
+              <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/50">
+                <div className="flex items-center gap-4">
+                  <button 
+                    onClick={() => updateProduct(product.productId, { isCurated: !product.isCurated })}
+                    className={`flex items-center gap-1.5 text-xs ${product.isCurated ? 'text-yellow-600' : 'text-gray-400'}`}
+                  >
+                    <Star className={`w-4 h-4 ${product.isCurated ? 'fill-current' : ''}`} />
+                    <span className="hidden sm:inline">Curated</span>
+                  </button>
+                  <button 
+                    onClick={() => updateProduct(product.productId, { isBestSeller: !product.isBestSeller })}
+                    className={`flex items-center gap-1.5 text-xs ${product.isBestSeller ? 'text-primary' : 'text-gray-400'}`}
+                  >
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="hidden sm:inline">Best Seller</span>
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary">
+                    <Edit className="w-4 h-4" />
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteProduct(product.productId)}>
+                    <Trash className="w-4 h-4" />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Desktop Table Layout */}
+        <div className="hidden lg:block bg-white rounded-lg border border-border shadow-sm overflow-hidden">
           <table className="w-full text-sm text-left">
             <thead className="bg-secondary/10 text-muted-foreground uppercase text-xs font-bold tracking-wider">
               <tr>

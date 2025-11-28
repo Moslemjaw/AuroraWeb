@@ -38,10 +38,10 @@ export default function CustomOrderForm() {
   }
 
   return (
-    <div className="p-8 lg:p-10">
-        <div className="text-center mb-10">
-          <h3 className="font-serif text-2xl text-foreground mb-2">Start Your Project</h3>
-          <p className="text-sm text-muted-foreground">Configure your arrangement below.</p>
+    <div className="p-0 sm:p-4 lg:p-10">
+        <div className="text-center mb-6 sm:mb-10">
+          <h3 className="font-serif text-xl sm:text-2xl text-foreground mb-2">Start Your Project</h3>
+          <p className="text-xs sm:text-sm text-muted-foreground">Configure your arrangement below.</p>
         </div>
 
         <Form {...form}>
@@ -83,14 +83,14 @@ export default function CustomOrderForm() {
               name="color"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-base font-medium text-foreground flex items-center gap-2 mb-3">
+                  <FormLabel className="text-sm sm:text-base font-medium text-foreground flex items-center gap-2 mb-3">
                     <Palette className="w-4 h-4 text-primary" /> Color Palette
                   </FormLabel>
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
                       defaultValue={field.value}
-                      className="grid grid-cols-3 gap-3"
+                      className="grid grid-cols-3 gap-2 sm:gap-3"
                     >
                       {[
                         { id: "signature-pink", name: "Signature Pink", color: "bg-[#f97a9d]" },
@@ -104,9 +104,9 @@ export default function CustomOrderForm() {
                           <FormControl>
                             <RadioGroupItem value={color.id} className="peer sr-only" />
                           </FormControl>
-                          <FormLabel className="flex flex-col items-center justify-center rounded-lg border border-border bg-white p-3 hover:border-primary hover:bg-secondary/50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 peer-data-[state=checked]:text-primary cursor-pointer transition-all h-24 text-center">
-                            <div className={`w-6 h-6 rounded-full mb-2 shadow-sm ${color.color}`} />
-                            <span className="text-xs font-medium">{color.name}</span>
+                          <FormLabel className="flex flex-col items-center justify-center rounded-lg border border-border bg-white p-2 sm:p-3 hover:border-primary hover:bg-secondary/50 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 peer-data-[state=checked]:text-primary cursor-pointer transition-all h-20 sm:h-24 text-center">
+                            <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full mb-1.5 sm:mb-2 shadow-sm ${color.color}`} />
+                            <span className="text-[10px] sm:text-xs font-medium leading-tight">{color.name}</span>
                           </FormLabel>
                         </FormItem>
                       ))}
@@ -144,12 +144,12 @@ export default function CustomOrderForm() {
               )}
             />
 
-            <div className="pt-6 border-t border-border mt-4">
-              <div className="flex justify-between items-end mb-6">
-                 <span className="text-sm text-muted-foreground">Estimated Total</span>
-                 <span className="text-3xl font-serif font-medium text-primary">{previewPrice}.00 K.D.</span>
+            <div className="pt-4 sm:pt-6 border-t border-border mt-4">
+              <div className="flex justify-between items-end mb-4 sm:mb-6">
+                 <span className="text-xs sm:text-sm text-muted-foreground">Estimated Total</span>
+                 <span className="text-2xl sm:text-3xl font-serif font-medium text-primary">{previewPrice}.00 K.D.</span>
               </div>
-              <Button type="submit" size="lg" className="w-full h-14 text-lg rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all">
+              <Button type="submit" size="lg" className="w-full h-12 sm:h-14 text-base sm:text-lg rounded-full bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20 transition-all">
                 Begin Order
               </Button>
             </div>

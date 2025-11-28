@@ -2,6 +2,7 @@ import { useAdmin } from "@/lib/admin-context";
 import { Button } from "@/components/ui/button";
 import { Link, useRoute } from "wouter";
 import { ArrowLeft, Minus, Plus, ShoppingBag, Star, Check } from "lucide-react";
+import MobileNav from "@/components/mobile-nav";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 import NotFound from "@/pages/not-found";
 
@@ -14,12 +15,12 @@ export default function ProductDetail() {
 
   return (
     <div className="min-h-screen bg-background font-sans">
-      <nav className="sticky top-0 left-0 w-full z-50 px-6 py-6 flex items-center justify-between bg-white border-b border-border/40">
-         <div className="flex items-center gap-3">
+      <nav className="sticky top-0 left-0 w-full z-50 px-4 sm:px-6 py-4 sm:py-6 flex items-center justify-between bg-white border-b border-border/40">
+         <div className="flex items-center gap-2 sm:gap-3">
            <Link href="/">
-             <a className="flex items-center gap-3">
-               <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain" />
-               <span className="font-serif text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
+             <a className="flex items-center gap-2 sm:gap-3">
+               <img src={logoImg} alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
+               <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Fabric & Blooms</span>
              </a>
            </Link>
          </div>
@@ -36,52 +37,53 @@ export default function ProductDetail() {
               </a>
             </Link>
          </div>
+         <MobileNav />
       </nav>
 
-      <div className="container mx-auto px-6 md:px-12 lg:px-24 py-12">
+      <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24 py-6 sm:py-12">
         <Link href="/">
-          <a className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors mb-8">
+          <a className="inline-flex items-center text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors mb-6 sm:mb-8">
             <ArrowLeft className="w-4 h-4 mr-2" /> Back to Collection
           </a>
         </Link>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
+        <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-start">
           {/* Product Image */}
-          <div className="bg-secondary/20 aspect-[4/5] overflow-hidden rounded-sm">
+          <div className="bg-secondary/20 aspect-square sm:aspect-[4/5] overflow-hidden rounded-sm">
             <img src={product.imageUrl} alt={product.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
           </div>
 
           {/* Product Details */}
-          <div className="space-y-8 sticky top-32">
+          <div className="space-y-6 sm:space-y-8 lg:sticky lg:top-32">
             <div>
-              <span className="text-primary font-bold tracking-widest uppercase text-xs mb-2 block">{product.category}</span>
-              <h1 className="font-serif text-4xl md:text-5xl text-foreground mb-4">{product.title}</h1>
-              <p className="font-sans text-2xl font-medium text-primary">{product.price}</p>
+              <span className="text-primary font-bold tracking-widest uppercase text-[10px] sm:text-xs mb-2 block">{product.category}</span>
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground mb-3 sm:mb-4">{product.title}</h1>
+              <p className="font-sans text-xl sm:text-2xl font-medium text-primary">{product.price}</p>
             </div>
 
-            <div className="prose prose-stone text-muted-foreground font-light leading-relaxed">
+            <div className="prose prose-stone text-sm sm:text-base text-muted-foreground font-light leading-relaxed">
               <p>{product.longDescription}</p>
             </div>
 
-            <div className="border-y border-border/50 py-6 space-y-4">
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary" /> Handmade to order
+            <div className="border-y border-border/50 py-4 sm:py-6 space-y-3 sm:space-y-4">
+              <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
+                <Check className="w-4 h-4 text-primary flex-shrink-0" /> Handmade to order
               </div>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary" /> Lifetime durability
+              <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
+                <Check className="w-4 h-4 text-primary flex-shrink-0" /> Lifetime durability
               </div>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary" /> Gift wrapping included
+              <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
+                <Check className="w-4 h-4 text-primary flex-shrink-0" /> Gift wrapping included
               </div>
             </div>
 
-            <div className="flex gap-4">
-              <div className="flex items-center border border-border rounded-none h-14 px-4">
-                <button className="p-2 hover:bg-secondary/50 transition-colors"><Minus className="w-4 h-4" /></button>
-                <span className="w-12 text-center font-medium">1</span>
-                <button className="p-2 hover:bg-secondary/50 transition-colors"><Plus className="w-4 h-4" /></button>
+            <div className="flex gap-3 sm:gap-4">
+              <div className="flex items-center border border-border rounded-none h-12 sm:h-14 px-2 sm:px-4">
+                <button className="p-1.5 sm:p-2 hover:bg-secondary/50 transition-colors"><Minus className="w-4 h-4" /></button>
+                <span className="w-10 sm:w-12 text-center font-medium text-sm sm:text-base">1</span>
+                <button className="p-1.5 sm:p-2 hover:bg-secondary/50 transition-colors"><Plus className="w-4 h-4" /></button>
               </div>
-              <Button className="flex-1 h-14 bg-foreground text-background hover:bg-primary hover:text-white rounded-none uppercase tracking-widest text-xs font-bold transition-colors">
+              <Button className="flex-1 h-12 sm:h-14 bg-foreground text-background hover:bg-primary hover:text-white rounded-none uppercase tracking-widest text-[10px] sm:text-xs font-bold transition-colors">
                 Add to Cart
               </Button>
             </div>
