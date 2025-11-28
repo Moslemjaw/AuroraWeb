@@ -58,40 +58,48 @@ export default function CustomOrderForm() {
       setColors(colorsData);
       setPresentations(presentationsData);
       setAddOns(addOnsData);
-      setSettings({
+      const newSettings = {
         flowerCountMin: settingsData.flowerCountMin ?? 1,
         flowerCountMax: settingsData.flowerCountMax ?? 50,
         pricePerFlower: settingsData.pricePerFlower ?? 5.0,
-      });
-      // Set defaults
+      };
+      setSettings(newSettings);
+      // Initialize quantity to minimum
+      setQuantity(newSettings.flowerCountMin);
+      // Set default presentation
       if (presentationsData.length > 0) {
         setSelectedPresentation(presentationsData[0].presentationId);
       }
     }).catch(console.error);
   }, []);
 
-  const totalPrice = useMemo(() => {
-    // Base price: quantity * price per flower
-    let total = quantity * settings.pricePerFlower;
-
-    // Add selected colors prices
-    selectedColors.forEach(colorId => {
+  // Calculate color surcharge per flower (average of selected color prices)
+  const colorSurchargePerFlower = useMemo(() => {
+    if (selectedColors.length === 0) return 0;
+    const totalColorPrice = selectedColors.reduce((sum, colorId) => {
       const color = colors.find(c => c.colorId === colorId);
-      if (color) total += color.price;
-    });
+      return sum + (color?.price || 0);
+    }, 0);
+    // Color prices are per-flower surcharges, averaged across selections
+    return totalColorPrice / selectedColors.length;
+  }, [selectedColors, colors]);
 
-    // Add presentation price
+  const totalPrice = useMemo(() => {
+    // Base price: quantity * (price per flower + color surcharge per flower)
+    let total = quantity * (settings.pricePerFlower + colorSurchargePerFlower);
+
+    // Add presentation price (one-time)
     const presentation = presentations.find(p => p.presentationId === selectedPresentation);
     if (presentation) total += presentation.price;
 
-    // Add add-ons prices
+    // Add add-ons prices (one-time each)
     selectedAddOns.forEach(addOnId => {
       const addOn = addOns.find(a => a.addOnId === addOnId);
       if (addOn) total += addOn.price;
     });
 
     return total;
-  }, [quantity, selectedColors, selectedPresentation, selectedAddOns, colors, presentations, addOns, settings]);
+  }, [quantity, colorSurchargePerFlower, selectedPresentation, selectedAddOns, presentations, addOns, settings]);
 
   const toggleColor = (colorId: string) => {
     setSelectedColors(prev => 
@@ -224,7 +232,7 @@ export default function CustomOrderForm() {
                 <span className="text-[10px] sm:text-xs font-medium leading-tight">{color.name}</span>
                 {color.price > 0 && (
                   <span className="text-[9px] sm:text-[10px] text-primary mt-0.5">
-                    +{color.price.toFixed(2)} K.D.
+                    +{color.price.toFixed(2)} K.D./ea
                   </span>
                 )}
               </button>
@@ -310,22 +318,29 @@ export default function CustomOrderForm() {
               <span>{quantity} flowers @ {settings.pricePerFlower.toFixed(2)} K.D. each</span>
               <span>{(quantity * settings.pricePerFlower).toFixed(2)} K.D.</span>
             </div>
-            {selectedColors.length > 0 && (
+            {selectedColors.length > 0 && colorSurchargePerFlower > 0 && (
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Colors ({selectedColors.length})</span>
-                <span>+{selectedColors.reduce((sum, id) => sum + (colors.find(c => c.colorId === id)?.price || 0), 0).toFixed(2)} K.D.</span>
+                <span>Color upgrade ({selectedColors.length} selected) @ +{colorSurchargePerFlower.toFixed(2)} K.D./flower</span>
+                <span>+{(quantity * colorSurchargePerFlower).toFixed(2)} K.D.</span>
               </div>
             )}
             {selectedPresentation && (
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Presentation</span>
+                <span>Presentation: {presentations.find(p => p.presentationId === selectedPresentation)?.name}</span>
                 <span>+{(presentations.find(p => p.presentationId === selectedPresentation)?.price || 0).toFixed(2)} K.D.</span>
               </div>
             )}
             {selectedAddOns.length > 0 && (
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Add-ons ({selectedAddOns.length})</span>
-                <span>+{selectedAddOns.reduce((sum, id) => sum + (addOns.find(a => a.addOnId === id)?.price || 0), 0).toFixed(2)} K.D.</span>
+              <div className="space-y-1">
+                {selectedAddOns.map(addOnId => {
+                  const addOn = addOns.find(a => a.addOnId === addOnId);
+                  return addOn ? (
+                    <div key={addOnId} className="flex justify-between text-xs text-muted-foreground">
+                      <span>{addOn.name}</span>
+                      <span>+{addOn.price.toFixed(2)} K.D.</span>
+                    </div>
+                  ) : null;
+                })}
               </div>
             )}
           </div>
