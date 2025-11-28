@@ -60,30 +60,14 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right Panel - Masonry Gallery */}
-        <div className="w-full lg:w-[55%] min-h-[50vh] lg:min-h-screen bg-[#FDFBF7] relative order-1 lg:order-2 flex items-center justify-center p-8 lg:p-20 overflow-hidden">
-           {/* Decorative background blobs */}
-           <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-           <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-yellow-400/5 rounded-full blur-3xl" />
-           
-           <div className="grid grid-cols-2 gap-6 w-full max-w-2xl relative z-10">
-              <div className="space-y-6 flex flex-col justify-center pt-12">
-                 <div className="group relative overflow-hidden rounded-sm shadow-2xl shadow-black/5 aspect-[3/4]">
-                   <img src={luxuryBouquetImg} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Luxury Bouquet" />
-                 </div>
-                 <div className="group relative overflow-hidden rounded-sm shadow-xl shadow-black/5 aspect-square">
-                   <img src={roseImg} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Rose Detail" />
-                 </div>
-              </div>
-              <div className="space-y-6 flex flex-col justify-start">
-                 <div className="group relative overflow-hidden rounded-sm shadow-xl shadow-black/5 aspect-square">
-                   <img src={peonyImg} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Peony Detail" />
-                 </div>
-                 <div className="group relative overflow-hidden rounded-sm shadow-2xl shadow-black/5 aspect-[3/4]">
-                   <img src={hydrangeaImg} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="Hydrangea" />
-                 </div>
-              </div>
-           </div>
+        {/* Right Panel - Hero Image */}
+        <div className="w-full lg:w-[55%] h-[50vh] lg:h-auto relative order-1 lg:order-2 overflow-hidden">
+          <div className="absolute inset-0 bg-black/5 z-10 pointer-events-none" />
+          <img 
+            src={luxuryBouquetImg} 
+            alt="Luxury Fabric Bouquet" 
+            className="w-full h-full object-cover object-center scale-105 hover:scale-100 transition-transform duration-[2000ms]"
+          />
         </div>
 
       </header>
