@@ -1,12 +1,13 @@
+import { useAdmin } from "@/lib/admin-context";
 import { Button } from "@/components/ui/button";
 import { Link, useRoute } from "wouter";
 import { ArrowLeft, Minus, Plus, ShoppingBag, Star, Check } from "lucide-react";
-import { products } from "@/lib/products";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 import NotFound from "@/pages/not-found";
 
 export default function ProductDetail() {
   const [match, params] = useRoute("/product/:id");
+  const { products } = useAdmin();
   const product = products.find(p => p.id === params?.id);
 
   if (!product) return <NotFound />;

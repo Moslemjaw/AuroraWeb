@@ -1,10 +1,11 @@
+import { useAdmin } from "@/lib/admin-context";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { ArrowLeft, ShoppingBag, Minus, Plus, X } from "lucide-react";
-import { products } from "@/lib/products";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 
 export default function Cart() {
+  const { products } = useAdmin();
   // Mock cart items
   const cartItems = [
     { ...products[0], quantity: 1 },

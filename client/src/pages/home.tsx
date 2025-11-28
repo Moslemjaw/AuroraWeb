@@ -14,13 +14,37 @@ import sunflowerImg from "@assets/generated_images/fabric_sunflower_bouquet.png"
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 import luxuryBouquetImg from "@assets/image_1764358990214.png";
 
+import { useAdmin } from "@/lib/admin-context";
+import { useLocation } from "wouter";
+import { useState } from "react";
+
 export default function Home() {
+  const { products } = useAdmin();
+  const [, setLocation] = useLocation();
+  const [logoClicks, setLogoClicks] = useState(0);
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    // If 5 clicks in 3 seconds
+    const newClicks = logoClicks + 1;
+    setLogoClicks(newClicks);
+    
+    if (newClicks >= 5) {
+      setLocation("/admin/login");
+      setLogoClicks(0);
+    }
+
+    // Reset after 2 seconds of no clicks
+    setTimeout(() => {
+        setLogoClicks(0);
+    }, 2000);
+  };
+
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/10">
       
       {/* Navigation - Absolute positioned over Hero */}
       <nav className="absolute top-0 left-0 w-full z-50 px-6 py-8 flex items-center justify-between bg-transparent">
-         <div className="flex items-center gap-3">
+         <div className="flex items-center gap-3 cursor-pointer" onClick={handleLogoClick}>
            <img src={logoImg} alt="Logo" className="w-10 h-10 object-contain brightness-0 invert lg:filter-none transition-all" />
            <span className="font-serif text-xl font-medium tracking-tight text-white lg:text-foreground transition-colors">Fabric & Blooms</span>
          </div>
@@ -103,27 +127,16 @@ export default function Home() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-12">
-            <ProductCard 
-              id="peony-bouquet"
-              image={peonyImg}
-              title="Blushing Peony"
-              price="15.00 K.D."
-              description="Delicate layers of fabric handcrafted into a stunning bloom."
-            />
-            <ProductCard 
-              id="velvet-rose"
-              image={roseImg}
-              title="Royal Velvet Rose"
-              price="6.00 K.D."
-              description="Deep red velvet textures for a romantic, classic look."
-            />
-            <ProductCard 
-              id="pastel-tulips"
-              image={tulipImg}
-              title="Pastel Tulip Set"
-              price="10.50 K.D."
-              description="A breath of spring that never fades. Perfect for gifting."
-            />
+            {products.slice(0, 3).map((product) => (
+              <ProductCard 
+                key={product.id}
+                id={product.id}
+                image={product.image}
+                title={product.title}
+                price={product.price}
+                description={product.description}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -181,27 +194,29 @@ export default function Home() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <ProductCard 
-              id="azure-hydrangea"
-              image={hydrangeaImg}
-              title="Azure Hydrangea"
-              price="18.00 K.D."
-              description="Voluminous blooms of hand-dyed blue fabric petals."
-            />
-            <ProductCard 
-              id="imperial-orchid"
-              image={orchidImg}
-              title="Imperial Orchid"
-              price="22.00 K.D."
-              description="Elegant, architectural stems of pure white orchids."
-            />
-            <ProductCard 
-              id="rustic-sunflower"
-              image={sunflowerImg}
-              title="Rustic Sunflower"
-              price="16.50 K.D."
-              description="Warm and inviting sunflowers wrapped in natural burlap."
-            />
+            {products.filter(p => p.isBestSeller).length > 0 ? 
+              products.filter(p => p.isBestSeller).slice(0, 3).map(product => (
+                <ProductCard 
+                  key={product.id}
+                  id={product.id}
+                  image={product.image}
+                  title={product.title}
+                  price={product.price}
+                  description={product.description}
+                />
+              )) : 
+              // Fallback if no best sellers selected yet
+              products.slice(3, 6).map(product => (
+                <ProductCard 
+                  key={product.id}
+                  id={product.id}
+                  image={product.image}
+                  title={product.title}
+                  price={product.price}
+                  description={product.description}
+                />
+              ))
+            }
           </div>
         </div>
       </section>
