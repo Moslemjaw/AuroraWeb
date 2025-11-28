@@ -10,22 +10,26 @@ export default function AdminProducts() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newProduct, setNewProduct] = useState<Partial<Product>>({});
 
-  const handleSaveProduct = () => {
+  const handleSaveProduct = async () => {
     if (!newProduct.title || !newProduct.price) return;
     
-    addProduct({
-      id: `prod-${Math.random().toString(36).substr(2, 9)}`,
-      title: newProduct.title,
-      price: newProduct.price,
-      description: newProduct.description || "",
-      longDescription: newProduct.longDescription || "",
-      image: newProduct.image || "", // In a real app, this would be an upload
-      category: newProduct.category || "Uncategorized",
-      isCurated: false,
-      isBestSeller: false,
-    });
-    setIsAddModalOpen(false);
-    setNewProduct({});
+    try {
+      await addProduct({
+        productId: `prod-${Date.now()}`,
+        title: newProduct.title,
+        price: newProduct.price,
+        description: newProduct.description || "",
+        longDescription: newProduct.longDescription || "",
+        imageUrl: newProduct.imageUrl || "", // In a real app, this would be an upload
+        category: newProduct.category || "Uncategorized",
+        isCurated: false,
+        isBestSeller: false,
+      });
+      setIsAddModalOpen(false);
+      setNewProduct({});
+    } catch (error) {
+      console.error("Failed to add product:", error);
+    }
   };
 
   return (
@@ -72,7 +76,7 @@ export default function AdminProducts() {
                 <div className="space-y-2">
                    <label className="text-xs font-medium">Image URL (Mock)</label>
                    <input className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" 
-                      value={newProduct.image || ''} onChange={e => setNewProduct({...newProduct, image: e.target.value})} />
+                      value={newProduct.imageUrl || ''} onChange={e => setNewProduct({...newProduct, imageUrl: e.target.value})} />
                 </div>
                 <Button onClick={handleSaveProduct}>Save Product</Button>
               </div>
@@ -95,10 +99,10 @@ export default function AdminProducts() {
             </thead>
             <tbody className="divide-y divide-border/50">
               {products.map((product) => (
-                <tr key={product.id} className="hover:bg-secondary/5 transition-colors">
+                <tr key={product.productId} className="hover:bg-secondary/5 transition-colors">
                   <td className="px-6 py-4">
                     <div className="w-12 h-12 rounded-md bg-secondary/20 overflow-hidden">
-                      <img src={product.image} alt={product.title} className="w-full h-full object-cover" />
+                      <img src={product.imageUrl} alt={product.title} className="w-full h-full object-cover" />
                     </div>
                   </td>
                   <td className="px-6 py-4 font-medium">{product.title}</td>
@@ -106,7 +110,7 @@ export default function AdminProducts() {
                   <td className="px-6 py-4 font-medium">{product.price}</td>
                   <td className="px-6 py-4 text-center">
                     <button 
-                      onClick={() => updateProduct(product.id, { isCurated: !product.isCurated })}
+                      onClick={() => updateProduct(product.productId, { isCurated: !product.isCurated })}
                       className={`p-1 rounded-full transition-colors ${product.isCurated ? 'text-yellow-500 bg-yellow-50' : 'text-gray-300 hover:text-gray-400'}`}
                     >
                       <Star className={`w-5 h-5 ${product.isCurated ? 'fill-current' : ''}`} />
@@ -114,7 +118,7 @@ export default function AdminProducts() {
                   </td>
                   <td className="px-6 py-4 text-center">
                     <button 
-                      onClick={() => updateProduct(product.id, { isBestSeller: !product.isBestSeller })}
+                      onClick={() => updateProduct(product.productId, { isBestSeller: !product.isBestSeller })}
                       className={`p-1 rounded-full transition-colors ${product.isBestSeller ? 'text-primary bg-primary/10' : 'text-gray-300 hover:text-gray-400'}`}
                     >
                       <TrendingUp className="w-5 h-5" />
@@ -125,7 +129,7 @@ export default function AdminProducts() {
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-primary">
                         <Edit className="w-4 h-4" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteProduct(product.id)}>
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive" onClick={() => deleteProduct(product.productId)}>
                         <Trash className="w-4 h-4" />
                       </Button>
                     </div>

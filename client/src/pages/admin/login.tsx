@@ -10,14 +10,15 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock password check
-    if (password === "admin123") {
-      login();
+    setError("");
+    
+    try {
+      await login(password);
       setLocation("/admin/dashboard");
-    } else {
-      setError("Invalid password");
+    } catch (error: any) {
+      setError(error.message || "Invalid password");
     }
   };
 

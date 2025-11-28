@@ -6,11 +6,11 @@ import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1
 
 export default function Cart() {
   const { products } = useAdmin();
-  // Mock cart items
-  const cartItems = [
+  // Mock cart items - only if products are loaded
+  const cartItems = products.length > 0 ? [
     { ...products[0], quantity: 1 },
-    { ...products[2], quantity: 2 }
-  ];
+    { ...(products[2] || products[1]), quantity: 2 }
+  ] : [];
 
   return (
     <div className="min-h-screen bg-background font-sans">
@@ -38,9 +38,9 @@ export default function Cart() {
         <div className="grid lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2 space-y-8">
             {cartItems.map((item) => (
-              <div key={item.id} className="flex gap-6 py-6 border-b border-border">
+              <div key={item.productId} className="flex gap-6 py-6 border-b border-border">
                 <div className="w-24 h-32 bg-secondary/20 rounded-sm overflow-hidden flex-shrink-0">
-                  <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                  <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1 flex flex-col justify-between">
                   <div className="flex justify-between items-start">

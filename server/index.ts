@@ -77,6 +77,10 @@ app.use((req, res, next) => {
   // Connect to MongoDB first
   await connectDB();
   
+  // Seed the database with initial products
+  const { seedDatabase } = await import("./seed");
+  await seedDatabase();
+  
   await registerRoutes(httpServer, app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {

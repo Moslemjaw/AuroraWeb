@@ -8,7 +8,7 @@ import NotFound from "@/pages/not-found";
 export default function ProductDetail() {
   const [match, params] = useRoute("/product/:id");
   const { products } = useAdmin();
-  const product = products.find(p => p.id === params?.id);
+  const product = products.find(p => p.productId === params?.id);
 
   if (!product) return <NotFound />;
 
@@ -48,7 +48,7 @@ export default function ProductDetail() {
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Product Image */}
           <div className="bg-secondary/20 aspect-[4/5] overflow-hidden rounded-sm">
-            <img src={product.image} alt={product.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+            <img src={product.imageUrl} alt={product.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
           </div>
 
           {/* Product Details */}

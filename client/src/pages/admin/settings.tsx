@@ -8,10 +8,14 @@ export default function AdminSettings() {
   const { colors, addColor, removeColor } = useAdmin();
   const [newColor, setNewColor] = useState({ name: '', hex: '#000000' });
 
-  const handleAddColor = () => {
+  const handleAddColor = async () => {
     if (newColor.name && newColor.hex) {
-      addColor({ id: Date.now().toString(), ...newColor });
-      setNewColor({ name: '', hex: '#000000' });
+      try {
+        await addColor({ ...newColor });
+        setNewColor({ name: '', hex: '#000000' });
+      } catch (error) {
+        console.error("Failed to add color:", error);
+      }
     }
   };
 
@@ -49,12 +53,12 @@ export default function AdminSettings() {
 
               <div className="space-y-2 max-h-[300px] overflow-y-auto pr-2">
                 {colors.map(color => (
-                  <div key={color.id} className="flex items-center justify-between p-3 bg-secondary/10 rounded-md group">
+                  <div key={color.colorId} className="flex items-center justify-between p-3 bg-secondary/10 rounded-md group">
                     <div className="flex items-center gap-3">
                       <div className="w-6 h-6 rounded-full border border-border shadow-sm" style={{ backgroundColor: color.hex }} />
                       <span className="text-sm font-medium">{color.name}</span>
                     </div>
-                    <button onClick={() => removeColor(color.id)} className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all">
+                    <button onClick={() => removeColor(color.colorId)} className="text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-all">
                       <Trash className="w-4 h-4" />
                     </button>
                   </div>

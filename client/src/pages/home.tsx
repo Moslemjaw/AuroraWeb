@@ -127,11 +127,11 @@ export default function Home() {
           </div>
           
           <div className="grid md:grid-cols-3 gap-12">
-            {products.slice(0, 3).map((product) => (
+            {products.filter(p => p.isCurated).slice(0, 3).map((product) => (
               <ProductCard 
-                key={product.id}
-                id={product.id}
-                image={product.image}
+                key={product.productId}
+                id={product.productId}
+                image={product.imageUrl}
                 title={product.title}
                 price={product.price}
                 description={product.description}
@@ -197,9 +197,9 @@ export default function Home() {
             {products.filter(p => p.isBestSeller).length > 0 ? 
               products.filter(p => p.isBestSeller).slice(0, 3).map(product => (
                 <ProductCard 
-                  key={product.id}
-                  id={product.id}
-                  image={product.image}
+                  key={product.productId}
+                  id={product.productId}
+                  image={product.imageUrl}
                   title={product.title}
                   price={product.price}
                   description={product.description}
@@ -208,9 +208,9 @@ export default function Home() {
               // Fallback if no best sellers selected yet
               products.slice(3, 6).map(product => (
                 <ProductCard 
-                  key={product.id}
-                  id={product.id}
-                  image={product.image}
+                  key={product.productId}
+                  id={product.productId}
+                  image={product.imageUrl}
                   title={product.title}
                   price={product.price}
                   description={product.description}

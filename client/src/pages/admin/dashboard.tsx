@@ -1,9 +1,15 @@
 import { useAdmin } from "@/lib/admin-context";
 import AdminLayout from "@/components/admin-layout";
 import { TrendingUp, ShoppingBag, Users, DollarSign } from "lucide-react";
+import { useEffect } from "react";
 
 export default function AdminDashboard() {
-  const { stats, orders } = useAdmin();
+  const { stats, orders, loadOrders, loadStats } = useAdmin();
+
+  useEffect(() => {
+    loadOrders();
+    loadStats();
+  }, []);
 
   return (
     <AdminLayout>
@@ -79,10 +85,10 @@ export default function AdminDashboard() {
               </thead>
               <tbody className="divide-y divide-border/50">
                 {orders.map((order) => (
-                  <tr key={order.id} className="hover:bg-secondary/5 transition-colors">
-                    <td className="px-6 py-4 font-medium">{order.id}</td>
+                  <tr key={order.orderId} className="hover:bg-secondary/5 transition-colors">
+                    <td className="px-6 py-4 font-medium">{order.orderId}</td>
                     <td className="px-6 py-4">{order.customerName}</td>
-                    <td className="px-6 py-4 text-muted-foreground">{order.date}</td>
+                    <td className="px-6 py-4 text-muted-foreground">{order.createdAt ? new Date(order.createdAt).toLocaleDateString() : "-"}</td>
                     <td className="px-6 py-4">
                       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
                         ${order.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' : 
