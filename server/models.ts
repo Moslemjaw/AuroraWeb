@@ -84,3 +84,14 @@ const customOrderSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 export const CustomOrder = mongoose.model("CustomOrder", customOrderSchema);
+
+const inquirySchema = new mongoose.Schema({
+  inquiryId: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  subject: { type: String, required: true },
+  message: { type: String, required: true },
+  status: { type: String, default: "Unread", enum: ["Unread", "Read", "Replied"] },
+}, { timestamps: true });
+
+export const Inquiry = mongoose.model("Inquiry", inquirySchema);
