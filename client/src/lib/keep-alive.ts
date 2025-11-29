@@ -36,44 +36,79 @@ const shouldKeepAlive = () => {
   // 2. It's a full URL (starts with http)
   // 3. It's not localhost (different domain deployment)
   // 4. It contains "render.com" or "railway.app" or other external hosting
-  const isExternalHost = 
+  const isExternalHost =
     baseUrl.includes("render.com") ||
     baseUrl.includes("railway.app") ||
     baseUrl.includes("herokuapp.com") ||
-    (baseUrl.startsWith("http") && !baseUrl.includes("localhost") && !baseUrl.includes("127.0.0.1") && !baseUrl.includes("vercel.app"));
-  
+    (baseUrl.startsWith("http") &&
+      !baseUrl.includes("localhost") &&
+      !baseUrl.includes("127.0.0.1") &&
+      !baseUrl.includes("vercel.app"));
+
   return baseUrl.length > 0 && isExternalHost;
 };
 
 let keepAliveInterval: number | null = null;
 
 async function pingBackend() {
-  const url = `${API_BASE}/health`;
+  // Try health endpoint first, fallback to products if health doesn't exist
+  const healthUrl = `${API_BASE}/health`;
+  const fallbackUrl = `${API_BASE}/products`;
+
   try {
     // Use lightweight health check endpoint
-    const response = await fetch(url, {
+    const response = await fetch(healthUrl, {
       method: "GET",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
     });
-    
+
     // We don't care about the response, just that the request was made
     if (response.ok || response.status === 200) {
-      console.log("[Keep-Alive] ✅ Ping successful:", url);
+      console.log("[Keep-Alive] ✅ Ping successful (health):", healthUrl);
+      return;
+    } else if (response.status === 404) {
+      // Health endpoint doesn't exist, try products as fallback
+      console.log(
+        "[Keep-Alive] Health endpoint not found, trying products endpoint..."
+      );
+      const fallbackResponse = await fetch(fallbackUrl, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (fallbackResponse.ok || fallbackResponse.status === 200) {
+        console.log(
+          "[Keep-Alive] ✅ Ping successful (products fallback):",
+          fallbackUrl
+        );
+      } else {
+        console.warn(
+          "[Keep-Alive] ⚠️ Fallback ping returned status:",
+          fallbackResponse.status
+        );
+      }
     } else {
-      console.warn("[Keep-Alive] ⚠️ Ping returned status:", response.status, url);
+      console.warn(
+        "[Keep-Alive] ⚠️ Ping returned status:",
+        response.status,
+        healthUrl
+      );
     }
   } catch (error) {
     // Log errors so we can debug
-    console.error("[Keep-Alive] ❌ Ping failed:", error, "URL:", url);
+    console.error("[Keep-Alive] ❌ Ping failed:", error, "URL:", healthUrl);
   }
 }
 
 export function startKeepAlive() {
   const baseUrl = config.api.baseUrl || "";
-  
+
   // Log for debugging (always log, not just in dev)
   console.log("[Keep-Alive] Checking configuration...", {
     baseUrl: baseUrl || "(empty)",
@@ -82,7 +117,9 @@ export function startKeepAlive() {
 
   // Only start if backend is on a different domain
   if (!shouldKeepAlive()) {
-    console.log("[Keep-Alive] Skipping - backend on same domain or not configured");
+    console.log(
+      "[Keep-Alive] Skipping - backend on same domain or not configured"
+    );
     return;
   }
 
@@ -95,14 +132,17 @@ export function startKeepAlive() {
   console.log("[Keep-Alive] Starting - initial ping...");
   pingBackend();
 
-  // Then ping every 5 minutes (300000 ms)
-  // Render free tier sleeps after 15 minutes, so 5 minutes is safe
+  // Then ping every 4 minutes (240000 ms)
+  // Render free tier sleeps after 15 minutes, so 4 minutes is safe and more aggressive
   keepAliveInterval = window.setInterval(() => {
     console.log("[Keep-Alive] Sending periodic ping...");
     pingBackend();
-  }, 5 * 60 * 1000); // 5 minutes
+  }, 4 * 60 * 1000); // 4 minutes
 
-  console.log("[Keep-Alive] ✅ Started - pinging backend every 5 minutes at:", API_BASE);
+  console.log(
+    "[Keep-Alive] ✅ Started - pinging backend every 4 minutes at:",
+    API_BASE
+  );
 }
 
 export function stopKeepAlive() {
