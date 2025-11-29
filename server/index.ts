@@ -14,6 +14,7 @@ app.set("trust proxy", 1);
 
 // CORS configuration
 const allowedOrigins = [
+  "https://auroraflowers.vercel.app",
   "https://auroraflowerskw.vercel.app",
   "http://localhost:5000",
   ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
@@ -25,20 +26,49 @@ app.use(
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
 
+      // Allow all Vercel deployments
+      if (origin.includes(".vercel.app")) {
+        return callback(null, true);
+      }
+
+      // Allow localhost for development
+      if (origin.includes("localhost") || origin.includes("127.0.0.1")) {
+        return callback(null, true);
+      }
+
+      // Check against allowed origins list
       if (
         allowedOrigins.includes(origin) ||
         process.env.NODE_ENV === "development"
       ) {
         callback(null, true);
       } else {
+        console.log("CORS blocked origin:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
+
+// Handle preflight requests explicitly
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With"
+  );
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.sendStatus(204);
+});
 
 const mongoUri =
   process.env.MONGODB_URI ||
