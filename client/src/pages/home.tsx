@@ -244,6 +244,15 @@ export default function Home() {
             <Button
               variant="outline"
               className="rounded-none border border-foreground/80 bg-transparent text-foreground hover:bg-primary hover:text-white hover:border-primary px-8 sm:px-12 h-12 sm:h-14 text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold transition-all w-full sm:w-auto"
+              onClick={() => {
+                const element = document.getElementById("products");
+                if (element) {
+                  element.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                  });
+                }
+              }}
             >
               View Collections
             </Button>
