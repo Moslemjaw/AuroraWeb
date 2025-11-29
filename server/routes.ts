@@ -21,55 +21,128 @@ function getAbsoluteImageUrl(
   req: Request,
   imageUrl: string | undefined
 ): string | undefined {
-  if (!imageUrl) return undefined;
+  if (!imageUrl || typeof imageUrl !== "string") return undefined;
 
   // If already absolute URL, return as is
   if (imageUrl.startsWith("http://") || imageUrl.startsWith("https://")) {
     return imageUrl;
   }
 
-  // Get base URL from request
-  const protocol = req.protocol;
-  const host = req.get("host");
-  const baseUrl = `${protocol}://${host}`;
+  try {
+    // Get base URL from request
+    const protocol = req.protocol || "https";
+    const host = req.get("host");
 
-  // Ensure imageUrl starts with /
-  const normalizedUrl = imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`;
+    if (!host) {
+      // Fallback: use environment variable or default
+      const backendUrl =
+        process.env.BACKEND_URL || "https://auroraflowerbe.onrender.com";
+      const normalizedUrl = imageUrl.startsWith("/")
+        ? imageUrl
+        : `/${imageUrl}`;
+      return `${backendUrl}${normalizedUrl}`;
+    }
 
-  return `${baseUrl}${normalizedUrl}`;
+    const baseUrl = `${protocol}://${host}`;
+    const normalizedUrl = imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`;
+    return `${baseUrl}${normalizedUrl}`;
+  } catch (error) {
+    console.error("Error converting image URL:", error);
+    return imageUrl; // Return original if conversion fails
+  }
 }
 
 // Helper to process product/image objects and convert image URLs
-function processImageUrls(req: Request, obj: any): any {
+function processImageUrls(
+  req: Request,
+  obj: any,
+  visited = new WeakSet()
+): any {
   if (!obj) return obj;
 
-  if (Array.isArray(obj)) {
-    return obj.map((item) => processImageUrls(req, item));
+  // Prevent circular references
+  if (typeof obj === "object" && obj !== null) {
+    if (visited.has(obj)) {
+      return obj;
+    }
+    visited.add(obj);
   }
 
+  // Handle arrays
+  if (Array.isArray(obj)) {
+    return obj.map((item) => processImageUrls(req, item, visited));
+  }
+
+  // Handle objects (but skip special types)
   if (typeof obj === "object" && obj !== null) {
-    const processed = { ...obj };
+    // Skip Mongoose documents, Dates, Buffers, etc.
+    if (
+      obj instanceof Date ||
+      Buffer.isBuffer(obj) ||
+      obj.constructor?.name === "ObjectId"
+    ) {
+      return obj;
+    }
+
+    // Convert Mongoose document to plain object if needed
+    let plainObj = obj;
+    if (obj.toObject && typeof obj.toObject === "function") {
+      try {
+        plainObj = obj.toObject();
+      } catch (e) {
+        // If toObject fails, use the object as-is
+        plainObj = obj;
+      }
+    } else {
+      plainObj = { ...obj };
+    }
 
     // Convert imageUrl
-    if (processed.imageUrl) {
-      processed.imageUrl = getAbsoluteImageUrl(req, processed.imageUrl);
+    if (plainObj.imageUrl && typeof plainObj.imageUrl === "string") {
+      plainObj.imageUrl =
+        getAbsoluteImageUrl(req, plainObj.imageUrl) || plainObj.imageUrl;
     }
 
     // Convert images array
-    if (Array.isArray(processed.images)) {
-      processed.images = processed.images.map((img: string) =>
-        getAbsoluteImageUrl(req, img)
-      );
+    if (Array.isArray(plainObj.images)) {
+      plainObj.images = plainObj.images.map((img: any) => {
+        if (typeof img === "string") {
+          return getAbsoluteImageUrl(req, img) || img;
+        }
+        return img;
+      });
     }
 
-    // Recursively process nested objects
-    for (const key in processed) {
-      if (typeof processed[key] === "object" && processed[key] !== null) {
-        processed[key] = processImageUrls(req, processed[key]);
+    // Only process simple nested objects, avoid deep recursion on complex objects
+    for (const key in plainObj) {
+      if (
+        key === "_id" ||
+        key === "__v" ||
+        key === "createdAt" ||
+        key === "updatedAt"
+      ) {
+        continue; // Skip Mongoose metadata
+      }
+
+      const value = plainObj[key];
+      if (
+        value &&
+        typeof value === "object" &&
+        !Array.isArray(value) &&
+        !(value instanceof Date) &&
+        !Buffer.isBuffer(value) &&
+        value.constructor?.name !== "ObjectId"
+      ) {
+        try {
+          plainObj[key] = processImageUrls(req, value, visited);
+        } catch (e) {
+          // If processing fails, keep original value
+          console.error(`Error processing key ${key}:`, e);
+        }
       }
     }
 
-    return processed;
+    return plainObj;
   }
 
   return obj;
@@ -249,8 +322,11 @@ export async function registerRoutes(
       const products = await Product.find().sort({ createdAt: -1 });
       const processedProducts = processImageUrls(req, products);
       res.json(processedProducts);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch products" });
+    } catch (error: any) {
+      console.error("Error fetching products:", error);
+      res
+        .status(500)
+        .json({ error: "Failed to fetch products", details: error.message });
     }
   });
 
@@ -264,8 +340,11 @@ export async function registerRoutes(
       }
       const processedProduct = processImageUrls(req, product);
       res.json(processedProduct);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch product" });
+    } catch (error: any) {
+      console.error("Error fetching product:", error);
+      res
+        .status(500)
+        .json({ error: "Failed to fetch product", details: error.message });
     }
   });
 
@@ -341,8 +420,11 @@ export async function registerRoutes(
       const orders = await Order.find().sort({ createdAt: -1 });
       const processedOrders = processImageUrls(req, orders);
       res.json(processedOrders);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch orders" });
+    } catch (error: any) {
+      console.error("Error fetching orders:", error);
+      res
+        .status(500)
+        .json({ error: "Failed to fetch orders", details: error.message });
     }
   });
 
@@ -394,8 +476,11 @@ export async function registerRoutes(
       const colors = await Color.find().sort({ createdAt: 1 });
       const processedColors = processImageUrls(req, colors);
       res.json(processedColors);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch colors" });
+    } catch (error: any) {
+      console.error("Error fetching colors:", error);
+      res
+        .status(500)
+        .json({ error: "Failed to fetch colors", details: error.message });
     }
   });
 
@@ -466,8 +551,14 @@ export async function registerRoutes(
       const presentations = await Presentation.find().sort({ createdAt: 1 });
       const processedPresentations = processImageUrls(req, presentations);
       res.json(processedPresentations);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch presentations" });
+    } catch (error: any) {
+      console.error("Error fetching presentations:", error);
+      res
+        .status(500)
+        .json({
+          error: "Failed to fetch presentations",
+          details: error.message,
+        });
     }
   });
 
@@ -537,8 +628,11 @@ export async function registerRoutes(
       const addOns = await AddOn.find().sort({ createdAt: 1 });
       const processedAddOns = processImageUrls(req, addOns);
       res.json(processedAddOns);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch add-ons" });
+    } catch (error: any) {
+      console.error("Error fetching add-ons:", error);
+      res
+        .status(500)
+        .json({ error: "Failed to fetch add-ons", details: error.message });
     }
   });
 
@@ -735,8 +829,11 @@ export async function registerRoutes(
       try {
         const inquiries = await Inquiry.find().sort({ createdAt: -1 });
         res.json(inquiries);
-      } catch (error) {
-        res.status(500).json({ error: "Failed to fetch inquiries" });
+      } catch (error: any) {
+        console.error("Error fetching inquiries:", error);
+        res
+          .status(500)
+          .json({ error: "Failed to fetch inquiries", details: error.message });
       }
     }
   );
