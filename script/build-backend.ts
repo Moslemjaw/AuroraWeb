@@ -77,7 +77,13 @@ async function buildBackend() {
   }
 }
 
-buildBackend().catch((err) => {
-  console.error("Build failed:", err);
-  process.exit(1);
-});
+buildBackend()
+  .then(() => {
+    console.log("✅ Build script completed successfully");
+    process.exit(0);
+  })
+  .catch((err) => {
+    console.error("❌ Build failed:", err);
+    console.error("Error stack:", err.stack);
+    process.exit(1);
+  });
