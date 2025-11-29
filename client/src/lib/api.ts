@@ -1,6 +1,20 @@
 // API client for backend
 import { config } from "./config";
-const API_BASE = config.api.baseUrl || "/api";
+
+// Ensure API base URL ends with /api if it's a full URL, or starts with /api if relative
+function getApiBase(): string {
+  const baseUrl = config.api.baseUrl || "/api";
+
+  // If it's a full URL (starts with http), ensure it ends with /api
+  if (baseUrl.startsWith("http")) {
+    return baseUrl.endsWith("/api") ? baseUrl : `${baseUrl}/api`;
+  }
+
+  // If it's a relative path, ensure it starts with /api
+  return baseUrl.startsWith("/api") ? baseUrl : "/api";
+}
+
+const API_BASE = getApiBase();
 
 async function apiCall(endpoint: string, options?: RequestInit) {
   const response = await fetch(`${API_BASE}${endpoint}`, {
