@@ -15,6 +15,7 @@ app.set("trust proxy", 1);
 // When frontend and backend are on same domain, CORS is less critical
 // but we still allow Vercel preview deployments
 const allowedOrigins = [
+  "https://auroraflowers.vercel.app",
   "https://auroraflowerskw.vercel.app",
   "http://localhost:5000",
   ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
