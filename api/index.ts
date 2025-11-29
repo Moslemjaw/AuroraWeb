@@ -18,11 +18,14 @@ const allowedOrigins = [
   ...(process.env.FRONTEND_URL ? [process.env.FRONTEND_URL] : []),
 ];
 
+// CORS middleware - must be before other middleware
 app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
+      if (!origin) {
+        return callback(null, true);
+      }
 
       // Allow all Vercel preview deployments (*.vercel.app)
       if (origin.includes(".vercel.app")) {
@@ -41,14 +44,26 @@ app.use(
       ) {
         callback(null, true);
       } else {
+        console.log("CORS blocked origin:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
+
+// Handle preflight requests explicitly
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.sendStatus(204);
+});
 
 const mongoUri =
   process.env.MONGODB_URI ||
@@ -120,6 +135,12 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Initialize app on first request
   await initializeApp();
+
+  // If request doesn't have /api prefix, add it
+  // This handles cases where frontend calls backend directly without /api
+  if (req.url && !req.url.startsWith("/api")) {
+    req.url = `/api${req.url.startsWith("/") ? req.url : `/${req.url}`}`;
+  }
 
   // Convert Vercel request/response to Express format
   return new Promise<void>((resolve) => {

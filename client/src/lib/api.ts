@@ -3,18 +3,39 @@ import { config } from "./config";
 
 // Ensure API base URL ends with /api if it's a full URL, or starts with /api if relative
 function getApiBase(): string {
-  const baseUrl = config.api.baseUrl || "/api";
-
+  let baseUrl = config.api.baseUrl || "";
+  
+  // If empty, default to /api (relative path for same domain)
+  if (!baseUrl) {
+    return "/api";
+  }
+  
+  // Remove trailing slash
+  baseUrl = baseUrl.replace(/\/$/, "");
+  
   // If it's a full URL (starts with http), ensure it ends with /api
   if (baseUrl.startsWith("http")) {
-    return baseUrl.endsWith("/api") ? baseUrl : `${baseUrl}/api`;
+    if (baseUrl.endsWith("/api")) {
+      return baseUrl;
+    }
+    // Add /api if not present
+    return `${baseUrl}/api`;
   }
-
+  
   // If it's a relative path, ensure it starts with /api
-  return baseUrl.startsWith("/api") ? baseUrl : "/api";
+  if (baseUrl.startsWith("/api")) {
+    return baseUrl;
+  }
+  // Add /api prefix if not present
+  return `/api${baseUrl.startsWith("/") ? baseUrl : `/${baseUrl}`}`;
 }
 
 const API_BASE = getApiBase();
+
+// Debug log (remove in production)
+if (typeof window !== "undefined" && import.meta.env.DEV) {
+  console.log("API Base URL:", API_BASE);
+}
 
 async function apiCall(endpoint: string, options?: RequestInit) {
   const response = await fetch(`${API_BASE}${endpoint}`, {
