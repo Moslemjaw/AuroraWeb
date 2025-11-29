@@ -1,6 +1,7 @@
 import ProductCard from "@/components/product-card";
 import CustomOrderForm from "@/components/custom-order-form";
 import MobileNav from "@/components/mobile-nav";
+import LoadingScreen from "@/components/loading-screen";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -127,7 +128,7 @@ function ProductCarousel({
 }
 
 export default function Home() {
-  const { products } = useAdmin();
+  const { products, isLoadingProducts } = useAdmin();
   const [, setLocation] = useLocation();
   const [logoClicks, setLogoClicks] = useState(0);
 
@@ -148,6 +149,11 @@ export default function Home() {
   const curatedProducts = products.filter((p) => p.isCurated);
   const bestSellerProducts = products.filter((p) => p.isBestSeller);
   const fallbackProducts = products.slice(0, 6);
+
+  // Show loading screen while products are loading
+  if (isLoadingProducts) {
+    return <LoadingScreen />;
+  }
 
   return (
     <div className="min-h-screen bg-background font-sans selection:bg-primary/10">
