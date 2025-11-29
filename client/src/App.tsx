@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -5,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AdminProvider } from "@/lib/admin-context";
 import { CartProvider } from "@/lib/cart-context";
+import { startKeepAlive, stopKeepAlive } from "@/lib/keep-alive";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import About from "@/pages/about";
@@ -28,7 +30,7 @@ function Router() {
       <Route path="/cart" component={Cart} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/product/:id" component={ProductDetail} />
-      
+
       {/* Admin Routes */}
       <Route path="/admin/login" component={AdminLogin} />
       <Route path="/admin/dashboard" component={AdminDashboard} />
@@ -36,13 +38,23 @@ function Router() {
       <Route path="/admin/settings" component={AdminSettings} />
       <Route path="/admin/orders" component={AdminOrders} />
       <Route path="/admin/inquiries" component={AdminInquiries} />
-      
+
       <Route component={NotFound} />
     </Switch>
   );
 }
 
 function App() {
+  useEffect(() => {
+    // Start keep-alive service to prevent Render free tier from sleeping
+    startKeepAlive();
+
+    // Cleanup on unmount
+    return () => {
+      stopKeepAlive();
+    };
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <AdminProvider>

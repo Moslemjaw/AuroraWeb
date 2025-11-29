@@ -424,6 +424,11 @@ export async function registerRoutes(
     res.json({ isAuthenticated: !!req.session.isAuthenticated });
   });
 
+  // Health check endpoint for keep-alive pings
+  app.get("/api/health", (req, res) => {
+    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
   app.get("/api/products", async (req: Request, res: Response) => {
     try {
       const products = await Product.find().sort({ createdAt: -1 }).lean();

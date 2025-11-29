@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import MobileNav from "@/components/mobile-nav";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
+import customOrderIcon from "@assets/custom-order-icon.png";
 
 export default function Cart() {
   const {
@@ -84,7 +85,7 @@ export default function Cart() {
                       <img
                         src={
                           item.type === "custom"
-                            ? logoImg
+                            ? customOrderIcon
                             : item.imageUrl || logoImg
                         }
                         alt={item.title}

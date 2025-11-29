@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { colorAPI, presentationAPI, addOnAPI, settingsAPI } from "@/lib/api";
 import { useCart } from "@/lib/cart-context";
-import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
+import customOrderIcon from "@assets/custom-order-icon.png";
 
 type Color = {
   colorId: string;
@@ -186,7 +186,7 @@ export default function CustomOrderForm() {
       productId: `custom-${Date.now()}`,
       title,
       price: `${totalPrice.toFixed(2)} K.D.`,
-      imageUrl: logoImg,
+      imageUrl: customOrderIcon,
       category: "Custom Order",
       type: "custom",
       customization: {
