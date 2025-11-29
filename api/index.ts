@@ -12,6 +12,8 @@ const app = express();
 app.set("trust proxy", 1);
 
 // CORS configuration
+// When frontend and backend are on same domain, CORS is less critical
+// but we still allow Vercel preview deployments
 const allowedOrigins = [
   "https://auroraflowerskw.vercel.app",
   "http://localhost:5000",
@@ -59,8 +61,14 @@ app.use(
 // Handle preflight requests explicitly
 app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+  );
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With"
+  );
   res.header("Access-Control-Allow-Credentials", "true");
   res.sendStatus(204);
 });
