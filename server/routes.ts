@@ -53,96 +53,88 @@ function getAbsoluteImageUrl(
 }
 
 // Helper to process product/image objects and convert image URLs
-function processImageUrls(
-  req: Request,
-  obj: any,
-  visited = new WeakSet()
-): any {
+// Simplified version - only processes imageUrl and images fields
+function processImageUrls(req: Request, obj: any): any {
   if (!obj) return obj;
-
-  // Prevent circular references
-  if (typeof obj === "object" && obj !== null) {
-    if (visited.has(obj)) {
-      return obj;
-    }
-    visited.add(obj);
-  }
 
   // Handle arrays
   if (Array.isArray(obj)) {
-    return obj.map((item) => processImageUrls(req, item, visited));
+    return obj.map((item) => processImageUrls(req, item));
   }
 
-  // Handle objects (but skip special types)
+  // Handle objects
   if (typeof obj === "object" && obj !== null) {
-    // Skip Mongoose documents, Dates, Buffers, etc.
-    if (
-      obj instanceof Date ||
-      Buffer.isBuffer(obj) ||
-      obj.constructor?.name === "ObjectId"
-    ) {
+    try {
+      // Convert to plain object if it's a Mongoose document
+      let plainObj: any;
+      if (obj.toJSON && typeof obj.toJSON === "function") {
+        plainObj = obj.toJSON();
+      } else if (obj.toObject && typeof obj.toObject === "function") {
+        plainObj = obj.toObject();
+      } else {
+        plainObj = { ...obj };
+      }
+
+      // Convert imageUrl field
+      if (plainObj.imageUrl && typeof plainObj.imageUrl === "string") {
+        plainObj.imageUrl =
+          getAbsoluteImageUrl(req, plainObj.imageUrl) || plainObj.imageUrl;
+      }
+
+      // Convert images array
+      if (Array.isArray(plainObj.images)) {
+        plainObj.images = plainObj.images.map((img: any) => {
+          if (typeof img === "string") {
+            return getAbsoluteImageUrl(req, img) || img;
+          }
+          return img;
+        });
+      }
+
+      // Process nested items array (for orders)
+      if (Array.isArray(plainObj.items)) {
+        plainObj.items = plainObj.items.map((item: any) => {
+          if (item && typeof item === "object") {
+            const processedItem = { ...item };
+            if (
+              processedItem.imageUrl &&
+              typeof processedItem.imageUrl === "string"
+            ) {
+              processedItem.imageUrl =
+                getAbsoluteImageUrl(req, processedItem.imageUrl) ||
+                processedItem.imageUrl;
+            }
+            return processedItem;
+          }
+          return item;
+        });
+      }
+
+      // Process selectedColors array (for orders)
+      if (Array.isArray(plainObj.selectedColors)) {
+        plainObj.selectedColors = plainObj.selectedColors.map((color: any) => {
+          if (color && typeof color === "object") {
+            const processedColor = { ...color };
+            if (
+              processedColor.imageUrl &&
+              typeof processedColor.imageUrl === "string"
+            ) {
+              processedColor.imageUrl =
+                getAbsoluteImageUrl(req, processedColor.imageUrl) ||
+                processedColor.imageUrl;
+            }
+            return processedColor;
+          }
+          return color;
+        });
+      }
+
+      return plainObj;
+    } catch (error) {
+      console.error("Error processing image URLs:", error);
+      // Return original object if processing fails
       return obj;
     }
-
-    // Convert Mongoose document to plain object if needed
-    let plainObj = obj;
-    if (obj.toObject && typeof obj.toObject === "function") {
-      try {
-        plainObj = obj.toObject();
-      } catch (e) {
-        // If toObject fails, use the object as-is
-        plainObj = obj;
-      }
-    } else {
-      plainObj = { ...obj };
-    }
-
-    // Convert imageUrl
-    if (plainObj.imageUrl && typeof plainObj.imageUrl === "string") {
-      plainObj.imageUrl =
-        getAbsoluteImageUrl(req, plainObj.imageUrl) || plainObj.imageUrl;
-    }
-
-    // Convert images array
-    if (Array.isArray(plainObj.images)) {
-      plainObj.images = plainObj.images.map((img: any) => {
-        if (typeof img === "string") {
-          return getAbsoluteImageUrl(req, img) || img;
-        }
-        return img;
-      });
-    }
-
-    // Only process simple nested objects, avoid deep recursion on complex objects
-    for (const key in plainObj) {
-      if (
-        key === "_id" ||
-        key === "__v" ||
-        key === "createdAt" ||
-        key === "updatedAt"
-      ) {
-        continue; // Skip Mongoose metadata
-      }
-
-      const value = plainObj[key];
-      if (
-        value &&
-        typeof value === "object" &&
-        !Array.isArray(value) &&
-        !(value instanceof Date) &&
-        !Buffer.isBuffer(value) &&
-        value.constructor?.name !== "ObjectId"
-      ) {
-        try {
-          plainObj[key] = processImageUrls(req, value, visited);
-        } catch (e) {
-          // If processing fails, keep original value
-          console.error(`Error processing key ${key}:`, e);
-        }
-      }
-    }
-
-    return plainObj;
   }
 
   return obj;
@@ -319,7 +311,7 @@ export async function registerRoutes(
 
   app.get("/api/products", async (req: Request, res: Response) => {
     try {
-      const products = await Product.find().sort({ createdAt: -1 });
+      const products = await Product.find().sort({ createdAt: -1 }).lean();
       const processedProducts = processImageUrls(req, products);
       res.json(processedProducts);
     } catch (error: any) {
@@ -334,7 +326,7 @@ export async function registerRoutes(
     try {
       const product = await Product.findOne({
         productId: req.params.productId,
-      });
+      }).lean();
       if (!product) {
         return res.status(404).json({ error: "Product not found" });
       }
@@ -417,7 +409,7 @@ export async function registerRoutes(
 
   app.get("/api/orders", requireAuth, async (req: Request, res: Response) => {
     try {
-      const orders = await Order.find().sort({ createdAt: -1 });
+      const orders = await Order.find().sort({ createdAt: -1 }).lean();
       const processedOrders = processImageUrls(req, orders);
       res.json(processedOrders);
     } catch (error: any) {
@@ -473,7 +465,7 @@ export async function registerRoutes(
 
   app.get("/api/colors", async (req: Request, res: Response) => {
     try {
-      const colors = await Color.find().sort({ createdAt: 1 });
+      const colors = await Color.find().sort({ createdAt: 1 }).lean();
       const processedColors = processImageUrls(req, colors);
       res.json(processedColors);
     } catch (error: any) {
@@ -548,17 +540,17 @@ export async function registerRoutes(
 
   app.get("/api/presentations", async (req: Request, res: Response) => {
     try {
-      const presentations = await Presentation.find().sort({ createdAt: 1 });
+      const presentations = await Presentation.find()
+        .sort({ createdAt: 1 })
+        .lean();
       const processedPresentations = processImageUrls(req, presentations);
       res.json(processedPresentations);
     } catch (error: any) {
       console.error("Error fetching presentations:", error);
-      res
-        .status(500)
-        .json({
-          error: "Failed to fetch presentations",
-          details: error.message,
-        });
+      res.status(500).json({
+        error: "Failed to fetch presentations",
+        details: error.message,
+      });
     }
   });
 
@@ -625,7 +617,7 @@ export async function registerRoutes(
 
   app.get("/api/addons", async (req: Request, res: Response) => {
     try {
-      const addOns = await AddOn.find().sort({ createdAt: 1 });
+      const addOns = await AddOn.find().sort({ createdAt: 1 }).lean();
       const processedAddOns = processImageUrls(req, addOns);
       res.json(processedAddOns);
     } catch (error: any) {
@@ -696,14 +688,17 @@ export async function registerRoutes(
 
   app.get("/api/settings", async (req: Request, res: Response) => {
     try {
-      const settings = await Setting.find();
+      const settings = await Setting.find().lean();
       const settingsObj = settings.reduce((acc: any, s: any) => {
         acc[s.key] = s.value;
         return acc;
       }, {});
       res.json(settingsObj);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to fetch settings" });
+    } catch (error: any) {
+      console.error("Error fetching settings:", error);
+      res
+        .status(500)
+        .json({ error: "Failed to fetch settings", details: error.message });
     }
   });
 
@@ -762,10 +757,18 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const customOrders = await CustomOrder.find().sort({ createdAt: -1 });
+        const customOrders = await CustomOrder.find()
+          .sort({ createdAt: -1 })
+          .lean();
         res.json(customOrders);
-      } catch (error) {
-        res.status(500).json({ error: "Failed to fetch custom orders" });
+      } catch (error: any) {
+        console.error("Error fetching custom orders:", error);
+        res
+          .status(500)
+          .json({
+            error: "Failed to fetch custom orders",
+            details: error.message,
+          });
       }
     }
   );
@@ -776,7 +779,7 @@ export async function registerRoutes(
     async (req: Request, res: Response) => {
       try {
         const totalOrders = await Order.countDocuments();
-        const orders = await Order.find();
+        const orders = await Order.find().lean();
 
         const totalSales = orders.reduce((sum: number, order: any) => {
           const amount = parseFloat(order.total.replace(/[^0-9.]/g, ""));
@@ -827,7 +830,7 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const inquiries = await Inquiry.find().sort({ createdAt: -1 });
+        const inquiries = await Inquiry.find().sort({ createdAt: -1 }).lean();
         res.json(inquiries);
       } catch (error: any) {
         console.error("Error fetching inquiries:", error);
