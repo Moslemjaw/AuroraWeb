@@ -35,6 +35,7 @@ const allowlist = [
 
 async function buildBackend() {
   console.log("Building backend server...");
+  console.log("Current working directory:", process.cwd());
 
   // Ensure dist directory exists
   if (!existsSync("dist")) {
@@ -49,7 +50,8 @@ async function buildBackend() {
   ];
   const externals = allDeps.filter((dep) => !allowlist.includes(dep));
 
-  await esbuild({
+  console.log("Starting esbuild...");
+  const result = await esbuild({
     entryPoints: ["server/index.ts"],
     platform: "node",
     bundle: true,
@@ -64,6 +66,15 @@ async function buildBackend() {
   });
 
   console.log("Backend build complete!");
+  console.log("Output file:", "dist/index.cjs");
+
+  // Verify the file was created
+  if (existsSync("dist/index.cjs")) {
+    console.log("✅ dist/index.cjs exists!");
+  } else {
+    console.error("❌ ERROR: dist/index.cjs was not created!");
+    process.exit(1);
+  }
 }
 
 buildBackend().catch((err) => {
