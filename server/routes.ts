@@ -29,23 +29,27 @@ function getAbsoluteImageUrl(
   }
 
   try {
-    // Get base URL from request
-    const protocol = req.protocol || "https";
-    const host = req.get("host");
+    // Always use BACKEND_URL in production for consistency across devices
+    // This ensures images work on all devices regardless of request headers
+    const backendUrl =
+      process.env.BACKEND_URL || "https://auroraflowerbe.onrender.com";
 
-    if (!host) {
-      // Fallback: use environment variable or default
-      const backendUrl =
-        process.env.BACKEND_URL || "https://auroraflowerbe.onrender.com";
-      const normalizedUrl = imageUrl.startsWith("/")
-        ? imageUrl
-        : `/${imageUrl}`;
-      return `${backendUrl}${normalizedUrl}`;
+    // In development, try to use request host if available
+    if (process.env.NODE_ENV === "development") {
+      const host = req.get("host");
+      if (host) {
+        const protocol = req.protocol || "http";
+        const baseUrl = `${protocol}://${host}`;
+        const normalizedUrl = imageUrl.startsWith("/")
+          ? imageUrl
+          : `/${imageUrl}`;
+        return `${baseUrl}${normalizedUrl}`;
+      }
     }
 
-    const baseUrl = `${protocol}://${host}`;
+    // Use BACKEND_URL (production or fallback)
     const normalizedUrl = imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`;
-    return `${baseUrl}${normalizedUrl}`;
+    return `${backendUrl}${normalizedUrl}`;
   } catch (error) {
     console.error("Error converting image URL:", error);
     return imageUrl; // Return original if conversion fails
@@ -763,12 +767,10 @@ export async function registerRoutes(
         res.json(customOrders);
       } catch (error: any) {
         console.error("Error fetching custom orders:", error);
-        res
-          .status(500)
-          .json({
-            error: "Failed to fetch custom orders",
-            details: error.message,
-          });
+        res.status(500).json({
+          error: "Failed to fetch custom orders",
+          details: error.message,
+        });
       }
     }
   );

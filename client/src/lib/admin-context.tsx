@@ -1,5 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { productAPI, orderAPI, colorAPI, presentationAPI, addOnAPI, settingsAPI, adminAPI } from "./api";
+import {
+  productAPI,
+  orderAPI,
+  colorAPI,
+  presentationAPI,
+  addOnAPI,
+  settingsAPI,
+  adminAPI,
+} from "./api";
 
 // Define types
 export type Product = {
@@ -64,7 +72,10 @@ type AdminContextType = {
   products: Product[];
   loadProducts: () => Promise<void>;
   addProduct: (product: any) => Promise<void>;
-  updateProduct: (productId: string, updates: Partial<Product>) => Promise<void>;
+  updateProduct: (
+    productId: string,
+    updates: Partial<Product>
+  ) => Promise<void>;
   deleteProduct: (productId: string) => Promise<void>;
   orders: Order[];
   loadOrders: () => Promise<void>;
@@ -76,22 +87,39 @@ type AdminContextType = {
   loadStats: () => Promise<void>;
   colors: Color[];
   loadColors: () => Promise<void>;
-  addColor: (color: { name: string; hex: string; imageUrl?: string; price: number }) => Promise<void>;
+  addColor: (color: {
+    name: string;
+    hex: string;
+    imageUrl?: string;
+    price: number;
+  }) => Promise<void>;
   updateColor: (colorId: string, updates: Partial<Color>) => Promise<void>;
   removeColor: (colorId: string) => Promise<void>;
   presentations: Presentation[];
   loadPresentations: () => Promise<void>;
-  addPresentation: (presentation: { name: string; description?: string; price: number }) => Promise<void>;
-  updatePresentation: (presentationId: string, updates: Partial<Presentation>) => Promise<void>;
+  addPresentation: (presentation: {
+    name: string;
+    description?: string;
+    price: number;
+  }) => Promise<void>;
+  updatePresentation: (
+    presentationId: string,
+    updates: Partial<Presentation>
+  ) => Promise<void>;
   removePresentation: (presentationId: string) => Promise<void>;
   addOns: AddOn[];
   loadAddOns: () => Promise<void>;
-  addAddOn: (addOn: { name: string; description?: string; price: number }) => Promise<void>;
+  addAddOn: (addOn: {
+    name: string;
+    description?: string;
+    price: number;
+  }) => Promise<void>;
   updateAddOn: (addOnId: string, updates: Partial<AddOn>) => Promise<void>;
   removeAddOn: (addOnId: string) => Promise<void>;
   settings: Settings;
   loadSettings: () => Promise<void>;
   updateSettings: (updates: Partial<Settings>) => Promise<void>;
+  isLoadingProducts: boolean;
 };
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -113,14 +141,18 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     totalOrders: 0,
     avgOrderValue: "0.00 K.D.",
   });
+  const [isLoadingProducts, setIsLoadingProducts] = useState(true);
 
   // Check authentication on mount
   useEffect(() => {
-    adminAPI.checkAuth().then(({ isAuthenticated }) => {
-      setIsAuthenticated(isAuthenticated);
-    }).catch(() => {
-      setIsAuthenticated(false);
-    });
+    adminAPI
+      .checkAuth()
+      .then(({ isAuthenticated }) => {
+        setIsAuthenticated(isAuthenticated);
+      })
+      .catch(() => {
+        setIsAuthenticated(false);
+      });
   }, []);
 
   // Load products on mount and when authenticated
@@ -150,12 +182,28 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
-  const loadProducts = async () => {
-    try {
-      const data = await productAPI.getAll();
-      setProducts(data);
-    } catch (error) {
-      console.error("Failed to load products:", error);
+  const loadProducts = async (retries = 3) => {
+    setIsLoadingProducts(true);
+    for (let i = 0; i < retries; i++) {
+      try {
+        const data = await productAPI.getAll();
+        setProducts(data || []);
+        setIsLoadingProducts(false);
+        return; // Success, exit retry loop
+      } catch (error) {
+        console.error(
+          `Failed to load products (attempt ${i + 1}/${retries}):`,
+          error
+        );
+        if (i < retries - 1) {
+          // Wait before retrying (exponential backoff)
+          await new Promise((resolve) => setTimeout(resolve, 1000 * (i + 1)));
+        } else {
+          // Last attempt failed, set empty array
+          setProducts([]);
+          setIsLoadingProducts(false);
+        }
+      }
     }
   };
 
@@ -164,7 +212,10 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     setProducts([...products, created]);
   };
 
-  const updateProduct = async (productId: string, updates: Partial<Product>) => {
+  const updateProduct = async (
+    productId: string,
+    updates: Partial<Product>
+  ) => {
     const updated = await productAPI.update(productId, updates);
     setProducts(products.map((p) => (p.productId === productId ? updated : p)));
   };
@@ -192,7 +243,12 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const addColor = async (color: { name: string; hex: string; imageUrl?: string; price: number }) => {
+  const addColor = async (color: {
+    name: string;
+    hex: string;
+    imageUrl?: string;
+    price: number;
+  }) => {
     const created = await colorAPI.create(color);
     setColors([...colors, created]);
   };
@@ -216,19 +272,32 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const addPresentation = async (presentation: { name: string; description?: string; price: number }) => {
+  const addPresentation = async (presentation: {
+    name: string;
+    description?: string;
+    price: number;
+  }) => {
     const created = await presentationAPI.create(presentation);
     setPresentations([...presentations, created]);
   };
 
-  const updatePresentation = async (presentationId: string, updates: Partial<Presentation>) => {
+  const updatePresentation = async (
+    presentationId: string,
+    updates: Partial<Presentation>
+  ) => {
     const updated = await presentationAPI.update(presentationId, updates);
-    setPresentations(presentations.map((p) => (p.presentationId === presentationId ? updated : p)));
+    setPresentations(
+      presentations.map((p) =>
+        p.presentationId === presentationId ? updated : p
+      )
+    );
   };
 
   const removePresentation = async (presentationId: string) => {
     await presentationAPI.delete(presentationId);
-    setPresentations(presentations.filter((p) => p.presentationId !== presentationId));
+    setPresentations(
+      presentations.filter((p) => p.presentationId !== presentationId)
+    );
   };
 
   const loadAddOns = async () => {
@@ -240,7 +309,11 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const addAddOn = async (addOn: { name: string; description?: string; price: number }) => {
+  const addAddOn = async (addOn: {
+    name: string;
+    description?: string;
+    price: number;
+  }) => {
     const created = await addOnAPI.create(addOn);
     setAddOns([...addOns, created]);
   };
@@ -319,6 +392,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
         settings,
         loadSettings,
         updateSettings,
+        isLoadingProducts,
       }}
     >
       {children}
