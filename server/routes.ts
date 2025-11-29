@@ -15,6 +15,7 @@ import multer from "multer";
 import path from "path";
 import fs from "fs";
 import sharp from "sharp";
+import { v2 as cloudinary } from "cloudinary";
 
 // Helper function to convert relative image URLs to absolute URLs
 function getAbsoluteImageUrl(
@@ -144,6 +145,51 @@ function processImageUrls(req: Request, obj: any): any {
   return obj;
 }
 
+// Configure Cloudinary (supports both CLOUDINARY_URL and individual env vars)
+let useCloudinary = false;
+
+if (process.env.CLOUDINARY_URL) {
+  // Parse CLOUDINARY_URL format: cloudinary://api_key:api_secret@cloud_name
+  const urlMatch = process.env.CLOUDINARY_URL.match(
+    /cloudinary:\/\/([^:]+):([^@]+)@(.+)/
+  );
+  if (urlMatch) {
+    cloudinary.config({
+      cloud_name: urlMatch[3],
+      api_key: urlMatch[1],
+      api_secret: urlMatch[2],
+    });
+    useCloudinary = true;
+    console.log("✅ Cloudinary configured from CLOUDINARY_URL");
+  }
+} else if (
+  process.env.CLOUDINARY_CLOUD_NAME &&
+  process.env.CLOUDINARY_API_KEY &&
+  process.env.CLOUDINARY_API_SECRET
+) {
+  // Use individual environment variables
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
+  useCloudinary = true;
+  console.log("✅ Cloudinary configured from individual environment variables");
+}
+
+if (!useCloudinary) {
+  console.log(
+    "⚠️  Cloudinary not configured - using local storage (images will be lost on restart)"
+  );
+  console.log(
+    "   To enable Cloudinary, set CLOUDINARY_URL or CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET"
+  );
+} else {
+  console.log(`   Cloud Name: ${cloudinary.config().cloud_name}`);
+  console.log(`   API Key: ${cloudinary.config().api_key}`);
+}
+
+// Fallback: local uploads directory
 const uploadDir = path.join(process.cwd(), "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -170,11 +216,66 @@ const upload = multer({
 async function compressAndSaveImage(
   buffer: Buffer,
   originalName: string
-): Promise<string> {
+): Promise<{ filename: string; url: string }> {
   const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
   const ext = path.extname(originalName).toLowerCase();
   const isGif = ext === ".gif";
 
+  // Use Cloudinary if configured
+  if (useCloudinary) {
+    try {
+      console.log("📤 Uploading to Cloudinary...");
+      let processedBuffer = buffer;
+
+      // Process image with Sharp before uploading (except GIFs)
+      if (!isGif) {
+        processedBuffer = await sharp(buffer)
+          .resize(1600, 1600, {
+            fit: "inside",
+            withoutEnlargement: true,
+          })
+          .webp({ quality: 80 })
+          .toBuffer();
+      }
+
+      // Upload to Cloudinary
+      const result = await new Promise<any>((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: "aurora-flowers",
+            resource_type: "image",
+            // Don't force format - let Cloudinary handle it
+          },
+          (error, result) => {
+            if (error) {
+              console.error("❌ Cloudinary upload failed:", error);
+              reject(error);
+            } else {
+              console.log(
+                "✅ Cloudinary upload successful:",
+                result.secure_url
+              );
+              resolve(result);
+            }
+          }
+        );
+        uploadStream.end(processedBuffer);
+      });
+
+      return {
+        filename: result.public_id.split("/").pop() || uniqueSuffix,
+        url: result.secure_url,
+      };
+    } catch (error: any) {
+      console.error("❌ Cloudinary upload error:", error.message || error);
+      console.log("⚠️  Falling back to local storage");
+      // Fall through to local storage
+    }
+  } else {
+    console.log("⚠️  Cloudinary not configured - using local storage");
+  }
+
+  // Fallback: local storage
   let outputFilename: string;
   let outputPath: string;
 
@@ -195,7 +296,10 @@ async function compressAndSaveImage(
       .toFile(outputPath);
   }
 
-  return outputFilename;
+  return {
+    filename: outputFilename,
+    url: `/uploads/${outputFilename}`,
+  };
 }
 
 declare module "express-session" {
@@ -234,13 +338,18 @@ export async function registerRoutes(
         if (!req.file) {
           return res.status(400).json({ error: "No file uploaded" });
         }
-        const filename = await compressAndSaveImage(
+        const result = await compressAndSaveImage(
           req.file.buffer,
           req.file.originalname
         );
-        const relativeUrl = `/uploads/${filename}`;
-        const imageUrl = getAbsoluteImageUrl(req, relativeUrl);
-        res.json({ imageUrl, filename });
+
+        // If Cloudinary was used, url is already absolute
+        const imageUrl = result.url.startsWith("http")
+          ? result.url
+          : getAbsoluteImageUrl(req, result.url) || result.url;
+
+        console.log(`📸 Image uploaded: ${imageUrl}`);
+        res.json({ imageUrl, filename: result.filename });
       } catch (error) {
         console.error("Image compression error:", error);
         res.status(500).json({ error: "Failed to process image" });
@@ -260,12 +369,14 @@ export async function registerRoutes(
         }
         const imageUrls = await Promise.all(
           files.map(async (file) => {
-            const filename = await compressAndSaveImage(
+            const result = await compressAndSaveImage(
               file.buffer,
               file.originalname
             );
-            const relativeUrl = `/uploads/${filename}`;
-            return getAbsoluteImageUrl(req, relativeUrl) || relativeUrl;
+            // If Cloudinary was used, url is already absolute
+            return result.url.startsWith("http")
+              ? result.url
+              : getAbsoluteImageUrl(req, result.url) || result.url;
           })
         );
         res.json({ imageUrls });
