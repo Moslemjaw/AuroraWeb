@@ -21,8 +21,14 @@ export default function Cart() {
     updateQuantity,
     removeFromCart,
     getTotalFormatted,
+    getTotal,
     itemCount,
   } = useCart();
+
+  const SHIPPING_FEE = 2; // 2.00 K.D. flat rate
+  const formatCurrency = (amount: number) => `${amount.toFixed(2)} K.D.`;
+  const subtotal = getTotal();
+  const totalWithShipping = subtotal + (items.length > 0 ? SHIPPING_FEE : 0);
 
   return (
     <div className="min-h-screen bg-background font-sans">
@@ -243,17 +249,19 @@ export default function Cart() {
                   <span className="text-muted-foreground">
                     Items ({itemCount})
                   </span>
-                  <span>{getTotalFormatted()}</span>
+                  <span>{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">Shipping</span>
-                  <span className="text-right">Free</span>
+                  <span className="text-right">
+                    {items.length > 0 ? formatCurrency(SHIPPING_FEE) : "Free"}
+                  </span>
                 </div>
               </div>
               <div className="flex justify-between items-end mb-6 sm:mb-8">
                 <span className="font-medium text-sm sm:text-base">Total</span>
                 <span className="font-serif text-xl sm:text-2xl text-primary">
-                  {getTotalFormatted()}
+                  {formatCurrency(totalWithShipping)}
                 </span>
               </div>
               <Button

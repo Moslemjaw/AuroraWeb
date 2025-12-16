@@ -40,6 +40,11 @@ export default function Checkout() {
     paymentMethod: "cod",
   });
 
+  const SHIPPING_FEE = 2; // 2.00 K.D. flat rate
+  const formatCurrency = (amount: number) => `${amount.toFixed(2)} K.D.`;
+  const subtotal = getTotal();
+  const totalWithShipping = subtotal + (items.length > 0 ? SHIPPING_FEE : 0);
+
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -64,7 +69,7 @@ export default function Checkout() {
         customerName: formData.customerName,
         customerEmail: formData.customerEmail,
         customerPhone: formData.customerPhone,
-        total: getTotalFormatted(),
+        total: formatCurrency(totalWithShipping),
         items: items.length,
         status: "Pending",
         orderData: {
@@ -540,14 +545,16 @@ export default function Checkout() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Shipping</span>
-                    <span>Free</span>
+                    <span>
+                      {items.length > 0 ? formatCurrency(SHIPPING_FEE) : "Free"}
+                    </span>
                   </div>
                 </div>
 
                 <div className="flex justify-between items-end mb-8">
                   <span className="font-medium">Total</span>
                   <span className="font-serif text-2xl text-primary">
-                    {getTotalFormatted()}
+                    {formatCurrency(totalWithShipping)}
                   </span>
                 </div>
 
