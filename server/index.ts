@@ -24,27 +24,34 @@ app.use(
   cors({
     origin: (origin, callback) => {
       // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
+      if (!origin) {
+        console.log("CORS: Allowing request with no origin");
+        return callback(null, true);
+      }
 
       // Allow all Vercel deployments
       if (origin.includes(".vercel.app")) {
+        console.log("CORS: Allowing Vercel origin:", origin);
         return callback(null, true);
       }
 
       // Allow localhost for development
       if (origin.includes("localhost") || origin.includes("127.0.0.1")) {
+        console.log("CORS: Allowing localhost origin:", origin);
         return callback(null, true);
       }
 
       // Check against allowed origins list
-      if (
-        allowedOrigins.includes(origin) ||
-        process.env.NODE_ENV === "development"
-      ) {
+      if (allowedOrigins.includes(origin)) {
+        console.log("CORS: Allowing origin from allowed list:", origin);
+        callback(null, true);
+      } else if (process.env.NODE_ENV === "development") {
+        console.log("CORS: Allowing origin in development:", origin);
         callback(null, true);
       } else {
-        console.log("CORS blocked origin:", origin);
-        callback(new Error("Not allowed by CORS"));
+        console.log("CORS: Blocked origin:", origin);
+        console.log("CORS: Allowed origins:", allowedOrigins);
+        callback(new Error(`Not allowed by CORS: ${origin}`));
       }
     },
     credentials: true,
@@ -57,7 +64,24 @@ app.use(
 
 // Handle preflight requests explicitly
 app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  const origin = req.headers.origin;
+  console.log("OPTIONS preflight request from origin:", origin);
+
+  // Check if origin is allowed
+  const isAllowed =
+    !origin ||
+    origin.includes(".vercel.app") ||
+    origin.includes("localhost") ||
+    origin.includes("127.0.0.1") ||
+    allowedOrigins.includes(origin) ||
+    process.env.NODE_ENV === "development";
+
+  if (isAllowed && origin) {
+    res.header("Access-Control-Allow-Origin", origin);
+  } else {
+    res.header("Access-Control-Allow-Origin", "*");
+  }
+
   res.header(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, PATCH, DELETE, OPTIONS"

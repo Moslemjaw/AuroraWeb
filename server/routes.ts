@@ -310,12 +310,24 @@ declare module "express-session" {
 }
 
 function requireAuth(req: Request, res: Response, next: NextFunction) {
+  // Debug logging
+  console.log("Auth check - Session ID:", req.sessionID);
+  console.log("Auth check - Session exists:", !!req.session);
+  console.log("Auth check - Is authenticated:", req.session?.isAuthenticated);
+  console.log("Auth check - Request origin:", req.headers.origin);
+  console.log("Auth check - Cookies:", req.headers.cookie);
+  
   if (req.session && req.session.isAuthenticated) {
     return next();
   }
   res.status(401).json({ 
     error: "Unauthorized",
-    message: "Please log in to access this resource. Visit /admin/login to authenticate."
+    message: "Please log in to access this resource. Visit /admin/login to authenticate.",
+    debug: {
+      hasSession: !!req.session,
+      isAuthenticated: req.session?.isAuthenticated || false,
+      sessionId: req.sessionID || "none",
+    }
   });
 }
 
@@ -405,10 +417,25 @@ export async function registerRoutes(
         if (password === adminPassword) {
           req.session.isAuthenticated = true;
           req.session.adminId = "admin";
+          
+          // Log session info for debugging
+          console.log("✅ Login successful - Session ID:", req.sessionID);
+          console.log("✅ Session authenticated:", req.session.isAuthenticated);
+          console.log("✅ Request origin:", req.headers.origin);
+          console.log("✅ Cookie will be set by express-session");
+          
+          // Save session explicitly
+          req.session.save((err) => {
+            if (err) {
+              console.error("Session save error:", err);
+            }
+          });
+          
           return res.json({ success: true, message: "Logged in successfully" });
         }
         res.status(401).json({ error: "Invalid credentials" });
       } catch (error) {
+        console.error("Login error:", error);
         res.status(500).json({ error: "Login failed" });
       }
     }
