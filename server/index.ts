@@ -87,10 +87,12 @@ app.use(
       ttl: 7 * 24 * 60 * 60,
     }),
     cookie: {
-      secure: process.env.NODE_ENV === "production",
+      // In production, secure must be true when sameSite is "none"
+      secure: process.env.NODE_ENV === "production" ? true : false,
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      // Don't set domain - let browser handle it automatically
     },
   })
 );

@@ -313,7 +313,10 @@ function requireAuth(req: Request, res: Response, next: NextFunction) {
   if (req.session && req.session.isAuthenticated) {
     return next();
   }
-  res.status(401).json({ error: "Unauthorized" });
+  res.status(401).json({ 
+    error: "Unauthorized",
+    message: "Please log in to access this resource. Visit /admin/login to authenticate."
+  });
 }
 
 export async function registerRoutes(
