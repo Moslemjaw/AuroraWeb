@@ -112,12 +112,23 @@ app.use(
     }),
     cookie: {
       // In production, secure must be true when sameSite is "none"
-      secure: process.env.NODE_ENV === "production" ? true : false,
+      // iOS Safari requires secure: true for cross-origin cookies
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      // Safari requires "none" for cross-origin cookies, but only with secure: true
+      sameSite:
+        process.env.NODE_ENV === "production"
+          ? ("none" as const)
+          : ("lax" as const),
       // Don't set domain - let browser handle it automatically
+      // iOS Safari works better without explicit domain
+      path: "/", // Explicit path for Safari
     },
+    // Add name to help with iOS Safari cookie issues
+    name: "connect.sid",
+    // Force save on every request to help with iOS Safari
+    rolling: true,
   })
 );
 

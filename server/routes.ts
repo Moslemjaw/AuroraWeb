@@ -422,15 +422,34 @@ export async function registerRoutes(
           console.log("✅ Login successful - Session ID:", req.sessionID);
           console.log("✅ Session authenticated:", req.session.isAuthenticated);
           console.log("✅ Request origin:", req.headers.origin);
-          console.log("✅ Cookie will be set by express-session");
+          console.log("✅ User-Agent:", req.headers["user-agent"]);
           
-          // Save session explicitly
-          req.session.save((err) => {
-            if (err) {
-              console.error("Session save error:", err);
-            }
+          // For iOS Safari, we need to explicitly save and ensure cookie is set
+          await new Promise<void>((resolve, reject) => {
+            req.session.save((err) => {
+              if (err) {
+                console.error("❌ Session save error:", err);
+                return reject(err);
+              }
+              resolve();
+            });
           });
           
+          // Explicitly set cookie headers for Safari compatibility
+          // Safari needs the cookie to be set in the response
+          const isProduction = process.env.NODE_ENV === "production";
+          const cookieOptions = {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? ("none" as const) : ("lax" as const),
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+            path: "/",
+          };
+          
+          // Set cookie explicitly for Safari
+          res.cookie("connect.sid", req.sessionID, cookieOptions);
+          
+          console.log("✅ Session saved and cookie set for Safari");
           return res.json({ success: true, message: "Logged in successfully" });
         }
         res.status(401).json({ error: "Invalid credentials" });
