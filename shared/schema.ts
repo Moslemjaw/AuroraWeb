@@ -3,7 +3,7 @@ import { pgTable, text, varchar, real, timestamp, jsonb, integer } from "drizzle
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
-export const products = pgTable("aurora_products", {
+export const auroraProducts = pgTable("aurora_products", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   productId: text("product_id").notNull().unique(),
   title: text("title").notNull(),
@@ -17,14 +17,14 @@ export const products = pgTable("aurora_products", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertProductSchema = createInsertSchema(products).omit({
+export const insertAuroraProductSchema = createInsertSchema(auroraProducts).omit({
   id: true,
   createdAt: true,
 });
-export type InsertProduct = z.infer<typeof insertProductSchema>;
-export type Product = typeof products.$inferSelect;
+export type InsertAuroraProduct = z.infer<typeof insertAuroraProductSchema>;
+export type AuroraProduct = typeof auroraProducts.$inferSelect;
 
-export const orders = pgTable("aurora_orders", {
+export const auroraOrders = pgTable("aurora_orders", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   orderId: text("order_id").notNull().unique(),
   customerName: text("customer_name").notNull(),
@@ -37,14 +37,14 @@ export const orders = pgTable("aurora_orders", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertOrderSchema = createInsertSchema(orders).omit({
+export const insertAuroraOrderSchema = createInsertSchema(auroraOrders).omit({
   id: true,
   createdAt: true,
 });
-export type InsertOrder = z.infer<typeof insertOrderSchema>;
-export type Order = typeof orders.$inferSelect;
+export type InsertAuroraOrder = z.infer<typeof insertAuroraOrderSchema>;
+export type AuroraOrder = typeof auroraOrders.$inferSelect;
 
-export const colors = pgTable("aurora_colors", {
+export const auroraColors = pgTable("aurora_colors", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   colorId: text("color_id").notNull().unique(),
   name: text("name").notNull(),
@@ -53,14 +53,14 @@ export const colors = pgTable("aurora_colors", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertColorSchema = createInsertSchema(colors).omit({
+export const insertAuroraColorSchema = createInsertSchema(auroraColors).omit({
   id: true,
   createdAt: true,
 });
-export type InsertColor = z.infer<typeof insertColorSchema>;
-export type Color = typeof colors.$inferSelect;
+export type InsertAuroraColor = z.infer<typeof insertAuroraColorSchema>;
+export type AuroraColor = typeof auroraColors.$inferSelect;
 
-export const presentations = pgTable("aurora_presentations", {
+export const auroraPresentations = pgTable("aurora_presentations", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   presentationId: text("presentation_id").notNull().unique(),
   name: text("name").notNull(),
@@ -69,14 +69,14 @@ export const presentations = pgTable("aurora_presentations", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertPresentationSchema = createInsertSchema(presentations).omit({
+export const insertAuroraPresentationSchema = createInsertSchema(auroraPresentations).omit({
   id: true,
   createdAt: true,
 });
-export type InsertPresentation = z.infer<typeof insertPresentationSchema>;
-export type Presentation = typeof presentations.$inferSelect;
+export type InsertAuroraPresentation = z.infer<typeof insertAuroraPresentationSchema>;
+export type AuroraPresentation = typeof auroraPresentations.$inferSelect;
 
-export const addons = pgTable("aurora_addons", {
+export const auroraAddons = pgTable("aurora_addons", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   addOnId: text("addon_id").notNull().unique(),
   name: text("name").notNull(),
@@ -85,28 +85,28 @@ export const addons = pgTable("aurora_addons", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertAddonSchema = createInsertSchema(addons).omit({
+export const insertAuroraAddonSchema = createInsertSchema(auroraAddons).omit({
   id: true,
   createdAt: true,
 });
-export type InsertAddon = z.infer<typeof insertAddonSchema>;
-export type Addon = typeof addons.$inferSelect;
+export type InsertAuroraAddon = z.infer<typeof insertAuroraAddonSchema>;
+export type AuroraAddon = typeof auroraAddons.$inferSelect;
 
-export const settings = pgTable("aurora_settings", {
+export const auroraSettings = pgTable("aurora_settings", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   key: text("key").notNull().unique(),
   value: jsonb("value").notNull(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
-export const insertSettingSchema = createInsertSchema(settings).omit({
+export const insertAuroraSettingSchema = createInsertSchema(auroraSettings).omit({
   id: true,
   updatedAt: true,
 });
-export type InsertSetting = z.infer<typeof insertSettingSchema>;
-export type Setting = typeof settings.$inferSelect;
+export type InsertAuroraSetting = z.infer<typeof insertAuroraSettingSchema>;
+export type AuroraSetting = typeof auroraSettings.$inferSelect;
 
-export const customOrders = pgTable("aurora_custom_orders", {
+export const auroraCustomOrders = pgTable("aurora_custom_orders", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   customOrderId: text("custom_order_id").notNull().unique(),
   customerName: text("customer_name"),
@@ -121,9 +121,9 @@ export const customOrders = pgTable("aurora_custom_orders", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const insertCustomOrderSchema = createInsertSchema(customOrders).omit({
+export const insertAuroraCustomOrderSchema = createInsertSchema(auroraCustomOrders).omit({
   id: true,
   createdAt: true,
 });
-export type InsertCustomOrder = z.infer<typeof insertCustomOrderSchema>;
-export type CustomOrder = typeof customOrders.$inferSelect;
+export type InsertAuroraCustomOrder = z.infer<typeof insertAuroraCustomOrderSchema>;
+export type AuroraCustomOrder = typeof auroraCustomOrders.$inferSelect;

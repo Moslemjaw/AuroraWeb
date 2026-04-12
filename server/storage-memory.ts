@@ -1,6 +1,6 @@
 // In-memory storage fallback when MongoDB is unavailable
 
-interface Product {
+interface AuroraProduct {
   _id?: string;
   productId: string;
   title: string;
@@ -14,7 +14,7 @@ interface Product {
   createdAt?: Date;
 }
 
-interface Order {
+interface AuroraOrder {
   _id?: string;
   orderId: string;
   customerName: string;
@@ -27,7 +27,7 @@ interface Order {
   createdAt?: Date;
 }
 
-interface Color {
+interface AuroraColor {
   _id?: string;
   colorId: string;
   name: string;
@@ -36,7 +36,7 @@ interface Color {
   createdAt?: Date;
 }
 
-interface Presentation {
+interface AuroraPresentation {
   _id?: string;
   presentationId: string;
   name: string;
@@ -45,7 +45,7 @@ interface Presentation {
   createdAt?: Date;
 }
 
-interface AddOn {
+interface AuroraAddOn {
   _id?: string;
   addOnId: string;
   name: string;
@@ -54,14 +54,14 @@ interface AddOn {
   createdAt?: Date;
 }
 
-interface Settings {
+interface AuroraSetting {
   _id?: string;
   key: string;
   value: any;
   updatedAt?: Date;
 }
 
-interface CustomOrder {
+interface AuroraCustomOrder {
   _id?: string;
   customOrderId: string;
   customerName?: string;
@@ -77,13 +77,13 @@ interface CustomOrder {
 }
 
 export class MemoryStorage {
-  private products: Map<string, Product> = new Map();
-  private orders: Map<string, Order> = new Map();
-  private colors: Map<string, Color> = new Map();
-  private presentations: Map<string, Presentation> = new Map();
-  private addOns: Map<string, AddOn> = new Map();
-  private settings: Map<string, Settings> = new Map();
-  private customOrders: Map<string, CustomOrder> = new Map();
+  private products: Map<string, AuroraProduct> = new Map();
+  private orders: Map<string, AuroraOrder> = new Map();
+  private colors: Map<string, AuroraColor> = new Map();
+  private presentations: Map<string, AuroraPresentation> = new Map();
+  private addOns: Map<string, AuroraAddOn> = new Map();
+  private settings: Map<string, AuroraSetting> = new Map();
+  private customOrders: Map<string, AuroraCustomOrder> = new Map();
 
   constructor() {
     // Initialize with default colors (with prices)

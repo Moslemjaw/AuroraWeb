@@ -5,7 +5,7 @@ const adminUserSchema = new mongoose.Schema({
   password: { type: String, required: true },
 }, { timestamps: true });
 
-export const AdminUser = mongoose.model("AdminUser", adminUserSchema);
+export const AuroraAdminUser = mongoose.model("AuroraAdminUser", adminUserSchema);
 
 const productSchema = new mongoose.Schema({
   productId: { type: String, required: true, unique: true },
@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema({
   isBestSeller: { type: Boolean, default: false },
 }, { timestamps: true });
 
-export const Product = mongoose.model("Product", productSchema);
+export const AuroraProduct = mongoose.model("AuroraProduct", productSchema);
 
 const orderSchema = new mongoose.Schema({
   orderId: { type: String, required: true, unique: true },
@@ -33,7 +33,7 @@ const orderSchema = new mongoose.Schema({
   orderData: { type: Object },
 }, { timestamps: true });
 
-export const Order = mongoose.model("Order", orderSchema);
+export const AuroraOrder = mongoose.model("AuroraOrder", orderSchema);
 
 const colorSchema = new mongoose.Schema({
   colorId: { type: String, required: true, unique: true },
@@ -43,7 +43,7 @@ const colorSchema = new mongoose.Schema({
   price: { type: Number, default: 0 },
 }, { timestamps: true });
 
-export const Color = mongoose.model("Color", colorSchema);
+export const AuroraColor = mongoose.model("AuroraColor", colorSchema);
 
 const presentationSchema = new mongoose.Schema({
   presentationId: { type: String, required: true, unique: true },
@@ -52,7 +52,7 @@ const presentationSchema = new mongoose.Schema({
   price: { type: Number, default: 0 },
 }, { timestamps: true });
 
-export const Presentation = mongoose.model("Presentation", presentationSchema);
+export const AuroraPresentation = mongoose.model("AuroraPresentation", presentationSchema);
 
 const addOnSchema = new mongoose.Schema({
   addOnId: { type: String, required: true, unique: true },
@@ -61,14 +61,14 @@ const addOnSchema = new mongoose.Schema({
   price: { type: Number, default: 0 },
 }, { timestamps: true });
 
-export const AddOn = mongoose.model("AddOn", addOnSchema);
+export const AuroraAddOn = mongoose.model("AuroraAddOn", addOnSchema);
 
 const settingSchema = new mongoose.Schema({
   key: { type: String, required: true, unique: true },
   value: { type: mongoose.Schema.Types.Mixed, required: true },
 }, { timestamps: true });
 
-export const Setting = mongoose.model("Setting", settingSchema);
+export const AuroraSetting = mongoose.model("AuroraSetting", settingSchema);
 
 const customOrderSchema = new mongoose.Schema({
   customOrderId: { type: String, required: true, unique: true },
@@ -83,7 +83,7 @@ const customOrderSchema = new mongoose.Schema({
   status: { type: String, default: "Pending" },
 }, { timestamps: true });
 
-export const CustomOrder = mongoose.model("CustomOrder", customOrderSchema);
+export const AuroraCustomOrder = mongoose.model("AuroraCustomOrder", customOrderSchema);
 
 const inquirySchema = new mongoose.Schema({
   inquiryId: { type: String, required: true, unique: true },
@@ -94,4 +94,4 @@ const inquirySchema = new mongoose.Schema({
   status: { type: String, default: "Unread", enum: ["Unread", "Read", "Replied"] },
 }, { timestamps: true });
 
-export const Inquiry = mongoose.model("Inquiry", inquirySchema);
+export const AuroraInquiry = mongoose.model("AuroraInquiry", inquirySchema);

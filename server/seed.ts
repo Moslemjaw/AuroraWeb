@@ -1,4 +1,4 @@
-import { Product, Color, Presentation, AddOn, Setting } from "./models";
+import { AuroraProduct as Product, AuroraColor as Color, AuroraPresentation as Presentation, AuroraAddOn as AddOn, AuroraSetting as Setting } from "./models";
 
 const seedProducts = [
   {

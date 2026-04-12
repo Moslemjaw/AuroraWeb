@@ -1,14 +1,14 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { type Server } from "http";
 import {
-  Product,
-  Order,
-  Color,
-  Presentation,
-  AddOn,
-  Setting,
-  CustomOrder,
-  Inquiry,
+  AuroraProduct,
+  AuroraOrder,
+  AuroraColor,
+  AuroraPresentation,
+  AuroraAddOn,
+  AuroraSetting,
+  AuroraCustomOrder,
+  AuroraInquiry,
 } from "./models";
 import { body, validationResult } from "express-validator";
 import multer from "multer";
@@ -115,7 +115,7 @@ function processImageUrls(req: Request, obj: any): any {
         });
       }
 
-      // Process selectedColors array (for orders)
+      // Process selectedAuroraColors array (for orders)
       if (Array.isArray(plainObj.selectedColors)) {
         plainObj.selectedColors = plainObj.selectedColors.map((color: any) => {
           if (color && typeof color === "object") {
@@ -251,11 +251,15 @@ async function compressAndSaveImage(
               console.error("❌ Cloudinary upload failed:", error);
               reject(error);
             } else {
-              console.log(
-                "✅ Cloudinary upload successful:",
-                result.secure_url
-              );
-              resolve(result);
+              if (result) {
+                console.log(
+                  "✅ Cloudinary upload successful:",
+                  result.secure_url
+                );
+                resolve(result);
+              } else {
+                reject(new Error("Cloudinary upload failed: No result"));
+              }
             }
           }
         );
@@ -480,7 +484,7 @@ export async function registerRoutes(
 
   app.get("/api/products", async (req: Request, res: Response) => {
     try {
-      const products = await Product.find().sort({ createdAt: -1 }).lean();
+      const products = await AuroraProduct.find().sort({ createdAt: -1 }).lean();
       const processedProducts = processImageUrls(req, products);
       res.json(processedProducts);
     } catch (error: any) {
@@ -493,11 +497,11 @@ export async function registerRoutes(
 
   app.get("/api/products/:productId", async (req: Request, res: Response) => {
     try {
-      const product = await Product.findOne({
+      const product = await AuroraProduct.findOne({
         productId: req.params.productId,
       }).lean();
       if (!product) {
-        return res.status(404).json({ error: "Product not found" });
+        return res.status(404).json({ error: "AuroraProduct not found" });
       }
       const processedProduct = processImageUrls(req, product);
       res.json(processedProduct);
@@ -527,11 +531,11 @@ export async function registerRoutes(
       }
 
       try {
-        const product = await new Product(req.body).save();
+        const product = await new AuroraProduct(req.body).save();
         res.status(201).json(product);
       } catch (error: any) {
         if (error.code === 11000) {
-          return res.status(400).json({ error: "Product ID already exists" });
+          return res.status(400).json({ error: "AuroraProduct ID already exists" });
         }
         res.status(500).json({ error: "Failed to create product" });
       }
@@ -543,13 +547,13 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const product = await Product.findOneAndUpdate(
+        const product = await AuroraProduct.findOneAndUpdate(
           { productId: req.params.productId },
           { $set: req.body },
           { new: true }
         );
         if (!product) {
-          return res.status(404).json({ error: "Product not found" });
+          return res.status(404).json({ error: "AuroraProduct not found" });
         }
         res.json(product);
       } catch (error) {
@@ -563,11 +567,11 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const product = await Product.findOneAndDelete({
+        const product = await AuroraProduct.findOneAndDelete({
           productId: req.params.productId,
         });
         if (!product) {
-          return res.status(404).json({ error: "Product not found" });
+          return res.status(404).json({ error: "AuroraProduct not found" });
         }
         res.json({ success: true });
       } catch (error) {
@@ -578,7 +582,7 @@ export async function registerRoutes(
 
   app.get("/api/orders", requireAuth, async (req: Request, res: Response) => {
     try {
-      const orders = await Order.find().sort({ createdAt: -1 }).lean();
+      const orders = await AuroraOrder.find().sort({ createdAt: -1 }).lean();
       const processedOrders = processImageUrls(req, orders);
       res.json(processedOrders);
     } catch (error: any) {
@@ -604,7 +608,7 @@ export async function registerRoutes(
 
       try {
         const orderId = `ORD-${Date.now()}`;
-        const order = await new Order({ orderId, ...req.body }).save();
+        const order = await new AuroraOrder({ orderId, ...req.body }).save();
         res.status(201).json(order);
       } catch (error) {
         res.status(500).json({ error: "Failed to create order" });
@@ -617,13 +621,13 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const order = await Order.findOneAndUpdate(
+        const order = await AuroraOrder.findOneAndUpdate(
           { orderId: req.params.orderId },
           { $set: req.body },
           { new: true }
         );
         if (!order) {
-          return res.status(404).json({ error: "Order not found" });
+          return res.status(404).json({ error: "AuroraOrder not found" });
         }
         res.json(order);
       } catch (error) {
@@ -634,7 +638,7 @@ export async function registerRoutes(
 
   app.get("/api/colors", async (req: Request, res: Response) => {
     try {
-      const colors = await Color.find().sort({ createdAt: 1 }).lean();
+      const colors = await AuroraColor.find().sort({ createdAt: 1 }).lean();
       const processedColors = processImageUrls(req, colors);
       res.json(processedColors);
     } catch (error: any) {
@@ -661,7 +665,7 @@ export async function registerRoutes(
 
       try {
         const colorId = `color-${Date.now()}`;
-        const color = await new Color({ colorId, ...req.body }).save();
+        const color = await new AuroraColor({ colorId, ...req.body }).save();
         res.status(201).json(color);
       } catch (error) {
         res.status(500).json({ error: "Failed to create color" });
@@ -674,13 +678,13 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const color = await Color.findOneAndUpdate(
+        const color = await AuroraColor.findOneAndUpdate(
           { colorId: req.params.colorId },
           { $set: req.body },
           { new: true }
         );
         if (!color) {
-          return res.status(404).json({ error: "Color not found" });
+          return res.status(404).json({ error: "AuroraColor not found" });
         }
         res.json(color);
       } catch (error) {
@@ -694,11 +698,11 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const color = await Color.findOneAndDelete({
+        const color = await AuroraColor.findOneAndDelete({
           colorId: req.params.colorId,
         });
         if (!color) {
-          return res.status(404).json({ error: "Color not found" });
+          return res.status(404).json({ error: "AuroraColor not found" });
         }
         res.json({ success: true });
       } catch (error) {
@@ -709,7 +713,7 @@ export async function registerRoutes(
 
   app.get("/api/presentations", async (req: Request, res: Response) => {
     try {
-      const presentations = await Presentation.find()
+      const presentations = await AuroraPresentation.find()
         .sort({ createdAt: 1 })
         .lean();
       const processedPresentations = processImageUrls(req, presentations);
@@ -735,7 +739,7 @@ export async function registerRoutes(
 
       try {
         const presentationId = `pres-${Date.now()}`;
-        const presentation = await new Presentation({
+        const presentation = await new AuroraPresentation({
           presentationId,
           ...req.body,
         }).save();
@@ -751,13 +755,13 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const presentation = await Presentation.findOneAndUpdate(
+        const presentation = await AuroraPresentation.findOneAndUpdate(
           { presentationId: req.params.presentationId },
           { $set: req.body },
           { new: true }
         );
         if (!presentation) {
-          return res.status(404).json({ error: "Presentation not found" });
+          return res.status(404).json({ error: "AuroraPresentation not found" });
         }
         res.json(presentation);
       } catch (error) {
@@ -771,11 +775,11 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const presentation = await Presentation.findOneAndDelete({
+        const presentation = await AuroraPresentation.findOneAndDelete({
           presentationId: req.params.presentationId,
         });
         if (!presentation) {
-          return res.status(404).json({ error: "Presentation not found" });
+          return res.status(404).json({ error: "AuroraPresentation not found" });
         }
         res.json({ success: true });
       } catch (error) {
@@ -786,7 +790,7 @@ export async function registerRoutes(
 
   app.get("/api/addons", async (req: Request, res: Response) => {
     try {
-      const addOns = await AddOn.find().sort({ createdAt: 1 }).lean();
+      const addOns = await AuroraAddOn.find().sort({ createdAt: 1 }).lean();
       const processedAddOns = processImageUrls(req, addOns);
       res.json(processedAddOns);
     } catch (error: any) {
@@ -809,7 +813,7 @@ export async function registerRoutes(
 
       try {
         const addOnId = `addon-${Date.now()}`;
-        const addOn = await new AddOn({ addOnId, ...req.body }).save();
+        const addOn = await new AuroraAddOn({ addOnId, ...req.body }).save();
         res.status(201).json(addOn);
       } catch (error) {
         res.status(500).json({ error: "Failed to create add-on" });
@@ -822,7 +826,7 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const addOn = await AddOn.findOneAndUpdate(
+        const addOn = await AuroraAddOn.findOneAndUpdate(
           { addOnId: req.params.addOnId },
           { $set: req.body },
           { new: true }
@@ -842,7 +846,7 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const addOn = await AddOn.findOneAndDelete({
+        const addOn = await AuroraAddOn.findOneAndDelete({
           addOnId: req.params.addOnId,
         });
         if (!addOn) {
@@ -857,7 +861,7 @@ export async function registerRoutes(
 
   app.get("/api/settings", async (req: Request, res: Response) => {
     try {
-      const settings = await Setting.find().lean();
+      const settings = await AuroraSetting.find().lean();
       const settingsObj = settings.reduce((acc: any, s: any) => {
         acc[s.key] = s.value;
         return acc;
@@ -878,13 +882,13 @@ export async function registerRoutes(
       try {
         const updates = req.body;
         for (const [key, value] of Object.entries(updates)) {
-          await Setting.findOneAndUpdate(
+          await AuroraSetting.findOneAndUpdate(
             { key },
             { $set: { key, value } },
             { upsert: true, new: true }
           );
         }
-        const settings = await Setting.find();
+        const settings = await AuroraSetting.find();
         const settingsObj = settings.reduce((acc: any, s: any) => {
           acc[s.key] = s.value;
           return acc;
@@ -910,11 +914,11 @@ export async function registerRoutes(
 
       try {
         const customOrderId = `CUSTOM-${Date.now()}`;
-        const customOrder = await new CustomOrder({
+        const customAuroraOrder = await new AuroraCustomOrder({
           customOrderId,
           ...req.body,
         }).save();
-        res.status(201).json(customOrder);
+        res.status(201).json(customAuroraOrder);
       } catch (error) {
         res.status(500).json({ error: "Failed to create custom order" });
       }
@@ -926,7 +930,7 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const customOrders = await CustomOrder.find()
+        const customOrders = await AuroraCustomOrder.find()
           .sort({ createdAt: -1 })
           .lean();
         res.json(customOrders);
@@ -945,8 +949,8 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const totalOrders = await Order.countDocuments();
-        const orders = await Order.find().lean();
+        const totalOrders = await AuroraOrder.countDocuments();
+        const orders = await AuroraOrder.find().lean();
 
         const totalSales = orders.reduce((sum: number, order: any) => {
           const amount = parseFloat(order.total.replace(/[^0-9.]/g, ""));
@@ -982,7 +986,7 @@ export async function registerRoutes(
 
       try {
         const inquiryId = `INQ-${Date.now()}`;
-        const inquiry = await new Inquiry({ inquiryId, ...req.body }).save();
+        const inquiry = await new AuroraInquiry({ inquiryId, ...req.body }).save();
         res
           .status(201)
           .json({ success: true, message: "Message sent successfully" });
@@ -997,7 +1001,7 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const inquiries = await Inquiry.find().sort({ createdAt: -1 }).lean();
+        const inquiries = await AuroraInquiry.find().sort({ createdAt: -1 }).lean();
         res.json(inquiries);
       } catch (error: any) {
         console.error("Error fetching inquiries:", error);
@@ -1013,13 +1017,13 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const inquiry = await Inquiry.findByIdAndUpdate(
+        const inquiry = await AuroraInquiry.findByIdAndUpdate(
           req.params.id,
           { status: req.body.status },
           { new: true }
         );
         if (!inquiry) {
-          return res.status(404).json({ error: "Inquiry not found" });
+          return res.status(404).json({ error: "AuroraInquiry not found" });
         }
         res.json(inquiry);
       } catch (error) {
@@ -1033,9 +1037,9 @@ export async function registerRoutes(
     requireAuth,
     async (req: Request, res: Response) => {
       try {
-        const inquiry = await Inquiry.findByIdAndDelete(req.params.id);
+        const inquiry = await AuroraInquiry.findByIdAndDelete(req.params.id);
         if (!inquiry) {
-          return res.status(404).json({ error: "Inquiry not found" });
+          return res.status(404).json({ error: "AuroraInquiry not found" });
         }
         res.json({ success: true });
       } catch (error) {
