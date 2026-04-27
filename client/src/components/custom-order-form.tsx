@@ -15,6 +15,7 @@ import {
 import { colorAPI, presentationAPI, addOnAPI, settingsAPI } from "@/lib/api";
 import { useCart } from "@/lib/cart-context";
 import customOrderIcon from "@assets/custom-order-icon.png";
+import { useT } from "@/lib/i18n";
 
 type Color = {
   colorId: string;
@@ -49,6 +50,7 @@ type SectionKey = "flowers" | "colors" | "presentation" | "addons";
 export default function CustomOrderForm() {
   const [, setLocation] = useLocation();
   const { addCustomToCart } = useCart();
+  const { getText, t } = useT();
 
   const [colors, setColors] = useState<Color[]>([]);
   const [presentations, setPresentations] = useState<Presentation[]>([]);
@@ -143,7 +145,7 @@ export default function CustomOrderForm() {
   const handleAddToCart = () => {
     if (selectedColors.length === 0) {
       toast({
-        title: "Please select at least one color",
+        title: getText(t.customForm.selectColorError),
         variant: "destructive",
       });
       setOpenSection("colors");
@@ -152,7 +154,7 @@ export default function CustomOrderForm() {
 
     if (!selectedPresentation) {
       toast({
-        title: "Please select a presentation style",
+        title: getText(t.customForm.selectPresentationError),
         variant: "destructive",
       });
       setOpenSection("presentation");
@@ -179,8 +181,7 @@ export default function CustomOrderForm() {
       return { addOnId: addOn.addOnId, name: addOn.name, price: addOn.price };
     });
 
-    const colorNames = selectedColorDetails.map((c) => c.name).join(", ");
-    const title = `Custom Bouquet (${quantity} flowers)`;
+    const title = `${getText(t.customForm.customBouquet)} (${quantity} ${getText(t.customForm.flowers)})`;
 
     addCustomToCart({
       productId: `custom-${Date.now()}`,
@@ -203,8 +204,8 @@ export default function CustomOrderForm() {
     });
 
     toast({
-      title: "Added to Cart!",
-      description: `Your custom ${quantity}-flower arrangement has been added to your cart.`,
+      title: getText(t.customForm.addedToCartTitle),
+      description: getText(t.customForm.addedToCartDesc),
     });
 
     setQuantity(settings.flowerCountMin);
@@ -220,20 +221,20 @@ export default function CustomOrderForm() {
   const getSectionSummary = (section: SectionKey) => {
     switch (section) {
       case "flowers":
-        return `${quantity} flowers`;
+        return `${quantity} ${getText(t.customForm.flowers)}`;
       case "colors":
         return selectedColors.length > 0
-          ? `${selectedColors.length} selected`
-          : "None selected";
+          ? `${selectedColors.length} ${getText(t.customForm.selected)}`
+          : getText(t.customForm.noneSelected);
       case "presentation":
         const pres = presentations.find(
           (p) => p.presentationId === selectedPresentation
         );
-        return pres?.name || "None selected";
+        return pres?.name || getText(t.customForm.noneSelected);
       case "addons":
         return selectedAddOns.length > 0
-          ? `${selectedAddOns.length} selected`
-          : "None selected";
+          ? `${selectedAddOns.length} ${getText(t.customForm.selected)}`
+          : getText(t.customForm.noneSelected);
       default:
         return "";
     }
@@ -243,10 +244,10 @@ export default function CustomOrderForm() {
     <div className="p-0 sm:p-4 lg:p-10">
       <div className="text-center mb-6 sm:mb-10">
         <h3 className="font-serif text-xl sm:text-2xl text-foreground mb-2">
-          Start Your Project
+          {getText(t.customForm.startProject)}
         </h3>
         <p className="text-xs sm:text-sm text-muted-foreground">
-          Configure your arrangement below.
+          {getText(t.customForm.configureBelow)}
         </p>
       </div>
 
@@ -261,7 +262,7 @@ export default function CustomOrderForm() {
           >
             <div className="flex items-center gap-3">
               <Flower className="w-5 h-5 text-primary" />
-              <span className="font-medium text-foreground">Flower Count</span>
+              <span className="font-medium text-foreground">{getText(t.customForm.flowerCount)}</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-sm text-primary font-medium">
@@ -278,7 +279,7 @@ export default function CustomOrderForm() {
             <div className="px-4 pb-4 pt-2 border-t border-border/50">
               <div className="flex justify-between items-center mb-4">
                 <span className="text-sm text-muted-foreground">
-                  Select quantity
+                  {getText(t.customForm.selectQuantity)}
                 </span>
                 <span
                   className="font-mono text-sm font-bold text-primary bg-secondary px-3 py-1 rounded-md"
@@ -314,9 +315,9 @@ export default function CustomOrderForm() {
           >
             <div className="flex items-center gap-3">
               <Palette className="w-5 h-5 text-primary" />
-              <span className="font-medium text-foreground">Color Palette</span>
+              <span className="font-medium text-foreground">{getText(t.customForm.colorPalette)}</span>
               <span className="text-xs text-muted-foreground">
-                (select multiple)
+                {getText(t.customForm.selectMultiple)}
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -399,7 +400,7 @@ export default function CustomOrderForm() {
                     </span>
                     {color.price > 0 && (
                       <span className="text-[9px] sm:text-[10px] text-primary mt-0.5">
-                        +{color.price.toFixed(2)} K.D./ea
+                        +{color.price.toFixed(2)} K.D./{getText(t.customForm.each)}
                       </span>
                     )}
                   </button>
@@ -419,7 +420,7 @@ export default function CustomOrderForm() {
           >
             <div className="flex items-center gap-3">
               <Gift className="w-5 h-5 text-primary" />
-              <span className="font-medium text-foreground">Presentation</span>
+              <span className="font-medium text-foreground">{getText(t.customForm.presentation)}</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-sm text-muted-foreground">
@@ -463,7 +464,7 @@ export default function CustomOrderForm() {
                     <span className="text-xs text-primary font-medium mt-1">
                       {pres.price > 0
                         ? `+${pres.price.toFixed(2)} K.D.`
-                        : "Included"}
+                        : getText(t.customForm.included)}
                     </span>
                   </button>
                 ))}
@@ -482,8 +483,8 @@ export default function CustomOrderForm() {
           >
             <div className="flex items-center gap-3">
               <Sparkles className="w-5 h-5 text-primary" />
-              <span className="font-medium text-foreground">Add-ons</span>
-              <span className="text-xs text-muted-foreground">(optional)</span>
+              <span className="font-medium text-foreground">{getText(t.customForm.addOnsOptional)}</span>
+              <span className="text-xs text-muted-foreground">{getText(t.customForm.optional)}</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="text-sm text-muted-foreground">
@@ -539,8 +540,8 @@ export default function CustomOrderForm() {
           <div className="space-y-2 mb-4">
             <div className="flex justify-between text-xs text-muted-foreground">
               <span>
-                {quantity} flowers @ {settings.pricePerFlower.toFixed(2)} K.D.
-                each
+                {quantity} {getText(t.customForm.flowers)} @ {settings.pricePerFlower.toFixed(2)} K.D.
+                {" "}{getText(t.customForm.each)}
               </span>
               <span>
                 {(quantity * settings.pricePerFlower).toFixed(2)} K.D.
@@ -549,8 +550,8 @@ export default function CustomOrderForm() {
             {selectedColors.length > 0 && colorSurchargePerFlower > 0 && (
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>
-                  Color upgrade ({selectedColors.length} selected) @ +
-                  {colorSurchargePerFlower.toFixed(2)} K.D./flower
+                  {getText(t.customForm.colorUpgrade)} ({selectedColors.length} {getText(t.customForm.selected)}) @ +
+                  {colorSurchargePerFlower.toFixed(2)} K.D.{getText(t.customForm.perFlower)}
                 </span>
                 <span>
                   +{(quantity * colorSurchargePerFlower).toFixed(2)} K.D.
@@ -560,7 +561,7 @@ export default function CustomOrderForm() {
             {selectedPresentation && (
               <div className="flex justify-between text-xs text-muted-foreground">
                 <span>
-                  Presentation:{" "}
+                  {getText(t.customForm.presentation)}:{" "}
                   {
                     presentations.find(
                       (p) => p.presentationId === selectedPresentation
@@ -597,7 +598,7 @@ export default function CustomOrderForm() {
           </div>
           <div className="flex justify-between items-end mb-4 sm:mb-6">
             <span className="text-xs sm:text-sm text-muted-foreground">
-              Total
+              {getText(t.customForm.total)}
             </span>
             <span
               className="text-2xl sm:text-3xl font-serif font-medium text-primary"
@@ -614,7 +615,7 @@ export default function CustomOrderForm() {
             data-testid="button-add-to-cart"
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
-            Add to Cart
+            {getText(t.customForm.addToCart)}
           </Button>
         </div>
       </div>

@@ -18,11 +18,13 @@ import MobileNav from "@/components/mobile-nav";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 import customOrderIcon from "@assets/custom-order-icon.png";
 import { useToast } from "@/hooks/use-toast";
+import { useT } from "@/lib/i18n";
 
 export default function Checkout() {
   const { items, getTotalFormatted, getTotal, clearCart } = useCart();
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { getText, t } = useT();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   const [orderId, setOrderId] = useState("");
@@ -40,7 +42,7 @@ export default function Checkout() {
     paymentMethod: "cod",
   });
 
-  const SHIPPING_FEE = 2; // 2.00 K.D. flat rate
+  const SHIPPING_FEE = 2;
   const formatCurrency = (amount: number) => `${amount.toFixed(2)} K.D.`;
   const subtotal = getTotal();
   const totalWithShipping = subtotal + (items.length > 0 ? SHIPPING_FEE : 0);
@@ -56,8 +58,8 @@ export default function Checkout() {
     e.preventDefault();
     if (items.length === 0) {
       toast({
-        title: "Cart is empty",
-        description: "Please add items to your cart before checkout.",
+        title: getText(t.checkout.cartEmptyError),
+        description: getText(t.checkout.addItemsErrorDesc),
         variant: "destructive",
       });
       return;
@@ -98,13 +100,13 @@ export default function Checkout() {
       clearCart();
 
       toast({
-        title: "Order placed successfully!",
-        description: `Your order ${order.orderId} has been received.`,
+        title: getText(t.checkout.orderSuccess),
+        description: `${getText(t.checkout.orderReceivedDesc)} ${order.orderId}`,
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to place order. Please try again.",
+        title: getText(t.checkout.error),
+        description: getText(t.checkout.orderFailed),
         variant: "destructive",
       });
     } finally {
@@ -137,20 +139,19 @@ export default function Checkout() {
               <Check className="w-10 h-10 text-primary" />
             </div>
             <h1 className="font-serif text-3xl sm:text-4xl text-foreground mb-4">
-              Thank You!
+              {getText(t.checkout.thankYou)}
             </h1>
             <p className="text-muted-foreground mb-2">
-              Your order has been placed successfully.
+              {getText(t.checkout.orderPlaced)}
             </p>
             <p className="text-lg font-medium text-primary mb-8">
-              Order ID: {orderId}
+              {getText(t.checkout.orderId)}: {orderId}
             </p>
 
             {formData.paymentMethod === "whatsapp" && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-8">
                 <p className="text-green-800 text-sm">
-                  Our customer service team will contact you via WhatsApp to
-                  complete the payment.
+                  {getText(t.checkout.whatsappNote)}
                 </p>
               </div>
             )}
@@ -159,7 +160,7 @@ export default function Checkout() {
               asChild
               className="bg-primary hover:bg-primary/90 text-white rounded-none uppercase tracking-widest text-xs font-bold"
             >
-              <Link href="/">Continue Shopping</Link>
+              <Link href="/">{getText(t.cart.continueShopping)}</Link>
             </Button>
           </div>
         </div>
@@ -189,16 +190,16 @@ export default function Checkout() {
         <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24 py-12 sm:py-20">
           <div className="max-w-lg mx-auto text-center">
             <h1 className="font-serif text-3xl sm:text-4xl text-foreground mb-4">
-              Your cart is empty
+              {getText(t.checkout.cartEmpty)}
             </h1>
             <p className="text-muted-foreground mb-8">
-              Add some beautiful flowers to your cart first.
+              {getText(t.checkout.addItemsFirst)}
             </p>
             <Button
               asChild
               className="bg-primary hover:bg-primary/90 text-white rounded-none uppercase tracking-widest text-xs font-bold"
             >
-              <Link href="/">Browse Products</Link>
+              <Link href="/">{getText(t.checkout.browseProducts)}</Link>
             </Button>
           </div>
         </div>
@@ -230,10 +231,10 @@ export default function Checkout() {
             href="/cart"
             className="inline-flex items-center text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors mb-4"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" /> Back to Cart
+            <ArrowLeft className="w-4 h-4 mr-2" /> {getText(t.checkout.backToCart)}
           </Link>
           <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground">
-            Checkout
+            {getText(t.checkout.checkout)}
           </h1>
         </div>
 
@@ -242,7 +243,7 @@ export default function Checkout() {
             <div className="lg:col-span-2 space-y-8">
               <div className="bg-white p-6 sm:p-8 border border-border/40 rounded-sm">
                 <h2 className="font-serif text-xl sm:text-2xl text-foreground mb-6">
-                  Customer Information
+                  {getText(t.checkout.customerInfo)}
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
@@ -250,7 +251,7 @@ export default function Checkout() {
                       htmlFor="customerName"
                       className="text-xs uppercase tracking-wider text-muted-foreground"
                     >
-                      Full Name *
+                      {getText(t.checkout.fullName)}
                     </Label>
                     <Input
                       id="customerName"
@@ -267,7 +268,7 @@ export default function Checkout() {
                       htmlFor="customerEmail"
                       className="text-xs uppercase tracking-wider text-muted-foreground"
                     >
-                      Email
+                      {getText(t.checkout.emailLabel)}
                     </Label>
                     <Input
                       id="customerEmail"
@@ -284,7 +285,7 @@ export default function Checkout() {
                       htmlFor="customerPhone"
                       className="text-xs uppercase tracking-wider text-muted-foreground"
                     >
-                      Phone *
+                      {getText(t.checkout.phone)}
                     </Label>
                     <Input
                       id="customerPhone"
@@ -302,7 +303,7 @@ export default function Checkout() {
 
               <div className="bg-white p-6 sm:p-8 border border-border/40 rounded-sm">
                 <h2 className="font-serif text-xl sm:text-2xl text-foreground mb-6">
-                  Delivery Address
+                  {getText(t.checkout.deliveryAddress)}
                 </h2>
                 <div className="space-y-4">
                   <div>
@@ -310,7 +311,7 @@ export default function Checkout() {
                       htmlFor="address"
                       className="text-xs uppercase tracking-wider text-muted-foreground"
                     >
-                      Street Address *
+                      {getText(t.checkout.streetAddress)}
                     </Label>
                     <Textarea
                       id="address"
@@ -328,7 +329,7 @@ export default function Checkout() {
                       htmlFor="city"
                       className="text-xs uppercase tracking-wider text-muted-foreground"
                     >
-                      City / Area *
+                      {getText(t.checkout.cityArea)}
                     </Label>
                     <Input
                       id="city"
@@ -345,7 +346,7 @@ export default function Checkout() {
 
               <div className="bg-white p-6 sm:p-8 border border-border/40 rounded-sm">
                 <h2 className="font-serif text-xl sm:text-2xl text-foreground mb-6">
-                  Gift Options
+                  {getText(t.checkout.giftOptions)}
                 </h2>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-3">
@@ -358,7 +359,7 @@ export default function Checkout() {
                       data-testid="checkbox-is-gift"
                     />
                     <Label htmlFor="isGift" className="text-sm cursor-pointer">
-                      This order is a gift (deliver to someone else)
+                      {getText(t.checkout.isGift)}
                     </Label>
                   </div>
 
@@ -369,7 +370,7 @@ export default function Checkout() {
                           htmlFor="giftRecipientName"
                           className="text-xs uppercase tracking-wider text-muted-foreground"
                         >
-                          Recipient Name
+                          {getText(t.checkout.recipientName)}
                         </Label>
                         <Input
                           id="giftRecipientName"
@@ -385,7 +386,7 @@ export default function Checkout() {
                           htmlFor="giftMessage"
                           className="text-xs uppercase tracking-wider text-muted-foreground"
                         >
-                          Gift Message
+                          {getText(t.checkout.giftMessage)}
                         </Label>
                         <Textarea
                           id="giftMessage"
@@ -394,7 +395,7 @@ export default function Checkout() {
                           onChange={handleInputChange}
                           rows={3}
                           className="mt-1 rounded-none border-border resize-none"
-                          placeholder="Write a personal message for the recipient..."
+                          placeholder={getText(t.checkout.giftMessagePlaceholder)}
                           data-testid="input-gift-message"
                         />
                       </div>
@@ -405,7 +406,7 @@ export default function Checkout() {
 
               <div className="bg-white p-6 sm:p-8 border border-border/40 rounded-sm">
                 <h2 className="font-serif text-xl sm:text-2xl text-foreground mb-6">
-                  Payment Method
+                  {getText(t.checkout.paymentMethod)}
                 </h2>
                 <RadioGroup
                   value={formData.paymentMethod}
@@ -427,10 +428,10 @@ export default function Checkout() {
                         className="flex items-center gap-2 text-sm font-medium cursor-pointer"
                       >
                         <Banknote className="w-5 h-5 text-primary" />
-                        Cash on Delivery
+                        {getText(t.checkout.cod)}
                       </Label>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Pay when you receive your order
+                        {getText(t.checkout.codDesc)}
                       </p>
                     </div>
                   </div>
@@ -448,11 +449,10 @@ export default function Checkout() {
                         className="flex items-center gap-2 text-sm font-medium cursor-pointer"
                       >
                         <MessageCircle className="w-5 h-5 text-green-500" />
-                        Pay via WhatsApp
+                        {getText(t.checkout.whatsappPay)}
                       </Label>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Our customer service will contact you to complete the
-                        payment
+                        {getText(t.checkout.whatsappPayDesc)}
                       </p>
                     </div>
                   </div>
@@ -470,13 +470,13 @@ export default function Checkout() {
                         className="flex items-center gap-2 text-sm font-medium cursor-not-allowed"
                       >
                         <CreditCard className="w-5 h-5 text-muted-foreground" />
-                        Credit/Debit Card
+                        {getText(t.checkout.creditCard)}
                         <span className="text-[10px] uppercase tracking-wider bg-secondary px-2 py-0.5 rounded-full">
-                          Coming Soon
+                          {getText(t.checkout.comingSoon)}
                         </span>
                       </Label>
                       <p className="text-xs text-muted-foreground mt-1">
-                        Online payment gateway will be available soon
+                        {getText(t.checkout.creditCardDesc)}
                       </p>
                     </div>
                   </div>
@@ -485,7 +485,7 @@ export default function Checkout() {
 
               <div className="bg-white p-6 sm:p-8 border border-border/40 rounded-sm">
                 <h2 className="font-serif text-xl sm:text-2xl text-foreground mb-6">
-                  Additional Notes
+                  {getText(t.checkout.additionalNotes)}
                 </h2>
                 <Textarea
                   name="notes"
@@ -493,7 +493,7 @@ export default function Checkout() {
                   onChange={handleInputChange}
                   rows={3}
                   className="rounded-none border-border resize-none"
-                  placeholder="Any special instructions for your order..."
+                  placeholder={getText(t.checkout.notesPlaceholder)}
                   data-testid="input-notes"
                 />
               </div>
@@ -502,7 +502,7 @@ export default function Checkout() {
             <div className="lg:col-span-1">
               <div className="bg-secondary/10 p-5 sm:p-8 rounded-sm sticky top-28">
                 <h3 className="font-serif text-lg sm:text-xl text-foreground mb-6">
-                  Order Summary
+                  {getText(t.cart.orderSummary)}
                 </h3>
 
                 <div className="space-y-4 mb-6 pb-6 border-b border-border/50">
@@ -528,7 +528,7 @@ export default function Checkout() {
                           {item.title}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          Qty: {item.quantity}
+                          {getText(t.checkout.qty)}: {item.quantity}
                         </p>
                       </div>
                       <span className="text-sm font-medium whitespace-nowrap">
@@ -540,19 +540,19 @@ export default function Checkout() {
 
                 <div className="space-y-3 mb-6 pb-6 border-b border-border/50">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Subtotal</span>
+                    <span className="text-muted-foreground">{getText(t.checkout.subtotal)}</span>
                     <span>{getTotalFormatted()}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Shipping</span>
+                    <span className="text-muted-foreground">{getText(t.cart.shipping)}</span>
                     <span>
-                      {items.length > 0 ? formatCurrency(SHIPPING_FEE) : "Free"}
+                      {items.length > 0 ? formatCurrency(SHIPPING_FEE) : getText(t.cart.free)}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex justify-between items-end mb-8">
-                  <span className="font-medium">Total</span>
+                  <span className="font-medium">{getText(t.cart.total)}</span>
                   <span className="font-serif text-2xl text-primary">
                     {formatCurrency(totalWithShipping)}
                   </span>
@@ -564,7 +564,7 @@ export default function Checkout() {
                   className="w-full h-12 bg-primary hover:bg-primary/90 text-white rounded-none uppercase tracking-widest text-xs font-bold"
                   data-testid="button-place-order"
                 >
-                  {isSubmitting ? "Placing Order..." : "Place Order"}
+                  {isSubmitting ? getText(t.checkout.placingOrder) : getText(t.checkout.placeOrder)}
                 </Button>
               </div>
             </div>

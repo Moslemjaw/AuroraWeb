@@ -1,7 +1,10 @@
 import { Loader2 } from "lucide-react";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
+import { useT } from "@/lib/i18n";
 
 export default function LoadingScreen() {
+  const { getText, t } = useT();
+  
   return (
     <div className="fixed inset-0 z-[9999] bg-white flex items-center justify-center">
       <div className="flex flex-col items-center gap-6">
@@ -20,7 +23,7 @@ export default function LoadingScreen() {
             Aurora Flowers
           </h2>
           <p className="text-sm text-muted-foreground">
-            Loading beautiful blooms...
+            {getText(t.loading.loadingBlooms)}
           </p>
         </div>
       </div>

@@ -106,3 +106,54 @@
     @apply px-6 md:px-12 lg:px-24;
   }
 }
+
+/* ===== RTL (Arabic) Support ===== */
+[dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .font-serif {
+  font-family: 'Playfair Display', 'Noto Sans Arabic', serif;
+}
+
+[dir="rtl"] .font-sans {
+  font-family: 'DM Sans', 'Noto Sans Arabic', sans-serif;
+}
+
+/* Flip arrow icons in RTL */
+[dir="rtl"] .lucide-arrow-left {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .lucide-arrow-right {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .lucide-chevron-left {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] .lucide-chevron-right {
+  transform: scaleX(-1);
+}
+
+/* Fix slide-out menu for RTL — slide from left instead */
+[dir="rtl"] .translate-x-full {
+  --tw-translate-x: -100%;
+}
+
+[dir="rtl"] .fixed.right-0 {
+  right: auto;
+  left: 0;
+}
+
+/* Ensure form inputs use correct text direction based on content */
+[dir="rtl"] input,
+[dir="rtl"] textarea {
+  text-align: right;
+}
+
+/* Keep tracking-widest uppercase labels readable in RTL */
+[dir="rtl"] .tracking-widest {
+  letter-spacing: 0.1em;
+}

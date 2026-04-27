@@ -2,6 +2,7 @@ import ProductCard from "@/components/product-card";
 import CustomOrderForm from "@/components/custom-order-form";
 import MobileNav from "@/components/mobile-nav";
 import LoadingScreen from "@/components/loading-screen";
+import LanguageToggle from "@/components/language-toggle";
 import { Button } from "@/components/ui/button";
 import {
   ArrowRight,
@@ -16,6 +17,7 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { config } from "@/lib/config";
+import { useT } from "@/lib/i18n";
 
 import peonyImg from "@assets/generated_images/handmade_fabric_peony_bouquet.png";
 import roseImg from "@assets/generated_images/fabric_rose_close_up.png";
@@ -46,6 +48,7 @@ function ProductCarousel({
   itemsPerPage?: number;
 }) {
   const [currentPage, setCurrentPage] = useState(0);
+  const { getText, t } = useT();
   const totalPages = Math.ceil(products.length / itemsPerPage);
 
   const startIndex = currentPage * itemsPerPage;
@@ -66,7 +69,7 @@ function ProductCarousel({
   if (products.length === 0) {
     return (
       <div className="text-center py-12 text-muted-foreground">
-        No products available
+        {getText(t.home.noProducts)}
       </div>
     );
   }
@@ -131,6 +134,7 @@ export default function Home() {
   const { products, isLoadingProducts } = useAdmin();
   const [, setLocation] = useLocation();
   const [logoClicks, setLogoClicks] = useState(0);
+  const { getText, t, lang } = useT();
 
   const handleLogoClick = (e: React.MouseEvent) => {
     const newClicks = logoClicks + 1;
@@ -176,21 +180,25 @@ export default function Home() {
         <div className="hidden md:flex items-center gap-8">
           <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-foreground/80 items-center">
             <Link href="/" className="hover:text-primary transition-colors">
-              Shop
+              {getText(t.nav.shop)}
             </Link>
             <Link
               href="/about"
               className="hover:text-primary transition-colors"
             >
-              About Us
+              {getText(t.nav.aboutUs)}
             </Link>
             <Link
               href="/contact"
               className="hover:text-primary transition-colors"
             >
-              Contact
+              {getText(t.nav.contact)}
             </Link>
           </div>
+
+          <div className="w-px h-4 bg-border mx-2" />
+
+          <LanguageToggle />
 
           <div className="w-px h-4 bg-border mx-2" />
 
@@ -200,7 +208,7 @@ export default function Home() {
               size="sm"
               className="hover:bg-secondary px-0 gap-2 text-xs font-bold tracking-widest uppercase text-foreground/80 hover:text-primary"
             >
-              Cart
+              {getText(t.nav.cart)}
               <div className="relative">
                 <ShoppingBag className="w-5 h-5" />
                 <div className="absolute -top-2 -right-2 bg-primary text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">
@@ -231,19 +239,18 @@ export default function Home() {
         {/* Left Panel */}
         <div className="w-full lg:w-[45%] bg-transparent lg:bg-white flex flex-col justify-center items-start px-6 py-4 sm:p-8 md:p-16 lg:p-24 z-10 lg:pt-24">
           <span className="text-primary font-bold tracking-[0.2em] sm:tracking-[0.3em] uppercase text-[10px] sm:text-xs mb-4 sm:mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-            EST. 2024
+            {getText(t.home.est)}
           </span>
 
           <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-[1.1] text-foreground tracking-tight mb-4 sm:mb-8 animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-100">
-            Timeless <br />
+            {getText(t.home.heroTitle1)} <br />
             <span className="italic font-light text-foreground/80">
-              Botanicals.
+              {getText(t.home.heroTitle2)}
             </span>
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground/80 leading-relaxed max-w-md mb-8 sm:mb-12 font-light animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
-            Handcrafted fabric flowers that capture the fleeting beauty of
-            nature in a permanent form. Sustainable luxury for your home.
+            {getText(t.home.heroDescription)}
           </p>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-10 animate-in fade-in slide-in-from-bottom-10 duration-1000 delay-300 w-full sm:w-auto mt-2 mb-8 sm:mb-0">
@@ -260,13 +267,13 @@ export default function Home() {
                 }
               }}
             >
-              View Collections
+              {getText(t.home.viewCollections)}
             </Button>
             <a
               href="#custom"
               className="text-xs tracking-[0.15em] sm:tracking-[0.2em] uppercase font-bold text-muted-foreground/80 hover:text-foreground transition-colors text-center sm:text-left w-full sm:w-auto py-3"
             >
-              Custom Orders
+              {getText(t.home.customOrders)}
             </a>
           </div>
         </div>
@@ -295,10 +302,10 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24">
           <div className="text-center mb-10 sm:mb-20 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500">
             <p className="text-[10px] sm:text-xs font-bold tracking-[0.2em] sm:tracking-[0.3em] text-muted-foreground uppercase mb-2 sm:mb-3">
-              Shop The Look
+              {getText(t.home.shopTheLook)}
             </p>
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground">
-              Curated Collections
+              {getText(t.home.curatedCollections)}
             </h2>
           </div>
 
@@ -323,31 +330,29 @@ export default function Home() {
             <div className="space-y-6 sm:space-y-10">
               <div className="space-y-4 sm:space-y-6">
                 <span className="text-primary font-bold tracking-widest uppercase text-[10px] sm:text-xs">
-                  Bespoke Service
+                  {getText(t.home.bespokeService)}
                 </span>
                 <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground leading-tight">
-                  Design Your Own <br className="hidden sm:block" />
-                  Masterpiece.
+                  {getText(t.home.designYourOwn)} <br className="hidden sm:block" />
+                  {getText(t.home.masterpiece)}
                 </h2>
                 <p className="text-muted-foreground text-base sm:text-lg leading-relaxed font-light">
-                  Our Custom Studio allows you to commission a unique
-                  arrangement. Select your preferences, and our artisans will
-                  craft a piece specifically for your space.
+                  {getText(t.home.customDescription)}
                 </p>
               </div>
 
               <div className="space-y-4 sm:space-y-8 font-serif text-lg sm:text-xl text-foreground/80">
                 <div className="flex items-center gap-3 sm:gap-4">
                   <span className="text-primary text-xl sm:text-2xl">01.</span>{" "}
-                  Select Quantity
+                  {getText(t.home.step1)}
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4">
                   <span className="text-primary text-xl sm:text-2xl">02.</span>{" "}
-                  Choose Palette
+                  {getText(t.home.step2)}
                 </div>
                 <div className="flex items-center gap-3 sm:gap-4">
                   <span className="text-primary text-xl sm:text-2xl">03.</span>{" "}
-                  We Create
+                  {getText(t.home.step3)}
                 </div>
               </div>
             </div>
@@ -370,17 +375,17 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-10 sm:mb-16 gap-4 sm:gap-6">
             <div className="space-y-2 sm:space-y-4">
               <span className="text-primary font-bold tracking-widest uppercase text-[10px] sm:text-xs">
-                Client Favorites
+                {getText(t.home.clientFavorites)}
               </span>
               <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground">
-                Best Sellers
+                {getText(t.home.bestSellers)}
               </h2>
             </div>
             <Button
               variant="outline"
               className="rounded-none border-b-2 border-transparent border-b-primary hover:border-b-primary hover:bg-transparent px-0 h-auto text-foreground font-medium uppercase tracking-widest text-[10px] sm:text-xs"
             >
-              View All Favorites
+              {getText(t.home.viewAllFavorites)}
             </Button>
           </div>
 
@@ -406,19 +411,19 @@ export default function Home() {
 
           <nav className="flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-12 mb-8 sm:mb-12 text-xs sm:text-sm font-medium text-muted-foreground uppercase tracking-widest">
             <Link href="/" className="hover:text-primary transition-colors">
-              Shop
+              {getText(t.nav.shop)}
             </Link>
             <Link
               href="/about"
               className="hover:text-primary transition-colors"
             >
-              About Us
+              {getText(t.nav.aboutUs)}
             </Link>
             <Link
               href="/contact"
               className="hover:text-primary transition-colors"
             >
-              Contact
+              {getText(t.nav.contact)}
             </Link>
           </nav>
 
@@ -455,10 +460,10 @@ export default function Home() {
           </div>
 
           <p className="text-[10px] sm:text-xs text-muted-foreground/60 uppercase tracking-widest mb-2">
-            © 2025 Aurora Flowers. All rights reserved.
+            {getText(t.home.copyright)}
           </p>
           <p className="text-[10px] sm:text-xs text-muted-foreground/60">
-            Developed By{" "}
+            {getText(t.home.developedBy)}{" "}
             <a
               href="https://www.instagram.com/nova.luminar?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
               target="_blank"

@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Menu, X, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import LanguageToggle from "@/components/language-toggle";
+import { useT } from "@/lib/i18n";
 
 interface MobileNavProps {
   isLight?: boolean;
@@ -9,6 +11,7 @@ interface MobileNavProps {
 
 export default function MobileNav({ isLight = false }: MobileNavProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { getText, t } = useT();
 
   return (
     <>
@@ -34,7 +37,7 @@ export default function MobileNav({ isLight = false }: MobileNavProps) {
       <div className={`fixed top-0 right-0 h-full w-[280px] bg-white z-[101] transform transition-transform duration-300 ease-in-out md:hidden ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-6 border-b border-border">
-            <span className="font-serif text-xl">Menu</span>
+            <span className="font-serif text-xl">{getText(t.nav.menu)}</span>
             <Button 
               variant="ghost" 
               size="icon"
@@ -53,7 +56,7 @@ export default function MobileNav({ isLight = false }: MobileNavProps) {
                 onClick={() => setIsOpen(false)}
                 data-testid="link-mobile-shop"
               >
-                Shop
+                {getText(t.nav.shop)}
               </Link>
               <Link 
                 href="/about"
@@ -61,7 +64,7 @@ export default function MobileNav({ isLight = false }: MobileNavProps) {
                 onClick={() => setIsOpen(false)}
                 data-testid="link-mobile-about"
               >
-                About Us
+                {getText(t.nav.aboutUs)}
               </Link>
               <Link 
                 href="/contact"
@@ -69,8 +72,12 @@ export default function MobileNav({ isLight = false }: MobileNavProps) {
                 onClick={() => setIsOpen(false)}
                 data-testid="link-mobile-contact"
               >
-                Contact
+                {getText(t.nav.contact)}
               </Link>
+
+              <div className="pt-4 border-t border-border">
+                <LanguageToggle />
+              </div>
             </div>
           </nav>
 
@@ -82,7 +89,7 @@ export default function MobileNav({ isLight = false }: MobileNavProps) {
               data-testid="link-mobile-cart"
             >
               <ShoppingBag className="w-5 h-5" />
-              View Cart
+              {getText(t.nav.viewCart)}
             </Link>
           </div>
         </div>

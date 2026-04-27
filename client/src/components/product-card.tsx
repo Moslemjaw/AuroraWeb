@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { useT } from "@/lib/i18n";
 
 interface ProductCardProps {
   id?: string;
@@ -10,6 +11,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ id, image, title, price, description }: ProductCardProps) {
+  const { getText, t } = useT();
+  
   const Content = (
     <div className="group flex flex-col cursor-pointer bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden">
       <div className="relative aspect-[4/5] overflow-hidden bg-secondary/20">
@@ -23,7 +26,7 @@ export default function ProductCard({ id, image, title, price, description }: Pr
         
         <div className="absolute inset-x-3 sm:inset-x-4 bottom-3 sm:bottom-4 opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 ease-out">
            <Button className="w-full bg-white text-foreground hover:bg-primary hover:text-white shadow-lg rounded-none uppercase tracking-widest text-[10px] sm:text-xs font-bold h-9 sm:h-10 border-none">
-             View Details
+             {getText(t.product.viewDetails)}
            </Button>
         </div>
       </div>

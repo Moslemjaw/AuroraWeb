@@ -1,11 +1,15 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import MobileNav from "@/components/mobile-nav";
+import LanguageToggle from "@/components/language-toggle";
 import { ShoppingBag } from "lucide-react";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 import artisanImg from "@assets/image_1764360953696.png";
+import { useT } from "@/lib/i18n";
 
 export default function About() {
+  const { getText, t } = useT();
+
   return (
     <div className="min-h-screen bg-background font-sans">
       <nav className="sticky top-0 left-0 w-full z-50 px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between bg-white border-b border-border shadow-sm">
@@ -24,19 +28,21 @@ export default function About() {
         <div className="hidden md:flex items-center gap-8">
           <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-foreground/80 items-center">
             <Link href="/" className="hover:text-primary transition-colors">
-              Shop
+              {getText(t.nav.shop)}
             </Link>
             <Link href="/about" className="text-primary transition-colors">
-              About Us
+              {getText(t.nav.aboutUs)}
             </Link>
             <Link
               href="/contact"
               className="hover:text-primary transition-colors"
             >
-              Contact
+              {getText(t.nav.contact)}
             </Link>
           </div>
 
+          <div className="w-px h-4 bg-border mx-2" />
+          <LanguageToggle />
           <div className="w-px h-4 bg-border mx-2" />
 
           <Link href="/cart">
@@ -45,7 +51,7 @@ export default function About() {
               size="sm"
               className="hover:bg-secondary px-0 gap-2 text-xs font-bold tracking-widest uppercase text-foreground/80 hover:text-primary"
             >
-              Cart
+              {getText(t.nav.cart)}
               <div className="relative">
                 <ShoppingBag className="w-5 h-5" />
                 <div className="absolute -top-2 -right-2 bg-primary text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">
@@ -62,11 +68,11 @@ export default function About() {
       <div className="container mx-auto px-6 md:px-12 lg:px-24 py-20">
         <div className="max-w-3xl mx-auto text-center mb-20 space-y-6">
           <span className="text-primary font-bold tracking-widest uppercase text-xs">
-            Our Story
+            {getText(t.about.ourStory)}
           </span>
           <h1 className="font-serif text-5xl md:text-6xl text-foreground leading-tight">
-            Crafting beauty that{" "}
-            <span className="italic text-primary">lasts forever.</span>
+            {getText(t.about.heroTitle)}{" "}
+            <span className="italic text-primary">{getText(t.about.heroAccent)}</span>
           </h1>
         </div>
 
@@ -80,17 +86,13 @@ export default function About() {
           </div>
           <div className="space-y-8">
             <h2 className="font-serif text-3xl text-foreground">
-              The Art of Fabric Floristry
+              {getText(t.about.artTitle)}
             </h2>
             <p className="text-lg text-muted-foreground font-light leading-relaxed">
-              Aurora Flowers was born from a desire to capture the fleeting
-              beauty of nature in a permanent form. We believe that flowers
-              should be enjoyed not just for a week, but for a lifetime.
+              {getText(t.about.artParagraph1)}
             </p>
             <p className="text-lg text-muted-foreground font-light leading-relaxed">
-              Every petal is individually cut, dyed, and shaped by hand in our
-              Kuwait studio. We use premium fabrics like silk, organza, and
-              velvet to create textures that rival real blooms.
+              {getText(t.about.artParagraph2)}
             </p>
             <div className="pt-4">
               <img
@@ -103,29 +105,27 @@ export default function About() {
         </div>
 
         <div className="bg-secondary/10 p-12 md:p-20 text-center space-y-8">
-          <h2 className="font-serif text-3xl text-foreground">Our Values</h2>
+          <h2 className="font-serif text-3xl text-foreground">{getText(t.about.ourValues)}</h2>
           <div className="grid md:grid-cols-3 gap-12 pt-8">
             <div className="space-y-4">
               <div className="w-12 h-1 bg-primary mx-auto mb-4" />
-              <h3 className="font-serif text-xl">Sustainability</h3>
+              <h3 className="font-serif text-xl">{getText(t.about.sustainability)}</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Using eco-friendly materials and reducing waste through
-                upcycling.
+                {getText(t.about.sustainabilityDesc)}
               </p>
             </div>
             <div className="space-y-4">
               <div className="w-12 h-1 bg-primary mx-auto mb-4" />
-              <h3 className="font-serif text-xl">Craftsmanship</h3>
+              <h3 className="font-serif text-xl">{getText(t.about.craftsmanship)}</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Honoring traditional flower making techniques with modern
-                design.
+                {getText(t.about.craftsmanshipDesc)}
               </p>
             </div>
             <div className="space-y-4">
               <div className="w-12 h-1 bg-primary mx-auto mb-4" />
-              <h3 className="font-serif text-xl">Timelessness</h3>
+              <h3 className="font-serif text-xl">{getText(t.about.timelessness)}</h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
-                Creating heirlooms that can be passed down through generations.
+                {getText(t.about.timelessnessDesc)}
               </p>
             </div>
           </div>

@@ -5,15 +5,18 @@ import { Button } from "@/components/ui/button";
 import { Link, useRoute } from "wouter";
 import { ArrowLeft, Minus, Plus, ShoppingBag, Check } from "lucide-react";
 import MobileNav from "@/components/mobile-nav";
+import LanguageToggle from "@/components/language-toggle";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 import NotFound from "@/pages/not-found";
 import { useToast } from "@/hooks/use-toast";
+import { useT } from "@/lib/i18n";
 
 export default function ProductDetail() {
   const [match, params] = useRoute("/product/:id");
   const { products } = useAdmin();
   const { addToCart, itemCount } = useCart();
   const { toast } = useToast();
+  const { getText, t } = useT();
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   
@@ -34,8 +37,8 @@ export default function ProductDetail() {
       category: product.category,
     }, quantity);
     toast({
-      title: "Added to cart",
-      description: `${quantity} x ${product.title} added to your cart`,
+      title: getText(t.product.addedToCart),
+      description: `${quantity} x ${product.title} ${getText(t.product.addedDesc)}`,
     });
   };
 
@@ -50,10 +53,12 @@ export default function ProductDetail() {
          </div>
          <div className="hidden md:flex items-center gap-8">
             <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-muted-foreground/80">
-              <Link href="/" className="hover:text-primary transition-colors">Shop</Link>
-              <Link href="/about" className="hover:text-primary transition-colors">About Us</Link>
-              <Link href="/contact" className="hover:text-primary transition-colors">Contact</Link>
+              <Link href="/" className="hover:text-primary transition-colors">{getText(t.nav.shop)}</Link>
+              <Link href="/about" className="hover:text-primary transition-colors">{getText(t.nav.aboutUs)}</Link>
+              <Link href="/contact" className="hover:text-primary transition-colors">{getText(t.nav.contact)}</Link>
             </div>
+            <div className="w-px h-4 bg-border/60 mx-2" />
+            <LanguageToggle />
             <div className="w-px h-4 bg-border/60 mx-2" />
             <Link href="/cart" className="flex items-center gap-2 hover:text-primary transition-colors relative">
               <ShoppingBag className="w-4 h-4" />
@@ -69,7 +74,7 @@ export default function ProductDetail() {
 
       <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24 py-6 sm:py-12">
         <Link href="/" className="inline-flex items-center text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors mb-6 sm:mb-8">
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Collection
+          <ArrowLeft className="w-4 h-4 mr-2" /> {getText(t.product.backToCollection)}
         </Link>
 
         <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-start">
@@ -113,13 +118,13 @@ export default function ProductDetail() {
 
             <div className="border-y border-border/50 py-4 sm:py-6 space-y-3 sm:space-y-4">
               <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary flex-shrink-0" /> Handmade to order
+                <Check className="w-4 h-4 text-primary flex-shrink-0" /> {getText(t.product.handmade)}
               </div>
               <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary flex-shrink-0" /> Lifetime durability
+                <Check className="w-4 h-4 text-primary flex-shrink-0" /> {getText(t.product.lifetime)}
               </div>
               <div className="flex items-center gap-3 text-xs sm:text-sm text-muted-foreground">
-                <Check className="w-4 h-4 text-primary flex-shrink-0" /> Gift wrapping included
+                <Check className="w-4 h-4 text-primary flex-shrink-0" /> {getText(t.product.giftWrapping)}
               </div>
             </div>
 
@@ -146,7 +151,7 @@ export default function ProductDetail() {
                 className="flex-1 h-12 sm:h-14 bg-foreground text-background hover:bg-primary hover:text-white rounded-none uppercase tracking-widest text-[10px] sm:text-xs font-bold transition-colors"
                 data-testid="button-add-to-cart"
               >
-                Add to Cart
+                {getText(t.product.addToCart)}
               </Button>
             </div>
           </div>

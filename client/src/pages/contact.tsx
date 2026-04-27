@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import MobileNav from "@/components/mobile-nav";
+import LanguageToggle from "@/components/language-toggle";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 import {
   Mail,
@@ -13,9 +14,11 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { config } from "@/lib/config";
+import { useT } from "@/lib/i18n";
 
 export default function Contact() {
   const { toast } = useToast();
+  const { getText, t } = useT();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -35,7 +38,7 @@ export default function Contact() {
       !formData.message
     ) {
       toast({
-        title: "Please fill in all fields",
+        title: getText(t.contact.fillAllFields),
         variant: "destructive",
       });
       return;
@@ -54,21 +57,21 @@ export default function Contact() {
         setIsSubmitted(true);
         setFormData({ name: "", email: "", subject: "", message: "" });
         toast({
-          title: "Message sent!",
-          description: "We'll get back to you soon.",
+          title: getText(t.contact.msgSentTitle),
+          description: getText(t.contact.msgSentDesc),
         });
       } else {
         const data = await response.json();
         toast({
-          title: "Failed to send message",
-          description: data.error || "Please try again",
+          title: getText(t.contact.failedToSend),
+          description: data.error || getText(t.contact.tryAgain),
           variant: "destructive",
         });
       }
     } catch (error) {
       toast({
-        title: "Failed to send message",
-        description: "Please try again later",
+        title: getText(t.contact.failedToSend),
+        description: getText(t.contact.tryAgainLater),
         variant: "destructive",
       });
     } finally {
@@ -94,19 +97,21 @@ export default function Contact() {
         <div className="hidden md:flex items-center gap-8">
           <div className="flex gap-8 text-xs font-bold tracking-widest uppercase text-foreground/80 items-center">
             <Link href="/" className="hover:text-primary transition-colors">
-              Shop
+              {getText(t.nav.shop)}
             </Link>
             <Link
               href="/about"
               className="hover:text-primary transition-colors"
             >
-              About Us
+              {getText(t.nav.aboutUs)}
             </Link>
             <Link href="/contact" className="text-primary transition-colors">
-              Contact
+              {getText(t.nav.contact)}
             </Link>
           </div>
 
+          <div className="w-px h-4 bg-border mx-2" />
+          <LanguageToggle />
           <div className="w-px h-4 bg-border mx-2" />
 
           <Link href="/cart">
@@ -115,7 +120,7 @@ export default function Contact() {
               size="sm"
               className="hover:bg-secondary px-0 gap-2 text-xs font-bold tracking-widest uppercase text-foreground/80 hover:text-primary"
             >
-              Cart
+              {getText(t.nav.cart)}
               <div className="relative">
                 <ShoppingBag className="w-5 h-5" />
                 <div className="absolute -top-2 -right-2 bg-primary text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm">
@@ -133,14 +138,13 @@ export default function Contact() {
         <div className="grid lg:grid-cols-2 gap-20">
           <div className="space-y-8">
             <span className="text-primary font-bold tracking-widest uppercase text-xs">
-              Get in Touch
+              {getText(t.contact.getInTouch)}
             </span>
             <h1 className="font-serif text-5xl text-foreground leading-tight">
-              We'd love to hear from you.
+              {getText(t.contact.heroTitle)}
             </h1>
             <p className="text-lg text-muted-foreground font-light leading-relaxed">
-              Whether you have a question about a custom order, shipping, or
-              just want to say hello, we're here to help.
+              {getText(t.contact.heroDescription)}
             </p>
 
             <div className="space-y-6 pt-8">
@@ -160,7 +164,7 @@ export default function Contact() {
                 <div className="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-primary">
                   <MapPin className="w-5 h-5" />
                 </div>
-                <span>Kuwait City, Kuwait</span>
+                <span>{getText(t.contact.locationLabel)}</span>
               </div>
             </div>
           </div>
@@ -170,10 +174,10 @@ export default function Contact() {
               <div className="flex flex-col items-center justify-center py-12 space-y-4">
                 <CheckCircle className="w-16 h-16 text-green-500" />
                 <h3 className="font-serif text-2xl text-foreground">
-                  Thank you!
+                  {getText(t.contact.thankYou)}
                 </h3>
                 <p className="text-muted-foreground text-center">
-                  Your message has been sent. We'll get back to you soon.
+                  {getText(t.contact.messageSent)}
                 </p>
                 <Button
                   onClick={() => setIsSubmitted(false)}
@@ -181,7 +185,7 @@ export default function Contact() {
                   className="mt-4"
                   data-testid="button-send-another"
                 >
-                  Send Another Message
+                  {getText(t.contact.sendAnother)}
                 </Button>
               </div>
             ) : (
@@ -189,12 +193,12 @@ export default function Contact() {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                      Name
+                      {getText(t.contact.name)}
                     </label>
                     <input
                       type="text"
                       className="w-full border-b border-border py-2 focus:outline-none focus:border-primary bg-transparent"
-                      placeholder="Jane Doe"
+                      placeholder={getText(t.contact.namePlaceholder)}
                       value={formData.name}
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
@@ -204,12 +208,12 @@ export default function Contact() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                      Email
+                      {getText(t.contact.email)}
                     </label>
                     <input
                       type="email"
                       className="w-full border-b border-border py-2 focus:outline-none focus:border-primary bg-transparent"
-                      placeholder="jane@example.com"
+                      placeholder={getText(t.contact.emailPlaceholder)}
                       value={formData.email}
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
@@ -220,12 +224,12 @@ export default function Contact() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    Subject
+                    {getText(t.contact.subject)}
                   </label>
                   <input
                     type="text"
                     className="w-full border-b border-border py-2 focus:outline-none focus:border-primary bg-transparent"
-                    placeholder="Custom Order Inquiry"
+                    placeholder={getText(t.contact.subjectPlaceholder)}
                     value={formData.subject}
                     onChange={(e) =>
                       setFormData({ ...formData, subject: e.target.value })
@@ -235,11 +239,11 @@ export default function Contact() {
                 </div>
                 <div className="space-y-2">
                   <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-                    Message
+                    {getText(t.contact.message)}
                   </label>
                   <textarea
                     className="w-full border-b border-border py-2 focus:outline-none focus:border-primary bg-transparent min-h-[100px]"
-                    placeholder="Tell us about your dream bouquet..."
+                    placeholder={getText(t.contact.messagePlaceholder)}
                     value={formData.message}
                     onChange={(e) =>
                       setFormData({ ...formData, message: e.target.value })
@@ -256,10 +260,10 @@ export default function Contact() {
                   {isSubmitting ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      Sending...
+                      {getText(t.contact.sending)}
                     </>
                   ) : (
-                    "Send Message"
+                    getText(t.contact.sendMessage)
                   )}
                 </Button>
               </form>

@@ -14,6 +14,7 @@ import {
 import MobileNav from "@/components/mobile-nav";
 import logoImg from "@assets/WhatsApp Image 2025-11-28 at 10.40.17 PM-modified_1764359891804.png";
 import customOrderIcon from "@assets/custom-order-icon.png";
+import { useT } from "@/lib/i18n";
 
 export default function Cart() {
   const {
@@ -24,6 +25,7 @@ export default function Cart() {
     getTotal,
     itemCount,
   } = useCart();
+  const { getText, t } = useT();
 
   const SHIPPING_FEE = 2; // 2.00 K.D. flat rate
   const formatCurrency = (amount: number) => `${amount.toFixed(2)} K.D.`;
@@ -54,10 +56,10 @@ export default function Cart() {
             href="/"
             className="inline-flex items-center text-xs sm:text-sm text-muted-foreground hover:text-primary transition-colors mb-4 sm:mb-6"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" /> Continue Shopping
+            <ArrowLeft className="w-4 h-4 mr-2" /> {getText(t.cart.continueShopping)}
           </Link>
           <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground">
-            Your Shopping Cart
+            {getText(t.cart.yourCart)}
           </h1>
         </div>
 
@@ -65,16 +67,16 @@ export default function Cart() {
           <div className="text-center py-16">
             <ShoppingBag className="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
             <h2 className="font-serif text-2xl text-foreground mb-3">
-              Your cart is empty
+              {getText(t.cart.emptyCart)}
             </h2>
             <p className="text-muted-foreground mb-8">
-              Looks like you haven't added any beautiful blooms yet.
+              {getText(t.cart.emptyCartDesc)}
             </p>
             <Button
               asChild
               className="bg-primary hover:bg-primary/90 text-white rounded-none uppercase tracking-widest text-xs font-bold"
             >
-              <Link href="/">Browse Collection</Link>
+              <Link href="/">{getText(t.cart.browseCollection)}</Link>
             </Button>
           </div>
         ) : (
@@ -146,7 +148,7 @@ export default function Cart() {
                           </div>
                         ) : (
                           <span className="text-xs text-muted-foreground">
-                            Custom Order
+                            {getText(t.cart.customOrder)}
                           </span>
                         )}
                         <button
@@ -155,7 +157,7 @@ export default function Cart() {
                           data-testid={`remove-${item.productId}`}
                         >
                           <Trash2 className="w-3 h-3" />
-                          Remove
+                          {getText(t.cart.remove)}
                         </button>
                       </div>
                     </div>
@@ -169,7 +171,7 @@ export default function Cart() {
                         <Palette className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                         <div>
                           <span className="text-xs font-medium text-foreground block mb-1">
-                            Colors
+                            {getText(t.cart.colors)}
                           </span>
                           <div className="flex flex-wrap gap-1.5">
                             {item.customization.selectedColors.map((color) => (
@@ -205,7 +207,7 @@ export default function Cart() {
                         <Gift className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                         <div>
                           <span className="text-xs font-medium text-foreground block mb-0.5">
-                            Presentation
+                            {getText(t.cart.presentation)}
                           </span>
                           <span className="text-[10px] text-muted-foreground">
                             {item.customization.presentation.name}
@@ -219,7 +221,7 @@ export default function Cart() {
                           <Sparkles className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
                           <div>
                             <span className="text-xs font-medium text-foreground block mb-1">
-                              Add-ons
+                              {getText(t.cart.addOns)}
                             </span>
                             <div className="flex flex-wrap gap-1.5">
                               {item.customization.addOns.map((addon) => (
@@ -242,24 +244,24 @@ export default function Cart() {
 
             <div className="bg-secondary/10 p-5 sm:p-8 h-fit rounded-sm sticky top-28">
               <h3 className="font-serif text-lg sm:text-xl text-foreground mb-4 sm:mb-6">
-                Order Summary
+                {getText(t.cart.orderSummary)}
               </h3>
               <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-border/50">
                 <div className="flex justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">
-                    Items ({itemCount})
+                    {getText(t.cart.items)} ({itemCount})
                   </span>
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-xs sm:text-sm">
-                  <span className="text-muted-foreground">Shipping</span>
+                  <span className="text-muted-foreground">{getText(t.cart.shipping)}</span>
                   <span className="text-right">
-                    {items.length > 0 ? formatCurrency(SHIPPING_FEE) : "Free"}
+                    {items.length > 0 ? formatCurrency(SHIPPING_FEE) : getText(t.cart.free)}
                   </span>
                 </div>
               </div>
               <div className="flex justify-between items-end mb-6 sm:mb-8">
-                <span className="font-medium text-sm sm:text-base">Total</span>
+                <span className="font-medium text-sm sm:text-base">{getText(t.cart.total)}</span>
                 <span className="font-serif text-xl sm:text-2xl text-primary">
                   {formatCurrency(totalWithShipping)}
                 </span>
@@ -269,7 +271,7 @@ export default function Cart() {
                 className="w-full h-11 sm:h-12 bg-primary hover:bg-primary/90 text-white rounded-none uppercase tracking-widest text-[10px] sm:text-xs font-bold"
               >
                 <Link href="/checkout" data-testid="button-checkout">
-                  Proceed to Checkout
+                  {getText(t.cart.proceedToCheckout)}
                 </Link>
               </Button>
             </div>
