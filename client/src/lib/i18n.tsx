@@ -12,6 +12,7 @@ const translations = {
     cart: { en: "Cart", ar: "السلة" },
     menu: { en: "Menu", ar: "القائمة" },
     viewCart: { en: "View Cart", ar: "عرض السلة" },
+    brand: { en: "Aurora Flowers", ar: "أورورا فلاور" },
   },
 
   // ===== Home Page =====
@@ -43,7 +44,7 @@ const translations = {
     viewAllFavorites: { en: "View All Favorites", ar: "عرض الكل" },
     copyright: {
       en: "© 2025 Aurora Flowers. All rights reserved.",
-      ar: "© ٢٠٢٥ أورورا فلاورز. جميع الحقوق محفوظة.",
+      ar: "© ٢٠٢٥ أورورا فلاور. جميع الحقوق محفوظة.",
     },
     developedBy: { en: "Developed By", ar: "تطوير" },
   },
@@ -343,5 +344,19 @@ export function useT() {
   // Returns a getter function: pass a translation object { en: "...", ar: "..." }
   const getText = (val: { en: string; ar: string }) => val[lang];
 
-  return { getText, lang, t };
+  /**
+   * Picks the Arabic or English field from a database object.
+   * Usage: localizeField(product, 'title', 'titleAr')  
+   *   → returns titleAr when lang=ar (if it exists), otherwise title
+   */
+  const localizeField = (
+    obj: Record<string, any>,
+    enField: string,
+    arField: string
+  ): string => {
+    if (lang === "ar" && obj[arField]) return obj[arField];
+    return obj[enField] || "";
+  };
+
+  return { getText, lang, t, localizeField };
 }

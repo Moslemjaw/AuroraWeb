@@ -50,7 +50,7 @@ type SectionKey = "flowers" | "colors" | "presentation" | "addons";
 export default function CustomOrderForm() {
   const [, setLocation] = useLocation();
   const { addCustomToCart } = useCart();
-  const { getText, t } = useT();
+  const { getText, t, localizeField } = useT();
 
   const [colors, setColors] = useState<Color[]>([]);
   const [presentations, setPresentations] = useState<Presentation[]>([]);
@@ -165,7 +165,7 @@ export default function CustomOrderForm() {
       const color = colors.find((c) => c.colorId === colorId)!;
       return {
         colorId: color.colorId,
-        name: color.name,
+        name: localizeField(color, "name", "nameAr"),
         hex: color.hex,
         imageUrl: color.imageUrl,
         price: color.price,
@@ -178,7 +178,8 @@ export default function CustomOrderForm() {
 
     const selectedAddOnDetails = selectedAddOns.map((addOnId) => {
       const addOn = addOns.find((a) => a.addOnId === addOnId)!;
-      return { addOnId: addOn.addOnId, name: addOn.name, price: addOn.price };
+      const name = localizeField(addOn, "name", "nameAr");
+      return { addOnId: addOn.addOnId, name, price: addOn.price };
     });
 
     const title = `${getText(t.customForm.customBouquet)} (${quantity} ${getText(t.customForm.flowers)})`;
@@ -196,7 +197,7 @@ export default function CustomOrderForm() {
         selectedColors: selectedColorDetails,
         presentation: {
           presentationId: presentationDetails.presentationId,
-          name: presentationDetails.name,
+          name: localizeField(presentationDetails, "name", "nameAr"),
           price: presentationDetails.price,
         },
         addOns: selectedAddOnDetails,
@@ -230,7 +231,8 @@ export default function CustomOrderForm() {
         const pres = presentations.find(
           (p) => p.presentationId === selectedPresentation
         );
-        return pres?.name || getText(t.customForm.noneSelected);
+        const presName = pres ? localizeField(pres, "name", "nameAr") : null;
+        return presName || getText(t.customForm.noneSelected);
       case "addons":
         return selectedAddOns.length > 0
           ? `${selectedAddOns.length} ${getText(t.customForm.selected)}`
@@ -396,7 +398,7 @@ export default function CustomOrderForm() {
                       />
                     )}
                     <span className="text-[10px] sm:text-xs font-medium leading-tight">
-                      {color.name}
+                      {localizeField(color, "name", "nameAr")}
                     </span>
                     {color.price > 0 && (
                       <span className="text-[9px] sm:text-[10px] text-primary mt-0.5">
@@ -454,11 +456,11 @@ export default function CustomOrderForm() {
                       </div>
                     )}
                     <span className="text-xs sm:text-sm font-medium">
-                      {pres.name}
+                      {localizeField(pres, "name", "nameAr")}
                     </span>
-                    {pres.description && (
+                    {localizeField(pres, "description", "descriptionAr") && (
                       <span className="text-[10px] sm:text-xs text-muted-foreground mt-0.5">
-                        {pres.description}
+                        {localizeField(pres, "description", "descriptionAr")}
                       </span>
                     )}
                     <span className="text-xs text-primary font-medium mt-1">
@@ -518,11 +520,11 @@ export default function CustomOrderForm() {
                       </div>
                     )}
                     <span className="text-xs sm:text-sm font-medium pr-5">
-                      {addOn.name}
+                      {localizeField(addOn, "name", "nameAr")}
                     </span>
-                    {addOn.description && (
+                    {localizeField(addOn, "description", "descriptionAr") && (
                       <span className="text-[10px] text-muted-foreground mt-0.5">
-                        {addOn.description}
+                        {localizeField(addOn, "description", "descriptionAr")}
                       </span>
                     )}
                     <span className="text-xs text-primary font-medium mt-1">

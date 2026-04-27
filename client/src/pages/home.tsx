@@ -35,8 +35,10 @@ import { useState } from "react";
 type ProductType = {
   productId: string;
   title: string;
+  titleAr?: string;
   price: string;
   description: string;
+  descriptionAr?: string;
   imageUrl: string;
 };
 
@@ -48,7 +50,7 @@ function ProductCarousel({
   itemsPerPage?: number;
 }) {
   const [currentPage, setCurrentPage] = useState(0);
-  const { getText, t } = useT();
+  const { getText, t, localizeField } = useT();
   const totalPages = Math.ceil(products.length / itemsPerPage);
 
   const startIndex = currentPage * itemsPerPage;
@@ -82,9 +84,9 @@ function ProductCarousel({
             key={product.productId}
             id={product.productId}
             image={product.imageUrl}
-            title={product.title}
+            title={localizeField(product, "title", "titleAr")}
             price={product.price}
-            description={product.description}
+            description={localizeField(product, "description", "descriptionAr")}
           />
         ))}
       </div>
@@ -134,7 +136,7 @@ export default function Home() {
   const { products, isLoadingProducts } = useAdmin();
   const [, setLocation] = useLocation();
   const [logoClicks, setLogoClicks] = useState(0);
-  const { getText, t, lang } = useT();
+  const { getText, t, lang, localizeField } = useT();
 
   const handleLogoClick = (e: React.MouseEvent) => {
     const newClicks = logoClicks + 1;
@@ -173,7 +175,7 @@ export default function Home() {
             className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
           />
           <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">
-            Aurora Flowers
+            {getText(t.nav.brand)}
           </span>
         </div>
 
@@ -405,7 +407,11 @@ export default function Home() {
         <div className="container mx-auto px-4 sm:px-6 md:px-12 lg:px-24 text-center">
           <div className="flex justify-center items-center gap-2 sm:gap-3 mb-6 sm:mb-10">
             <span className="font-serif text-2xl sm:text-3xl tracking-tight">
-              Aurora <span className="text-primary">Flowers</span>
+              {lang === "ar" ? (
+                <><span className="text-primary">أورورا</span> فلاور</>
+              ) : (
+                <>Aurora <span className="text-primary">Flowers</span></>
+              )}
             </span>
           </div>
 

@@ -16,7 +16,7 @@ export default function ProductDetail() {
   const { products } = useAdmin();
   const { addToCart, itemCount } = useCart();
   const { toast } = useToast();
-  const { getText, t } = useT();
+  const { getText, t, lang, localizeField } = useT();
   const [quantity, setQuantity] = useState(1);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   
@@ -31,14 +31,14 @@ export default function ProductDetail() {
   const handleAddToCart = () => {
     addToCart({
       productId: product.productId,
-      title: product.title,
+      title: localizeField(product, "title", "titleAr"),
       price: product.price,
       imageUrl: product.imageUrl,
       category: product.category,
     }, quantity);
     toast({
       title: getText(t.product.addedToCart),
-      description: `${quantity} x ${product.title} ${getText(t.product.addedDesc)}`,
+      description: `${quantity} x ${localizeField(product, "title", "titleAr")} ${getText(t.product.addedDesc)}`,
     });
   };
 
@@ -48,7 +48,7 @@ export default function ProductDetail() {
          <div className="flex items-center gap-2 sm:gap-3">
            <Link href="/" className="flex items-center gap-2 sm:gap-3">
              <img src={logoImg} alt="Logo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain" />
-             <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">Aurora Flowers</span>
+             <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">{getText(t.nav.brand)}</span>
            </Link>
          </div>
          <div className="hidden md:flex items-center gap-8">
@@ -108,12 +108,12 @@ export default function ProductDetail() {
           <div className="space-y-6 sm:space-y-8 lg:sticky lg:top-32">
             <div>
               <span className="text-primary font-bold tracking-widest uppercase text-[10px] sm:text-xs mb-2 block">{product.category}</span>
-              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground mb-3 sm:mb-4">{product.title}</h1>
+              <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl text-foreground mb-3 sm:mb-4">{localizeField(product, "title", "titleAr")}</h1>
               <p className="font-sans text-xl sm:text-2xl font-medium text-primary">{product.price}</p>
             </div>
 
             <div className="prose prose-stone text-sm sm:text-base text-muted-foreground font-light leading-relaxed">
-              <p>{product.longDescription || product.description}</p>
+              <p>{localizeField(product, "longDescription", "longDescriptionAr") || localizeField(product, "description", "descriptionAr")}</p>
             </div>
 
             <div className="border-y border-border/50 py-4 sm:py-6 space-y-3 sm:space-y-4">

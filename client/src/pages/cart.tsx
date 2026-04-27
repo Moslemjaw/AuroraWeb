@@ -25,7 +25,7 @@ export default function Cart() {
     getTotal,
     itemCount,
   } = useCart();
-  const { getText, t } = useT();
+  const { getText, t, lang } = useT();
 
   const SHIPPING_FEE = 2; // 2.00 K.D. flat rate
   const formatCurrency = (amount: number) => `${amount.toFixed(2)} K.D.`;
@@ -43,7 +43,7 @@ export default function Cart() {
               className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
             />
             <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">
-              Aurora Flowers
+              {getText(t.nav.brand)}
             </span>
           </Link>
         </div>

@@ -18,7 +18,7 @@ import { useT } from "@/lib/i18n";
 
 export default function Contact() {
   const { toast } = useToast();
-  const { getText, t } = useT();
+  const { getText, t, lang } = useT();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState({
@@ -90,7 +90,7 @@ export default function Contact() {
               className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
             />
             <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">
-              Aurora Flowers
+              {getText(t.nav.brand)}
             </span>
           </Link>
         </div>

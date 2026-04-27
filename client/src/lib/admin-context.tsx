@@ -14,9 +14,12 @@ export type Product = {
   _id?: string;
   productId: string;
   title: string;
+  titleAr?: string;
   price: string;
   description: string;
+  descriptionAr?: string;
   longDescription?: string;
+  longDescriptionAr?: string;
   imageUrl: string;
   images?: string[];
   category: string;
@@ -38,6 +41,7 @@ export type Color = {
   _id?: string;
   colorId: string;
   name: string;
+  nameAr?: string;
   hex: string;
   imageUrl?: string;
   price: number;
@@ -47,7 +51,9 @@ export type Presentation = {
   _id?: string;
   presentationId: string;
   name: string;
+  nameAr?: string;
   description?: string;
+  descriptionAr?: string;
   price: number;
 };
 
@@ -55,7 +61,9 @@ export type AddOn = {
   _id?: string;
   addOnId: string;
   name: string;
+  nameAr?: string;
   description?: string;
+  descriptionAr?: string;
   price: number;
 };
 
@@ -89,6 +97,7 @@ type AdminContextType = {
   loadColors: () => Promise<void>;
   addColor: (color: {
     name: string;
+    nameAr?: string;
     hex: string;
     imageUrl?: string;
     price: number;
@@ -99,7 +108,9 @@ type AdminContextType = {
   loadPresentations: () => Promise<void>;
   addPresentation: (presentation: {
     name: string;
+    nameAr?: string;
     description?: string;
+    descriptionAr?: string;
     price: number;
   }) => Promise<void>;
   updatePresentation: (
@@ -111,7 +122,9 @@ type AdminContextType = {
   loadAddOns: () => Promise<void>;
   addAddOn: (addOn: {
     name: string;
+    nameAr?: string;
     description?: string;
+    descriptionAr?: string;
     price: number;
   }) => Promise<void>;
   updateAddOn: (addOnId: string, updates: Partial<AddOn>) => Promise<void>;
@@ -245,6 +258,7 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
 
   const addColor = async (color: {
     name: string;
+    nameAr?: string;
     hex: string;
     imageUrl?: string;
     price: number;
@@ -274,7 +288,9 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
 
   const addPresentation = async (presentation: {
     name: string;
+    nameAr?: string;
     description?: string;
+    descriptionAr?: string;
     price: number;
   }) => {
     const created = await presentationAPI.create(presentation);
@@ -311,7 +327,9 @@ export function AdminProvider({ children }: { children: React.ReactNode }) {
 
   const addAddOn = async (addOn: {
     name: string;
+    nameAr?: string;
     description?: string;
+    descriptionAr?: string;
     price: number;
   }) => {
     const created = await addOnAPI.create(addOn);

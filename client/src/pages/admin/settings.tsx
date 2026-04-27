@@ -27,6 +27,7 @@ export default function AdminSettings() {
 
   const [newColor, setNewColor] = useState({
     name: "",
+    nameAr: "",
     hex: "#f97a9d",
     imageUrl: "",
     price: 0,
@@ -37,12 +38,16 @@ export default function AdminSettings() {
 
   const [newPresentation, setNewPresentation] = useState({
     name: "",
+    nameAr: "",
     description: "",
+    descriptionAr: "",
     price: 0,
   });
   const [newAddOn, setNewAddOn] = useState({
     name: "",
+    nameAr: "",
     description: "",
+    descriptionAr: "",
     price: 0,
   });
   const [flowerSettings, setFlowerSettings] = useState({
@@ -99,11 +104,12 @@ export default function AdminSettings() {
       try {
         await addColor({
           name: newColor.name,
+          nameAr: newColor.nameAr,
           hex: newColor.hex || "#cccccc",
           imageUrl: useImageForColor ? newColor.imageUrl : undefined,
           price: newColor.price,
         });
-        setNewColor({ name: "", hex: "#f97a9d", imageUrl: "", price: 0 });
+        setNewColor({ name: "", nameAr: "", hex: "#f97a9d", imageUrl: "", price: 0 });
         setUseImageForColor(false);
         toast({ title: "Color added successfully" });
       } catch (error) {
@@ -117,7 +123,7 @@ export default function AdminSettings() {
     if (newPresentation.name) {
       try {
         await addPresentation({ ...newPresentation });
-        setNewPresentation({ name: "", description: "", price: 0 });
+        setNewPresentation({ name: "", nameAr: "", description: "", descriptionAr: "", price: 0 });
         toast({ title: "Presentation added successfully" });
       } catch (error) {
         console.error("Failed to add presentation:", error);
@@ -130,7 +136,7 @@ export default function AdminSettings() {
     if (newAddOn.name) {
       try {
         await addAddOn({ ...newAddOn });
-        setNewAddOn({ name: "", description: "", price: 0 });
+        setNewAddOn({ name: "", nameAr: "", description: "", descriptionAr: "", price: 0 });
         toast({ title: "Add-on added successfully" });
       } catch (error) {
         console.error("Failed to add add-on:", error);
@@ -289,6 +295,22 @@ export default function AdminSettings() {
                         setNewColor({ ...newColor, name: e.target.value })
                       }
                       data-testid="input-color-name"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-1 block">
+                      Name (Arabic)
+                    </label>
+                    <input
+                      type="text"
+                      dir="rtl"
+                      placeholder="الاسم بالعربي"
+                      className="w-full h-10 rounded-md border border-input px-3 py-2 text-sm text-right"
+                      value={newColor.nameAr}
+                      onChange={(e) =>
+                        setNewColor({ ...newColor, nameAr: e.target.value })
+                      }
+                      data-testid="input-color-name-ar"
                     />
                   </div>
                   <div>
@@ -460,7 +482,7 @@ export default function AdminSettings() {
               Presentation Options
             </h3>
             <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_auto] gap-2 sm:gap-3 items-end">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-2">
                 <div>
                   <label className="text-xs text-muted-foreground mb-1 block">
                     Name
@@ -479,6 +501,66 @@ export default function AdminSettings() {
                     data-testid="input-presentation-name"
                   />
                 </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">
+                    Name (Arabic)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    placeholder="الاسم بالعربي"
+                    className="w-full h-10 rounded-md border border-input px-3 py-2 text-sm text-right"
+                    value={newPresentation.nameAr}
+                    onChange={(e) =>
+                      setNewPresentation({
+                        ...newPresentation,
+                        nameAr: e.target.value,
+                      })
+                    }
+                    data-testid="input-presentation-name-ar"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-2">
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">
+                    Description
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Description"
+                    className="w-full h-10 rounded-md border border-input px-3 py-2 text-sm"
+                    value={newPresentation.description}
+                    onChange={(e) =>
+                      setNewPresentation({
+                        ...newPresentation,
+                        description: e.target.value,
+                      })
+                    }
+                    data-testid="input-presentation-desc"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1 block">
+                    Description (Arabic)
+                  </label>
+                  <input
+                    type="text"
+                    dir="rtl"
+                    placeholder="الوصف بالعربي"
+                    className="w-full h-10 rounded-md border border-input px-3 py-2 text-sm text-right"
+                    value={newPresentation.descriptionAr}
+                    onChange={(e) =>
+                      setNewPresentation({
+                        ...newPresentation,
+                        descriptionAr: e.target.value,
+                      })
+                    }
+                    data-testid="input-presentation-desc-ar"
+                  />
+                </div>
+              </div>
+              <div className="flex gap-2 items-end">
                 <div>
                   <label className="text-xs text-muted-foreground mb-1 block">
                     Price (K.D.)
@@ -552,7 +634,7 @@ export default function AdminSettings() {
             Customers can select multiple add-ons to enhance their order.
           </p>
           <div className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto_auto] gap-2 sm:gap-3 items-end">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-2">
               <div>
                 <label className="text-xs text-muted-foreground mb-1 block">
                   Name
@@ -570,6 +652,24 @@ export default function AdminSettings() {
               </div>
               <div>
                 <label className="text-xs text-muted-foreground mb-1 block">
+                  Name (Arabic)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  placeholder="الاسم بالعربي"
+                  className="w-full h-10 rounded-md border border-input px-3 py-2 text-sm text-right"
+                  value={newAddOn.nameAr}
+                  onChange={(e) =>
+                    setNewAddOn({ ...newAddOn, nameAr: e.target.value })
+                  }
+                  data-testid="input-addon-name-ar"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-2">
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">
                   Description (optional)
                 </label>
                 <input
@@ -583,6 +683,24 @@ export default function AdminSettings() {
                   data-testid="input-addon-description"
                 />
               </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1 block">
+                  Description (Arabic)
+                </label>
+                <input
+                  type="text"
+                  dir="rtl"
+                  placeholder="الوصف بالعربي"
+                  className="w-full h-10 rounded-md border border-input px-3 py-2 text-sm text-right"
+                  value={newAddOn.descriptionAr}
+                  onChange={(e) =>
+                    setNewAddOn({ ...newAddOn, descriptionAr: e.target.value })
+                  }
+                  data-testid="input-addon-description-ar"
+                />
+              </div>
+            </div>
+            <div className="flex gap-2 items-end">
               <div>
                 <label className="text-xs text-muted-foreground mb-1 block">
                   Price (K.D.)

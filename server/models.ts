@@ -10,9 +10,12 @@ export const AuroraAdminUser = mongoose.model("AuroraAdminUser", adminUserSchema
 const productSchema = new mongoose.Schema({
   productId: { type: String, required: true, unique: true },
   title: { type: String, required: true },
+  titleAr: { type: String },
   price: { type: String, required: true },
   description: { type: String, required: true },
+  descriptionAr: { type: String },
   longDescription: { type: String },
+  longDescriptionAr: { type: String },
   imageUrl: { type: String, required: true },
   images: [{ type: String }],
   category: { type: String, required: true },
@@ -38,6 +41,7 @@ export const AuroraOrder = mongoose.model("AuroraOrder", orderSchema);
 const colorSchema = new mongoose.Schema({
   colorId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
+  nameAr: { type: String },
   hex: { type: String, required: true },
   imageUrl: { type: String },
   price: { type: Number, default: 0 },
@@ -48,7 +52,9 @@ export const AuroraColor = mongoose.model("AuroraColor", colorSchema);
 const presentationSchema = new mongoose.Schema({
   presentationId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
+  nameAr: { type: String },
   description: { type: String },
+  descriptionAr: { type: String },
   price: { type: Number, default: 0 },
 }, { timestamps: true });
 
@@ -57,7 +63,9 @@ export const AuroraPresentation = mongoose.model("AuroraPresentation", presentat
 const addOnSchema = new mongoose.Schema({
   addOnId: { type: String, required: true, unique: true },
   name: { type: String, required: true },
+  nameAr: { type: String },
   description: { type: String },
+  descriptionAr: { type: String },
   price: { type: Number, default: 0 },
 }, { timestamps: true });
 

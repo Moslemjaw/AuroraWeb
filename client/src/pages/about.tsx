@@ -8,7 +8,7 @@ import artisanImg from "@assets/image_1764360953696.png";
 import { useT } from "@/lib/i18n";
 
 export default function About() {
-  const { getText, t } = useT();
+  const { getText, t, lang } = useT();
 
   return (
     <div className="min-h-screen bg-background font-sans">
@@ -21,7 +21,7 @@ export default function About() {
               className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
             />
             <span className="font-serif text-lg sm:text-xl font-medium tracking-tight text-foreground">
-              Aurora Flowers
+              {getText(t.nav.brand)}
             </span>
           </Link>
         </div>

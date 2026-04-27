@@ -20,8 +20,10 @@ export default function AdminProducts() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [formTitle, setFormTitle] = useState("");
+  const [formTitleAr, setFormTitleAr] = useState("");
   const [formPrice, setFormPrice] = useState("");
   const [formDescription, setFormDescription] = useState("");
+  const [formDescriptionAr, setFormDescriptionAr] = useState("");
   const [formImages, setFormImages] = useState<string[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -29,8 +31,10 @@ export default function AdminProducts() {
 
   const resetForm = () => {
     setFormTitle("");
+    setFormTitleAr("");
     setFormPrice("");
     setFormDescription("");
+    setFormDescriptionAr("");
     setFormImages([]);
     setEditingProduct(null);
   };
@@ -39,8 +43,10 @@ export default function AdminProducts() {
     setEditingProduct(product);
     const priceNumber = product.price.replace(/[^0-9.]/g, "");
     setFormTitle(product.title);
+    setFormTitleAr(product.titleAr || "");
     setFormPrice(priceNumber);
     setFormDescription(product.description || "");
+    setFormDescriptionAr(product.descriptionAr || "");
     setFormImages(product.images || [product.imageUrl]);
     setIsEditModalOpen(true);
   };
@@ -121,8 +127,10 @@ export default function AdminProducts() {
       await addProduct({
         productId: `prod-${Date.now()}`,
         title: formTitle,
+        titleAr: formTitleAr,
         price: formattedPrice,
         description: formDescription,
+        descriptionAr: formDescriptionAr,
         longDescription: "",
         imageUrl: formImages[0],
         images: formImages,
@@ -159,8 +167,10 @@ export default function AdminProducts() {
 
       await updateProduct(editingProduct.productId, {
         title: formTitle,
+        titleAr: formTitleAr,
         price: formattedPrice,
         description: formDescription,
+        descriptionAr: formDescriptionAr,
         imageUrl: formImages[0],
         images: formImages,
       });
@@ -215,6 +225,16 @@ export default function AdminProducts() {
                     />
                   </div>
                   <div className="space-y-2">
+                    <label className="text-xs font-medium">Title (Arabic)</label>
+                    <input
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-right"
+                      dir="rtl"
+                      value={formTitleAr}
+                      onChange={(e) => setFormTitleAr(e.target.value)}
+                      data-testid="input-product-title-ar"
+                    />
+                  </div>
+                  <div className="space-y-2 sm:col-span-2">
                     <label className="text-xs font-medium">Price (K.D.)</label>
                     <input
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
@@ -226,16 +246,30 @@ export default function AdminProducts() {
                     />
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <label className="text-xs font-medium">
-                    Short Description
-                  </label>
-                  <input
-                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
-                    value={formDescription}
-                    onChange={(e) => setFormDescription(e.target.value)}
-                    data-testid="input-product-description"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium">
+                      Short Description
+                    </label>
+                    <input
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                      value={formDescription}
+                      onChange={(e) => setFormDescription(e.target.value)}
+                      data-testid="input-product-description"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-medium">
+                      Description (Arabic)
+                    </label>
+                    <input
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-right"
+                      dir="rtl"
+                      value={formDescriptionAr}
+                      onChange={(e) => setFormDescriptionAr(e.target.value)}
+                      data-testid="input-product-description-ar"
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-3">
