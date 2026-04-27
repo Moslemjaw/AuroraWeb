@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Plus, Trash, Save, Upload, X } from "lucide-react";
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { config } from "@/lib/config";
+import { API_BASE } from "@/lib/api";
 
 export default function AdminSettings() {
   const { toast } = useToast();
@@ -59,8 +59,7 @@ export default function AdminSettings() {
     formData.append("image", files[0]);
 
     // Get API base URL
-    const apiBase = config.api.baseUrl || "/api";
-    const uploadUrl = `${apiBase}/upload`;
+    const uploadUrl = `${API_BASE}/upload`;
 
     try {
       const response = await fetch(uploadUrl, {

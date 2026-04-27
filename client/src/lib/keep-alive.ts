@@ -2,31 +2,7 @@
 // Sends a ping request to the backend every 5 minutes
 
 import { config } from "./config";
-
-// Get API base URL
-function getApiBase(): string {
-  let baseUrl = config.api.baseUrl || "";
-
-  if (!baseUrl) {
-    return "/api";
-  }
-
-  baseUrl = baseUrl.replace(/\/$/, "");
-
-  if (baseUrl.startsWith("http")) {
-    if (baseUrl.endsWith("/api")) {
-      return baseUrl;
-    }
-    return `${baseUrl}/api`;
-  }
-
-  if (baseUrl.startsWith("/api")) {
-    return baseUrl;
-  }
-  return `/api${baseUrl.startsWith("/") ? baseUrl : `/${baseUrl}`}`;
-}
-
-const API_BASE = getApiBase();
+import { API_BASE } from "./api";
 
 // Only run keep-alive if we have a backend URL on a different domain (like Render)
 const shouldKeepAlive = () => {

@@ -30,7 +30,7 @@ function getApiBase(): string {
   return `/api${baseUrl.startsWith("/") ? baseUrl : `/${baseUrl}`}`;
 }
 
-const API_BASE = getApiBase();
+export const API_BASE = getApiBase();
 
 // Debug log (remove in production)
 if (typeof window !== "undefined" && import.meta.env.DEV) {
