@@ -15,15 +15,18 @@ export default function MobileNav({ isLight = false }: MobileNavProps) {
 
   return (
     <>
-      <Button 
-        variant="ghost" 
-        size="icon" 
-        className={`md:hidden ${isLight ? 'text-white hover:bg-white/10' : 'text-foreground hover:bg-secondary'}`}
-        onClick={() => setIsOpen(true)}
-        data-testid="button-mobile-menu"
-      >
-        <Menu className="w-6 h-6" />
-      </Button>
+      <div className="flex items-center gap-2 md:hidden">
+        <Button 
+          variant="ghost" 
+          size="icon" 
+          className={isLight ? 'text-white hover:bg-white/10' : 'text-foreground hover:bg-secondary'}
+          onClick={() => setIsOpen(true)}
+          data-testid="button-mobile-menu"
+        >
+          <Menu className="w-6 h-6" />
+        </Button>
+        <LanguageToggle />
+      </div>
 
       {/* Overlay */}
       {isOpen && (
