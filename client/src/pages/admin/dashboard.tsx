@@ -2,9 +2,11 @@ import { useAdmin } from "@/lib/admin-context";
 import AdminLayout from "@/components/admin-layout";
 import { TrendingUp, ShoppingBag, Users, DollarSign } from "lucide-react";
 import { useEffect } from "react";
+import { useT } from "@/lib/i18n";
 
 export default function AdminDashboard() {
   const { stats, orders, loadOrders, loadStats } = useAdmin();
+  const { getText, t } = useT();
 
   useEffect(() => {
     loadOrders();
@@ -15,8 +17,8 @@ export default function AdminDashboard() {
     <AdminLayout>
       <div className="space-y-6 sm:space-y-8">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl text-foreground mb-1 sm:mb-2">Dashboard Overview</h1>
-          <p className="text-sm text-muted-foreground">Welcome back, Admin.</p>
+          <h1 className="font-serif text-2xl sm:text-3xl text-foreground mb-1 sm:mb-2">{getText(t.admin.dashboardOverview)}</h1>
+          <p className="text-sm text-muted-foreground">{getText(t.admin.welcomeAdmin)}</p>
         </div>
 
         {/* Stats Grid */}
@@ -24,7 +26,7 @@ export default function AdminDashboard() {
           <div className="bg-white p-4 sm:p-6 rounded-lg border border-border shadow-sm">
             <div className="flex justify-between items-start mb-3 sm:mb-4">
               <div>
-                <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground">Total Sales</p>
+                <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground">{getText(t.admin.totalSales)}</p>
                 <h3 className="text-xl sm:text-2xl font-bold text-foreground mt-1 sm:mt-2">{stats.totalSales}</h3>
               </div>
               <div className="p-2 sm:p-3 bg-primary/10 rounded-full text-primary">
@@ -32,14 +34,14 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center text-[10px] sm:text-xs text-emerald-600 font-medium">
-              <TrendingUp className="w-3 h-3 mr-1" /> +12.5% from last month
+              <TrendingUp className="w-3 h-3 mr-1" /> +12.5% {getText(t.admin.fromLastMonth)}
             </div>
           </div>
 
           <div className="bg-white p-4 sm:p-6 rounded-lg border border-border shadow-sm">
             <div className="flex justify-between items-start mb-3 sm:mb-4">
               <div>
-                <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground">Total Orders</p>
+                <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground">{getText(t.admin.totalOrders)}</p>
                 <h3 className="text-xl sm:text-2xl font-bold text-foreground mt-1 sm:mt-2">{stats.totalOrders}</h3>
               </div>
               <div className="p-2 sm:p-3 bg-primary/10 rounded-full text-primary">
@@ -47,14 +49,14 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center text-[10px] sm:text-xs text-emerald-600 font-medium">
-              <TrendingUp className="w-3 h-3 mr-1" /> +5 New orders today
+              <TrendingUp className="w-3 h-3 mr-1" /> +5 {getText(t.admin.newOrdersToday)}
             </div>
           </div>
 
           <div className="bg-white p-4 sm:p-6 rounded-lg border border-border shadow-sm sm:col-span-2 lg:col-span-1">
             <div className="flex justify-between items-start mb-3 sm:mb-4">
               <div>
-                <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground">Avg. Order</p>
+                <p className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-muted-foreground">{getText(t.admin.avgOrder)}</p>
                 <h3 className="text-xl sm:text-2xl font-bold text-foreground mt-1 sm:mt-2">{stats.avgOrderValue}</h3>
               </div>
               <div className="p-2 sm:p-3 bg-primary/10 rounded-full text-primary">
@@ -62,7 +64,7 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div className="flex items-center text-[10px] sm:text-xs text-muted-foreground font-medium">
-              stable from last week
+              {getText(t.admin.stableLastWeek)}
             </div>
           </div>
         </div>
@@ -70,7 +72,7 @@ export default function AdminDashboard() {
         {/* Recent Orders */}
         <div className="bg-white rounded-lg border border-border shadow-sm overflow-hidden">
           <div className="p-4 sm:p-6 border-b border-border/50">
-            <h3 className="font-serif text-base sm:text-lg font-medium">Recent Orders</h3>
+            <h3 className="font-serif text-base sm:text-lg font-medium">{getText(t.admin.recentOrders)}</h3>
           </div>
           
           {/* Mobile Card Layout */}
@@ -86,7 +88,9 @@ export default function AdminDashboard() {
                     ${order.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' : 
                       order.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
                       order.status === 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {order.status}
+                    {order.status === 'Completed' ? getText(t.admin.statusCompleted) :
+                     order.status === 'Processing' ? getText(t.admin.statusProcessing) :
+                     order.status === 'Pending' ? getText(t.admin.statusPending) : order.status}
                   </span>
                 </div>
                 <div className="flex justify-between items-center text-xs">
@@ -102,11 +106,11 @@ export default function AdminDashboard() {
             <table className="w-full text-sm text-left">
               <thead className="bg-secondary/10 text-muted-foreground uppercase text-xs font-bold tracking-wider">
                 <tr>
-                  <th className="px-6 py-4">Order ID</th>
-                  <th className="px-6 py-4">Customer</th>
-                  <th className="px-6 py-4">Date</th>
-                  <th className="px-6 py-4">Status</th>
-                  <th className="px-6 py-4 text-right">Total</th>
+                  <th className="px-6 py-4">{getText(t.admin.orderId)}</th>
+                  <th className="px-6 py-4">{getText(t.admin.customer)}</th>
+                  <th className="px-6 py-4">{getText(t.admin.date)}</th>
+                  <th className="px-6 py-4">{getText(t.admin.status)}</th>
+                  <th className="px-6 py-4 text-right">{getText(t.admin.total)}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
@@ -120,7 +124,9 @@ export default function AdminDashboard() {
                         ${order.status === 'Completed' ? 'bg-emerald-100 text-emerald-800' : 
                           order.status === 'Processing' ? 'bg-blue-100 text-blue-800' :
                           order.status === 'Pending' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-800'}`}>
-                        {order.status}
+                        {order.status === 'Completed' ? getText(t.admin.statusCompleted) :
+                         order.status === 'Processing' ? getText(t.admin.statusProcessing) :
+                         order.status === 'Pending' ? getText(t.admin.statusPending) : order.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right font-medium">{order.total}</td>

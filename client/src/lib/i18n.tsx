@@ -233,6 +233,35 @@ const translations = {
     viewDetails: { en: "View Details", ar: "عرض التفاصيل" },
   },
 
+  // ===== Admin Dashboard =====
+  admin: {
+    adminPanel: { en: "Admin Panel", ar: "لوحة التحكم" },
+    dashboard: { en: "Dashboard", ar: "لوحة القيادة" },
+    orders: { en: "Orders", ar: "الطلبات" },
+    products: { en: "Products", ar: "المنتجات" },
+    inquiries: { en: "Inquiries", ar: "الاستفسارات" },
+    settings: { en: "Settings", ar: "الإعدادات" },
+    backToStore: { en: "Back to Store", ar: "العودة للمتجر" },
+    logout: { en: "Logout", ar: "تسجيل الخروج" },
+    dashboardOverview: { en: "Dashboard Overview", ar: "نظرة عامة على لوحة القيادة" },
+    welcomeAdmin: { en: "Welcome back, Admin.", ar: "مرحباً بعودتك، أيها المدير." },
+    totalSales: { en: "Total Sales", ar: "إجمالي المبيعات" },
+    fromLastMonth: { en: "from last month", ar: "عن الشهر الماضي" },
+    totalOrders: { en: "Total Orders", ar: "إجمالي الطلبات" },
+    newOrdersToday: { en: "New orders today", ar: "طلبات جديدة اليوم" },
+    avgOrder: { en: "Avg. Order", ar: "متوسط الطلب" },
+    stableLastWeek: { en: "stable from last week", ar: "مستقر عن الأسبوع الماضي" },
+    recentOrders: { en: "Recent Orders", ar: "الطلبات الأخيرة" },
+    orderId: { en: "Order ID", ar: "رقم الطلب" },
+    customer: { en: "Customer", ar: "العميل" },
+    date: { en: "Date", ar: "التاريخ" },
+    status: { en: "Status", ar: "الحالة" },
+    total: { en: "Total", ar: "المجموع" },
+    statusCompleted: { en: "Completed", ar: "مكتمل" },
+    statusProcessing: { en: "Processing", ar: "قيد التجهيز" },
+    statusPending: { en: "Pending", ar: "قيد الانتظار" },
+  },
+
   // ===== Custom Order Form =====
   customForm: {
     startProject: { en: "Start Your Project", ar: "ابدأ مشروعك" },

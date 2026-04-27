@@ -16,6 +16,7 @@ export default function MobileNav({ isLight = false }: MobileNavProps) {
   return (
     <>
       <div className="flex items-center gap-2 md:hidden">
+        <LanguageToggle />
         <Button 
           variant="ghost" 
           size="icon" 
@@ -25,7 +26,6 @@ export default function MobileNav({ isLight = false }: MobileNavProps) {
         >
           <Menu className="w-6 h-6" />
         </Button>
-        <LanguageToggle />
       </div>
 
       {/* Overlay */}

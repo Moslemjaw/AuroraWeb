@@ -2,8 +2,11 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { LayoutDashboard, ShoppingBag, Package, Settings, LogOut, Menu, X, Home, MessageSquare } from "lucide-react";
 import { useAdmin } from "@/lib/admin-context";
+import { useT } from "@/lib/i18n";
+import LanguageToggle from "@/components/language-toggle";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const { getText, t, lang } = useT();
   const [location, setLocation] = useLocation();
   const { logout } = useAdmin();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -23,7 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/dashboard') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
       >
         <LayoutDashboard className="w-4 h-4" />
-        Dashboard
+        {getText(t.admin.dashboard)}
       </Link>
       <Link 
         href="/admin/orders"
@@ -31,7 +34,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/orders') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
       >
         <ShoppingBag className="w-4 h-4" />
-        Orders
+        {getText(t.admin.orders)}
       </Link>
       <Link 
         href="/admin/products"
@@ -39,7 +42,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/products') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
       >
         <Package className="w-4 h-4" />
-        Products
+        {getText(t.admin.products)}
       </Link>
       <Link 
         href="/admin/inquiries"
@@ -47,7 +50,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/inquiries') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
       >
         <MessageSquare className="w-4 h-4" />
-        Inquiries
+        {getText(t.admin.inquiries)}
       </Link>
       <Link 
         href="/admin/settings"
@@ -55,7 +58,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         className={`flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium transition-colors ${isActive('/admin/settings') ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-secondary/50'}`}
       >
         <Settings className="w-4 h-4" />
-        Settings
+        {getText(t.admin.settings)}
       </Link>
     </>
   );
@@ -64,14 +67,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen bg-secondary/10 font-sans">
       {/* Mobile Header */}
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-border px-4 py-3 flex items-center justify-between">
-        <span className="font-serif text-lg font-bold text-foreground">Admin Panel</span>
-        <button 
-          onClick={() => setSidebarOpen(true)}
-          className="p-2 hover:bg-secondary/50 rounded-md"
-          data-testid="button-admin-menu"
-        >
-          <Menu className="w-5 h-5" />
-        </button>
+        <span className="font-serif text-lg font-bold text-foreground">{getText(t.admin.adminPanel)}</span>
+        <div className="flex items-center gap-2">
+          <LanguageToggle />
+          <button 
+            onClick={() => setSidebarOpen(true)}
+            className="p-2 hover:bg-secondary/50 rounded-md"
+            data-testid="button-admin-menu"
+          >
+            <Menu className="w-5 h-5" />
+          </button>
+        </div>
       </header>
 
       {/* Mobile Sidebar Overlay */}
@@ -91,7 +97,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         lg:translate-x-0
       `}>
         <div className="p-6 lg:p-8 border-b border-border/50 flex items-center justify-between">
-          <span className="font-serif text-lg lg:text-xl font-bold text-foreground">Admin Panel</span>
+          <span className="font-serif text-lg lg:text-xl font-bold text-foreground">{getText(t.admin.adminPanel)}</span>
+          <div className="hidden lg:block ml-2">
+            <LanguageToggle />
+          </div>
           <button 
             onClick={() => setSidebarOpen(false)}
             className="lg:hidden p-1 hover:bg-secondary/50 rounded-md"
@@ -111,14 +120,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             className="flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium text-muted-foreground hover:bg-secondary/50 transition-colors w-full"
           >
             <Home className="w-4 h-4" />
-            Back to Store
+            {getText(t.admin.backToStore)}
           </Link>
           <button 
             onClick={handleLogout} 
             className="flex items-center gap-3 px-4 py-3 rounded-md text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors w-full"
           >
             <LogOut className="w-4 h-4" />
-            Logout
+            {getText(t.admin.logout)}
           </button>
         </div>
       </aside>
